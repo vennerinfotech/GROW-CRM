@@ -5,13 +5,14 @@
         <!--check-->
         <tr>
             <td class="p-l-15">
-                PHP Supported Version 8.2 | 8.3 - <strong>Your Version <span class="badge-pill badge-info">{{ phpversion() }}</span></strong>
+                PHP Supported Version 8.2 | 8.3 - <strong>Your Version <span
+                        class="badge-pill badge-info">{{ phpversion() }}</span></strong>
             </td>
             <td class="x-td-checks">
-                @if($requirements['php_version'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['php_version'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -21,10 +22,10 @@
                 MySQL Database (mysqli)
             </td>
             <td class="x-td-checks">
-                @if($requirements['mysql'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['mysql'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -34,10 +35,10 @@
                 BCMath PHP Extension
             </td>
             <td class="x-td-checks">
-                @if($requirements['bcmath'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['bcmath'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -47,10 +48,10 @@
                 Ctype PHP Extension
             </td>
             <td class="x-td-checks">
-                @if($requirements['ctype'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['ctype'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -60,10 +61,10 @@
                 JSON PHP Extension
             </td>
             <td class="x-td-checks">
-                @if($requirements['json'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['json'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -73,10 +74,10 @@
                 Mbstring PHP Extension
             </td>
             <td class="x-td-checks">
-                @if($requirements['mbstring'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['mbstring'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -86,10 +87,10 @@
                 OpenSSL PHP Extension
             </td>
             <td class="x-td-checks">
-                @if($requirements['openssl'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['openssl'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -99,10 +100,10 @@
                 PDO PHP Extension
             </td>
             <td class="x-td-checks">
-                @if($requirements['pdo'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['pdo'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -112,10 +113,10 @@
                 Tokenizer PHP Extension
             </td>
             <td class="x-td-checks">
-                @if($requirements['tokenizer'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['tokenizer'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -125,10 +126,10 @@
                 XML PHP Extension
             </td>
             <td class="x-td-checks">
-                @if($requirements['xml'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['xml'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -138,10 +139,10 @@
                 FILEINFO PHP Extension
             </td>
             <td class="x-td-checks">
-                @if($requirements['fileinfo'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['fileinfo'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -152,10 +153,10 @@
                 GD Graphics Library (PHP GD)
             </td>
             <td class="x-td-checks">
-                @if($requirements['gd'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['gd'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -169,10 +170,10 @@
                 /updates
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_updates'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_updates'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -184,10 +185,10 @@
                 /storage
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_storage'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_storage'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -199,10 +200,10 @@
                 /storage/avatars
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_storage_avatars'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_storage_avatars'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -214,10 +215,10 @@
                 /storage/logos
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_storage_logos'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_storage_logos'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -227,10 +228,10 @@
                 /storage/logos/clients
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_storage_logos_clients'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_storage_logos_clients'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -240,10 +241,10 @@
                 /storage/logos/app
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_storage_logos_app'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_storage_logos_app'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -253,10 +254,10 @@
                 /storage/files
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_storage_files'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_storage_files'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -267,10 +268,10 @@
                 /storage/temp
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_storage_temp'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_storage_temp'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -281,10 +282,10 @@
                 /application/storage/app
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_storage_app'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_storage_app'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -295,10 +296,10 @@
                 /application/storage/app/public
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_storage_app_public'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_storage_app_public'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -310,10 +311,10 @@
                 /application/storage/cache
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_storage_cache'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_storage_cache'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -324,10 +325,10 @@
                 /application/storage/cache/data
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_storage_cache_data'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_storage_cache_data'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -339,10 +340,10 @@
                 /application/storage/logs
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_storage_logs'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_storage_logs'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -353,10 +354,10 @@
                 /application/storage/framework
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_storage_framework'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_storage_framework'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -368,10 +369,10 @@
                 /application/storage/framework/cache
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_storage_framework_cache'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_storage_framework_cache'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -382,10 +383,10 @@
                 /application/storage/framework/cache/data
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_storage_framework_cache_data'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_storage_framework_cache_data'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -397,10 +398,10 @@
                 /application/storage/framework/sessions_
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_storage_framework_sessions'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_storage_framework_sessions'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -412,10 +413,10 @@
                 /application/storage/framework/testing
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_storage_framework_testing'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_storage_framework_testing'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -427,10 +428,10 @@
                 /application/storage/framework/views
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_storage_framework_views'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_storage_framework_views'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -441,10 +442,10 @@
                 /application/bootstrap/cache
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_bootstrap_cache'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_bootstrap_cache'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -455,10 +456,10 @@
                 /application/storage/app/purifier
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_storage_app_purifier'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_storage_app_purifier'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -469,10 +470,10 @@
                 /application/storage/app/purifier/HTML
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_storage_app_purifier_html'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_storage_app_purifier_html'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -488,10 +489,10 @@
                 /application/.env (file)
             </td>
             <td class="x-td-checks">
-                @if($requirements['dir_app_env'])
-                <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
+                @if ($requirements['dir_app_env'])
+                    <span class="x-checks x-check-passed"><i class="sl-icon-check"></i></span>
                 @else
-                <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
+                    <span class="x-checks x-check-failed"><i class="sl-icon-close"></i></span>
                 @endif
             </td>
         </tr>
@@ -500,24 +501,24 @@
 
     <!--continue-->
     <div class="x-button text-right p-t-20">
-        @if($error['count'] > 0)
-        <!--warning-->
-        <div class="alert alert-danger text-left">
-            <h3 class="text-warning"><i class="fa fa-exclamation-triangle"></i> Error</h3>
-            One or more of the minimum requirements have not been met. You can contact your web hosting provider for
-            help (you can provide them with a screenshot of this screen). You can also refer to our <a
-                href="https://growcrm.io/documentation/2-installation/"> documentation</a> for more information.
-            You can also send us a support email at <strong>support@growcrm.io </strong>
-        </div>
-        <!--view server info-->
-        <a type="button" class="btn waves-effect waves-light btn-outline-secondary" href="{{url('setup/serverinfo') }}"
-            target="_blank">View Server Info</a>
+        @if ($error['count'] > 0)
+            <!--warning-->
+            <div class="alert alert-danger text-left">
+                <h3 class="text-warning"><i class="fa fa-exclamation-triangle"></i> Error</h3>
+                One or more of the minimum requirements have not been met. You can contact your web hosting provider for
+                help (you can provide them with a screenshot of this screen). You can also refer to our <a
+                    href="https://crm.grow.jovial-noether.94-136-184-62.plesk.page/2-installation/"> documentation</a>
+                for more information.
+                You can also send us a support email at <strong>support@growcrm.io </strong>
+            </div>
+            <!--view server info-->
+            <a type="button" class="btn waves-effect waves-light btn-outline-secondary"
+                href="{{ url('setup/serverinfo') }}" target="_blank">View Server Info</a>
         @else
-        <button type="button" class="btn waves-effect waves-light btn-info btn-extra-padding js-ajax-request"
-            data-button-loading-annimation="yes" data-button-disable-on-click="yes"
-            data-url="{{url('setup/database') }}">Continue</button>
+            <button type="button" class="btn waves-effect waves-light btn-info btn-extra-padding js-ajax-request"
+                data-button-loading-annimation="yes" data-button-disable-on-click="yes"
+                data-url="{{ url('setup/database') }}">Continue</button>
         @endif
     </div>
 
 </div>
-

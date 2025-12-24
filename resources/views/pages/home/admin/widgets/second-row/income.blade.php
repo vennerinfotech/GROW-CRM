@@ -1,4 +1,4 @@
-<div class="col-lg-8  col-md-12" id="dashboard-admin-invoice-vs-expenses">
+<!-- <div class="col-lg-8  col-md-12" id="dashboard-admin-invoice-vs-expenses">
     <div class="card">
         <div class="card-body">
             <div class="d-flex m-b-30">
@@ -15,15 +15,15 @@
                                 data-url="{{ url('home/update-stats') }}" data-type="form"
                                 data-form-id="dashboard-admin-invoice-vs-expenses"
                                 data-loading-target="dashboard-admin-invoice-vs-expenses">
-                                @if(isset($payload['available_years']))
-                                @foreach($payload['available_years'] as $year)
-                                <option value="{{ $year }}"
-                                    {{ ($year == $payload['income']['year']) ? 'selected' : '' }}>
+                                @if (isset($payload['available_years']))
+                                @foreach ($payload['available_years'] as $year)
+<option value="{{ $year }}"
+                                    {{ $year == $payload['income']['year'] ? 'selected' : '' }}>
                                     {{ $year }}
                                 </option>
-                                @endforeach
-                                @else
-                                <option value="{{ $payload['income']['year'] }}" selected>
+@endforeach
+@else
+<option value="{{ $payload['income']['year'] }}" selected>
                                     {{ $payload['income']['year'] }}
                                 </option>
                                 @endif
@@ -49,16 +49,15 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <!--[DYNAMIC INLINE SCRIPT] - Backend Variables to Javascript Variables-->
 <script>
-    NX.admin_home_chart_income = JSON.parse('{!! json_encode(clean($payload["income"]["monthly"])) !!}', true);
-    NX.admin_home_chart_expenses = JSON.parse('{!! json_encode(clean($payload["expenses"]["monthly"])) !!}', true);
+    NX.admin_home_chart_income = JSON.parse('{!! json_encode(clean($payload['income']['monthly'])) !!}', true);
+    NX.admin_home_chart_expenses = JSON.parse('{!! json_encode(clean($payload['expenses']['monthly'])) !!}', true);
 
     //call the chart function
-    $(document).ready(function () {
+    $(document).ready(function() {
         dashboardChartIncomeExpenses();
     });
 </script>
-

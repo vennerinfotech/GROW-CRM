@@ -20,11 +20,11 @@
                     <span class="x-spacer">|</span>
 
                     <!--projects-->
-                    <a class="right-sidepanel-menu ajax-request" href="javascript:void(0);" id="starred-projects"
+                    {{-- <a class="right-sidepanel-menu ajax-request" href="javascript:void(0);" id="starred-projects"
                         data-url="{{ url('/starred/view/projects?orderby=project_title&sortorder=asc') }}"
                         data-loading-target="sidepanel-starred-container" data-target="sidepanel-starred-container"
                         data-progress-bar='hidden'>@lang('lang.projects')</a>
-                    <span class="x-spacer">|</span>
+                    <span class="x-spacer">|</span> --}}
 
                     <!--tasks-->
                     <a class="right-sidepanel-menu ajax-request" href="javascript:void(0);" id="starred-tasks"
@@ -34,18 +34,18 @@
                     <span class="x-spacer">|</span>
 
                     <!--invoices-->
-                    <a class="right-sidepanel-menu ajax-request" href="javascript:void(0);" id="starred-invoices"
+                    {{-- <a class="right-sidepanel-menu ajax-request" href="javascript:void(0);" id="starred-invoices"
                         data-url="{{ url('/starred/view/invoices?orderby=bill_date&sortorder=desc') }}"
                         data-loading-target="sidepanel-starred-container" data-target="sidepanel-starred-container"
                         data-progress-bar='hidden'>@lang('lang.invoices')</a>
-                    <span class="x-spacer">|</span>
+                    <span class="x-spacer">|</span> --}}
 
                     <!--estimates-->
-                    <a class="right-sidepanel-menu ajax-request" href="javascript:void(0);" id="starred-estimates"
+                    {{-- <a class="right-sidepanel-menu ajax-request" href="javascript:void(0);" id="starred-estimates"
                         data-url="{{ url('/starred/view/estimates?orderby=bill_date&sortorder=desc') }}"
                         data-loading-target="sidepanel-starred-container" data-target="sidepanel-starred-container"
                         data-progress-bar='hidden'>@lang('lang.estimates')</a>
-                    <span class="x-spacer">|</span>
+                    <span class="x-spacer">|</span> --}}
 
                     <!--leads-->
                     <a class="right-sidepanel-menu ajax-request" href="javascript:void(0);" id="starred-leads"
@@ -55,11 +55,11 @@
                     <span class="x-spacer">|</span>
 
                     <!--project comments-->
-                    <a class="right-sidepanel-menu ajax-request" id="starred-project-comment" href="javascript:void(0);"
+                    {{-- <a class="right-sidepanel-menu ajax-request" id="starred-project-comment" href="javascript:void(0);"
                         data-url="{{ url('starred/view/project-comments?orderby=project_title&sortorder=asc') }}"
                         data-loading-target="sidepanel-starred-container" data-target="sidepanel-starred-container"
                         data-progress-bar='hidden'>@lang('lang.project_comments')</a>
-                    <span class="x-spacer">|</span>
+                    <span class="x-spacer">|</span> --}}
 
                     <!--notes-->
                     <a class="right-sidepanel-menu ajax-request" href="javascript:void(0);" id="starred-notes"
@@ -81,4 +81,3 @@
     </form>
 </div>
 <!--sidebar-->
-

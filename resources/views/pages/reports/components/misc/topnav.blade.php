@@ -4,12 +4,12 @@
         <ul data-modular-id="reports_tabs_menu" class="nav nav-tabs profile-tab reports-top-nav list-pages-crumbs"
             role="tablist">
 
-            
+
             <!--[MODULES] - dynamic menu-->
             @stack('menu_reports_topnav_1')
 
             <!--invoices-->
-            <li class="nav-item dropdown {{ $page['reports_tabs_productivty'] ?? '' }}">
+            {{-- <li class="nav-item dropdown {{ $page['reports_tabs_productivty'] ?? '' }}">
                 <a class="nav-link dropdown-toggle  tabs-menu-item" data-loading-class="loading-tabs"
                     data-toggle="dropdown" href="javascript:void(0)" role="button" aria-haspopup="true"
                     id="reports_tabs_invoices" aria-expanded="false">
@@ -44,13 +44,13 @@
                     <!--[MODULES] - dynamic menu-->
                     @stack('menu_reports_topnav_2')
                 </div>
-            </li>
+            </li> --}}
 
             <!--[MODULES] - dynamic menu-->
             @stack('menu_reports_topnav_3')
 
             <!--estimates-->
-            <li class="nav-item dropdown {{ $page['reports_tabs_productivty'] ?? '' }}">
+            {{-- <li class="nav-item dropdown {{ $page['reports_tabs_productivty'] ?? '' }}">
                 <a class="nav-link dropdown-toggle  tabs-menu-item" data-loading-class="loading-tabs"
                     data-toggle="dropdown" href="javascript:void(0)" role="button" aria-haspopup="true"
                     id="reports_tabs_estimates" aria-expanded="false">
@@ -84,13 +84,13 @@
                     <!--[MODULES] - dynamic menu-->
                     @stack('menu_reports_topnav_4')
                 </div>
-            </li>
+            </li> --}}
 
             <!--[MODULES] - dynamic menu-->
             @stack('menu_reports_topnav_5')
 
             <!--projects-->
-            <li class="nav-item dropdown {{ $page['reports_tabs_productivty'] ?? '' }}">
+            {{-- <li class="nav-item dropdown {{ $page['reports_tabs_productivty'] ?? '' }}">
                 <a class="nav-link dropdown-toggle  tabs-menu-item" data-loading-class="loading-tabs"
                     data-toggle="dropdown" href="javascript:void(0)" role="button" aria-haspopup="true"
                     id="reports_tabs_projects" aria-expanded="false">
@@ -118,7 +118,7 @@
                     <!--[MODULES] - dynamic menu-->
                     @stack('menu_reports_topnav_6')
                 </div>
-            </li>
+            </li> --}}
 
             <!--[MODULES] - dynamic menu-->
             @stack('menu_reports_topnav_7')
@@ -182,7 +182,7 @@
             @stack('menu_reports_topnav_11')
 
             <!--financial-->
-            <li class="nav-item dropdown {{ $page['reports_tabs_productivty'] ?? '' }}">
+            {{-- <li class="nav-item dropdown {{ $page['reports_tabs_productivty'] ?? '' }}">
                 <a class="nav-link dropdown-toggle  tabs-menu-item" data-loading-class="loading-tabs"
                     data-toggle="dropdown" href="javascript:void(0)" role="button" aria-haspopup="true"
                     id="reports_tabs_financial" aria-expanded="false">
@@ -198,7 +198,7 @@
                     <!--[MODULES] - dynamic menu-->
                     @stack('menu_reports_topnav_12')
                 </div>
-            </li>
+            </li> --}}
 
             <!--[MODULES] - dynamic menu-->
             @stack('menu_reports_topnav_13')
@@ -207,4 +207,3 @@
         <!-- Tab panes -->
     </div>
 </div>
-

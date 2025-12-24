@@ -41,25 +41,27 @@
                                 class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.company_logo')) }}</a>
                         </li>
                         <!--[MULTITENANCY]-->
-                        @if(config('system.settings_type') == 'standalone')
-                        <li>
-                            <a href="javascript:void(0);" data-url="/settings/modules" id="settings-menu-main-modules"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.modules')) }}</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);" data-url="/settings/cronjobs" id="settings-menu-main-cronjobs"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.cronjob_settings')) }}</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);" data-url="/settings/system/clearcache"
-                                id="settings-menu-main-cronjobs"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.clear_cache')) }}</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);" data-url="/settings/errorlogs"
-                                id="settings-menu-main-errorlogs"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.error_logs')) }}</a>
-                        </li>
+                        @if (config('system.settings_type') == 'standalone')
+                            <li>
+                                <a href="javascript:void(0);" data-url="/settings/modules"
+                                    id="settings-menu-main-modules"
+                                    class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.modules')) }}</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-url="/settings/cronjobs"
+                                    id="settings-menu-main-cronjobs"
+                                    class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.cronjob_settings')) }}</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-url="/settings/system/clearcache"
+                                    id="settings-menu-main-cronjobs"
+                                    class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.clear_cache')) }}</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-url="/settings/errorlogs"
+                                    id="settings-menu-main-errorlogs"
+                                    class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.error_logs')) }}</a>
+                            </li>
                         @endif
                         <!--[MODULES] - dynamic menu-->
                         {!! config('modules.menus.settings.general') !!}
@@ -73,35 +75,35 @@
 
                 <!--billing-->
                 <!--[MULTITENANCY]-->
-                @if(config('system.settings_type') == 'saas')
-                <li class="sidenav-menu-item">
-                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
-                        id="settings-menu-billing">
-                        <span class="hide-menu">{{ cleanLang(__('lang.billing')) }}
-                        </span>
-                    </a>
-                    <ul aria-expanded="false" class="collapse">
-                        <li><a href="javascript:void(0);" data-url="/settings/account/myaccount"
-                                id="settings-menu-billing-account"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.my_account')) }}</a>
-                        </li>
-                        <li><a href="javascript:void(0);" data-url="/settings/account/packages"
-                                id="settings-menu-billing-packages"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.packages')) }}</a>
-                        </li>
-                        <li><a href="javascript:void(0);" data-url="/settings/account/payments"
-                                id="settings-menu-billing-payments"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.payments')) }}</a>
-                        </li>
-                        <li><a href="javascript:void(0);" data-url="/settings/account/notices"
-                                id="settings-menu-billing-notices"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.notices')) }}</a>
-                        </li>
-                        <!--[MODULES] - dynamic menu-->
-                        {!! config('modules.menus.settings.billing') !!}
-                        @stack('menu_settings_main_4')
-                    </ul>
-                </li>
+                @if (config('system.settings_type') == 'saas')
+                    <li class="sidenav-menu-item">
+                        <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
+                            id="settings-menu-billing">
+                            <span class="hide-menu">{{ cleanLang(__('lang.billing')) }}
+                            </span>
+                        </a>
+                        <ul aria-expanded="false" class="collapse">
+                            <li><a href="javascript:void(0);" data-url="/settings/account/myaccount"
+                                    id="settings-menu-billing-account"
+                                    class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.my_account')) }}</a>
+                            </li>
+                            <li><a href="javascript:void(0);" data-url="/settings/account/packages"
+                                    id="settings-menu-billing-packages"
+                                    class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.packages')) }}</a>
+                            </li>
+                            <li><a href="javascript:void(0);" data-url="/settings/account/payments"
+                                    id="settings-menu-billing-payments"
+                                    class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.payments')) }}</a>
+                            </li>
+                            <li><a href="javascript:void(0);" data-url="/settings/account/notices"
+                                    id="settings-menu-billing-notices"
+                                    class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.notices')) }}</a>
+                            </li>
+                            <!--[MODULES] - dynamic menu-->
+                            {!! config('modules.menus.settings.billing') !!}
+                            @stack('menu_settings_main_4')
+                        </ul>
+                    </li>
                 @endif
 
                 <!--[MODULES] - dynamic menu-->
@@ -116,22 +118,23 @@
                         </span>
                     </a>
                     <ul aria-expanded="false" class="collapse">
-                        @if(config('system.settings_type') == 'standalone')
-                        <!--general-->
-                        <li><a href="javascript:void(0);" data-url="/settings/email/general"
-                                id="settings-menu-email-settings"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.general_settings')) }}</a>
-                        </li>
-                        <!--smtp-->
-                        <li><a href="javascript:void(0);" data-url="/settings/email/smtp" id="settings-menu-email-smtp"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.smtp_settings')) }}</a>
-                        </li>
+                        @if (config('system.settings_type') == 'standalone')
+                            <!--general-->
+                            <li><a href="javascript:void(0);" data-url="/settings/email/general"
+                                    id="settings-menu-email-settings"
+                                    class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.general_settings')) }}</a>
+                            </li>
+                            <!--smtp-->
+                            <li><a href="javascript:void(0);" data-url="/settings/email/smtp"
+                                    id="settings-menu-email-smtp"
+                                    class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.smtp_settings')) }}</a>
+                            </li>
                         @endif
-                        @if(config('system.settings_type') == 'saas')
-                        <li><a href="javascript:void(0);" data-url="/settings/account/email"
-                                id="settings-menu-email-settings"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.email_settings')) }}</a>
-                        </li>
+                        @if (config('system.settings_type') == 'saas')
+                            <li><a href="javascript:void(0);" data-url="/settings/account/email"
+                                    id="settings-menu-email-settings"
+                                    class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.email_settings')) }}</a>
+                            </li>
                         @endif
                         <!--templates-->
                         <li><a href="javascript:void(0);" data-url="/settings/email/templates"
@@ -194,7 +197,7 @@
                 @stack('menu_settings_main_9')
 
                 <!--projects-->
-                <li class="sidenav-menu-item">
+                {{-- <li class="sidenav-menu-item">
                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
                         id="settings-menu-projects">
                         <span class="hide-menu">{{ cleanLang(__('lang.projects')) }}
@@ -236,7 +239,7 @@
                         {!! config('modules.menus.settings.projects') !!}
                         @stack('menu_settings_main_10')
                     </ul>
-                </li>
+                </li> --}}
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.settings.parent6') !!}
@@ -251,7 +254,8 @@
                     </a>
                     <ul aria-expanded="false" class="collapse">
                         <li>
-                            <a href="javascript:void(0);" data-url="/settings/tasks" id="settings-menu-tasks-settings"
+                            <a href="javascript:void(0);" data-url="/settings/tasks"
+                                id="settings-menu-tasks-settings"
                                 class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.general_settings')) }}</a>
                         </li>
                         <li>
@@ -301,7 +305,8 @@
                                 class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.lead_stages')) }}</a>
                         </li>
                         <li>
-                            <a href="javascript:void(0);" data-url="/settings/sources" id="settings-menu-leads-sources"
+                            <a href="javascript:void(0);" data-url="/settings/sources"
+                                id="settings-menu-leads-sources"
                                 class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.lead_sources')) }}</a>
                         </li>
                         <li><a href="javascript:void(0);" data-url="/settings/customfields/leads"
@@ -355,7 +360,7 @@
                 @stack('menu_settings_main_17')
 
                 <!--invoices-->
-                <li class="sidenav-menu-item">
+                {{-- <li class="sidenav-menu-item">
                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
                         id="settings-menu-invoices">
                         <span class="hide-menu">{{ cleanLang(__('lang.invoices')) }}
@@ -381,14 +386,14 @@
                         {!! config('modules.menus.settings.invoices') !!}
                         @stack('menu_settings_main_18')
                     </ul>
-                </li>
+                </li> --}}
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.settings.parent10') !!}
                 @stack('menu_settings_main_19')
 
                 <!--estimates-->
-                <li class="sidenav-menu-item">
+                {{-- <li class="sidenav-menu-item">
                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
                         id="settings-menu-estimates">
                         <span class="hide-menu">{{ cleanLang(__('lang.estimates')) }}
@@ -414,7 +419,7 @@
                         {!! config('modules.menus.settings.estimates') !!}
                         @stack('menu_settings_main_20')
                     </ul>
-                </li>
+                </li> --}}
 
                 <!--timesheetes-->
                 <li class="sidenav-menu-item">
@@ -432,7 +437,7 @@
                         <!--[MODULES] - dynamic menu-->
                         {!! config('modules.menus.settings.timesheets') !!}
                         @stack('menu_settings_main_21')
-                        
+
                     </ul>
                 </li>
 
@@ -441,7 +446,7 @@
                 @stack('menu_settings_main_22')
 
                 <!--proposals-->
-                <li class="sidenav-menu-item">
+                {{-- <li class="sidenav-menu-item">
                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
                         id="settings-menu-proposals">
                         <span class="hide-menu">{{ cleanLang(__('lang.proposals')) }}
@@ -466,14 +471,14 @@
                         {!! config('modules.menus.settings.proposals') !!}
                         @stack('menu_settings_main_23')
                     </ul>
-                </li>
+                </li> --}}
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.settings.parent12') !!}
                 @stack('menu_settings_main_24')
 
                 <!--contracts-->
-                <li class="sidenav-menu-item">
+                {{-- <li class="sidenav-menu-item">
                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
                         id="settings-menu-contracts">
                         <span class="hide-menu">{{ cleanLang(__('lang.contracts')) }}
@@ -499,14 +504,14 @@
                         {!! config('modules.menus.settings.contracts') !!}
                         @stack('menu_settings_main_25')
                     </ul>
-                </li>
+                </li> --}}
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.settings.parent13') !!}
                 @stack('menu_settings_main_26')
 
                 <!--products-->
-                <li class="sidenav-menu-item">
+                {{-- <li class="sidenav-menu-item">
                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
                         id="settings-menu-items">
                         <span class="hide-menu">{{ cleanLang(__('lang.products')) }}
@@ -528,14 +533,14 @@
                         </a>
                     </li>
                     </ul>
-                </li>
+                </li> --}}
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.settings.parent14') !!}
                 @stack('menu_settings_main_27')
 
                 <!--expenses-->
-                <li class="sidenav-menu-item">
+                {{-- <li class="sidenav-menu-item">
                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
                         id="settings-menu-expenses">
                         <span class="hide-menu">{{ cleanLang(__('lang.expenses')) }}
@@ -556,14 +561,14 @@
                         {!! config('modules.menus.settings.expenses') !!}
                         @stack('menu_settings_main_28')
                     </ul>
-                </li>
+                </li> --}}
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.settings.parent15') !!}
                 @stack('menu_settings_main_29')
 
                 <!--subscriptions-->
-                <li class="sidenav-menu-item">
+                {{-- <li class="sidenav-menu-item">
                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
                         id="settings-menu-subscriptions">
                         <span class="hide-menu">{{ cleanLang(__('lang.subscriptions')) }}
@@ -579,7 +584,7 @@
                         {!! config('modules.menus.settings.subscriptions') !!}
                         @stack('menu_settings_main_30')
                     </ul>
-                </li>
+                </li> --}}
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.settings.parent16') !!}
@@ -668,7 +673,7 @@
                 @stack('menu_settings_main_37')
 
                 <!--payment gateways-->
-                <li class="sidenav-menu-item">
+                {{-- <li class="sidenav-menu-item">
                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
                         id="settings-menu-payment-methods">
                         <span class="hide-menu">{{ cleanLang(__('lang.payment_methods')) }}
@@ -714,7 +719,7 @@
                         {!! config('modules.menus.settings.payment_methods') !!}
                         @stack('menu_settings_main_38')
                     </ul>
-                </li>
+                </li> --}}
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.settings.parent20') !!}
@@ -742,7 +747,7 @@
                 @stack('menu_settings_main_41')
 
                 <!--tickets-->
-                <li class="sidenav-menu-item">
+                {{-- <li class="sidenav-menu-item">
                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
                         id="settings-menu-tickets">
                         <span class="hide-menu">{{ cleanLang(__('lang.tickets')) }}
@@ -780,7 +785,7 @@
                         {!! config('modules.menus.settings.tickets') !!}
                         @stack('menu_settings_main_42')
                     </ul>
-                </li>
+                </li> --}}
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.settings.parent22') !!}
@@ -824,17 +829,18 @@
                         </span>
                     </a>
                     <ul aria-expanded="false" class="collapse" id="settings-menu-other">
-                        @if(config('system.settings_type') == 'standalone')
-                        <!--update-->
-                        <li><a href="javascript:void(0);" data-url="/settings/updates" id="settings-menu-other-updates"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.updates')) }}</a>
-                        </li>
+                        @if (config('system.settings_type') == 'standalone')
+                            <!--update-->
+                            <li><a href="javascript:void(0);" data-url="/settings/updates"
+                                    id="settings-menu-other-updates"
+                                    class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.updates')) }}</a>
+                            </li>
 
-                        <!--system information-->
-                        <li><a href="javascript:void(0);" data-url="/settings/system/info"
+                            <!--system information-->
+                            {{-- <li><a href="javascript:void(0);" data-url="/settings/system/info"
                                 id="settings-menu-other-system-info"
                                 class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">@lang('lang.system_information')</a>
-                        </li>
+                        </li> --}}
                         @endif
                         <!--reCaptcha-->
                         <li><a href="javascript:void(0);" data-url="/settings/recaptcha"
@@ -863,4 +869,3 @@
     </div>
     <!-- End Sidebar scroll-->
 </aside>
-

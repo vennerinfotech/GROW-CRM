@@ -1,5 +1,5 @@
 <!-- Payments - This month-->
-<div class="col-lg-3 col-md-6 click-url cursor-pointer" data-url="{{ url('payments/search?ref=list&filter_payment_date_start='.$payload['filter_payment_month_start'].'&filter_payment_date_end='.$payload['filter_payment_month_end']) }}">
+<!-- <div class="col-lg-3 col-md-6 click-url cursor-pointer" data-url="{{ url('payments/search?ref=list&filter_payment_date_start='.$payload['filter_payment_month_start'].'&filter_payment_date_end='.$payload['filter_payment_month_end']) }}">
     <div class="card">
         <div class="card-body p-l-15 p-r-15">
             <div class="d-flex p-10 no-block">
@@ -15,5 +15,5 @@
                 aria-valuemax="100"></div>
         </div>
     </div>
-</div>
+</div> -->
 

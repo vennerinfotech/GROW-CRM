@@ -1,5 +1,5 @@
 <!-- Column -->
-<div class="col-lg-4 col-md-12" id="dashboard-widgets-tickets">
+<!--<div class="col-lg-4 col-md-12" id="dashboard-widgets-tickets">
     <div class="card">
         <div class="card-body">
             <div class="d-flex m-b-30 no-block">
@@ -20,7 +20,7 @@
             </ul>
         </div>
     </div>
-</div>
+</div> -->
 
 <!--[DYNAMIC INLINE SCRIPT]  Backend Variables to Javascript Variables-->
 <script>

@@ -1,5 +1,5 @@
 <!-- Invoice - Due-->
-<div class="col-lg-3 col-md-6 click-url cursor-pointer" data-url="{{ url('invoices/search?ref=list&filter_bill_status[]=2') }}">
+<!-- <div class="col-lg-3 col-md-6 click-url cursor-pointer" data-url="{{ url('invoices/search?ref=list&filter_bill_status[]=2') }}">
     <div class="card">
         <div class="card-body p-l-15 p-r-15">
             <div class="d-flex p-10 no-block">
@@ -15,5 +15,5 @@
                 aria-valuemax="100"></div>
         </div>
     </div>
-</div>
+</div> -->
 

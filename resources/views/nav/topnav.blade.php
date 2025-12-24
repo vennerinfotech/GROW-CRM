@@ -5,23 +5,24 @@
         <div class="navbar-header" id="topnav-logo-container">
 
 
-            @if(request('dashboard_section') == 'settings')
-            <!--exist-->
-            <div class="sidenav-menu-item exit-panel m-b-17">
-                <a class="waves-effect waves-dark text-info" href="home" id="settings-exit-button"
-                    aria-expanded="false" target="_self">
-                    <i class="sl-icon-logout text-info"></i>
-                    <span id="settings-exit-text" class="font-14">{{ str_limit(__('lang.exit_settings'), 20) }}</span>
-                </a>
-            </div>
+            @if (request('dashboard_section') == 'settings')
+                <!--exist-->
+                <div class="sidenav-menu-item exit-panel m-b-17">
+                    <a class="waves-effect waves-dark text-info" href="home" id="settings-exit-button"
+                        aria-expanded="false" target="_self">
+                        <i class="sl-icon-logout text-info"></i>
+                        <span id="settings-exit-text"
+                            class="font-14">{{ str_limit(__('lang.exit_settings'), 20) }}</span>
+                    </a>
+                </div>
             @else
-            <!--logo-->
-            <div class="sidenav-menu-item logo m-t-0">
-                <a class="navbar-brand" href="home">
-                    <img src="{{ runtimeLogoSmall() }}" alt="homepage" class="logo-small" />
-                    <img src="{{ runtimeLogoLarge() }}" alt="homepage" class="logo-large" />
-                </a>
-            </div>
+                <!--logo-->
+                <div class="sidenav-menu-item logo m-t-0">
+                    <a class="navbar-brand" href="home">
+                        <img src="{{ runtimeLogoSmall() }}" alt="homepage" class="logo-small" />
+                        <img src="{{ runtimeLogoLarge() }}" alt="homepage" class="logo-large" />
+                    </a>
+                </div>
             @endif
         </div>
 
@@ -33,72 +34,72 @@
             <ul class="navbar-nav mr-auto">
 
                 <!--left menu toogle (hamburger menu) - main application -->
-                @if(request('visibility_left_menu_toggle_button') == 'visible')
-                <li class="nav-item main-hamburger-menu">
-                    <a class="nav-link nav-toggler hidden-md-up waves-effect waves-dark" href="javascript:void(0)">
-                        <i class="sl-icon-menu"></i>
-                    </a>
-                </li>
-                <li class="nav-item main-hamburger-menu">
-                    <a class="nav-link sidebartoggler hidden-sm-down waves-effect waves-dark update-user-ux-preferences"
-                        data-type="leftmenu" data-progress-bar="hidden" data-url=""
-                        data-url-temp="{{ url('/') }}/{{ auth()->user()->team_or_contact }}/updatepreferences"
-                        data-preference-type="leftmenu" href="javascript:void(0)">
-                        <i class="sl-icon-menu"></i>
-                    </a>
-                </li>
+                @if (request('visibility_left_menu_toggle_button') == 'visible')
+                    <li class="nav-item main-hamburger-menu">
+                        <a class="nav-link nav-toggler hidden-md-up waves-effect waves-dark" href="javascript:void(0)">
+                            <i class="sl-icon-menu"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item main-hamburger-menu">
+                        <a class="nav-link sidebartoggler hidden-sm-down waves-effect waves-dark update-user-ux-preferences"
+                            data-type="leftmenu" data-progress-bar="hidden" data-url=""
+                            data-url-temp="{{ url('/') }}/{{ auth()->user()->team_or_contact }}/updatepreferences"
+                            data-preference-type="leftmenu" href="javascript:void(0)">
+                            <i class="sl-icon-menu"></i>
+                        </a>
+                    </li>
                 @endif
 
 
                 <!--left menu toogle (hamburger menu) - settings section -->
-                @if(request('visibility_settings_left_menu_toggle_button') == 'visible')
-                <li class="nav-item settings-hamburger-menu hidden">
-                    <a class="nav-link waves-effect waves-dark js-toggle-settings-menu" href="javascript:void(0)">
-                        <i class="sl-icon-menu"></i>
-                    </a>
-                </li>
+                @if (request('visibility_settings_left_menu_toggle_button') == 'visible')
+                    <li class="nav-item settings-hamburger-menu hidden">
+                        <a class="nav-link waves-effect waves-dark js-toggle-settings-menu" href="javascript:void(0)">
+                            <i class="sl-icon-menu"></i>
+                        </a>
+                    </li>
                 @endif
 
                 <!--search-->
-                @if(auth()->user()->is_team)
-                <li class="nav-item top-search-bar">
-                    <div class="top-search-container" id="top-search-container" data-toggle="modal"
-                        data-target="#searchModal">
-                        <i class="sl-icon-magnifier"></i>
-                        <input type="text" class="form-control" id="top-search-form" placeholder="@lang('lang.search')">
-                    </div>
-                </li>
+                @if (auth()->user()->is_team)
+                    <li class="nav-item top-search-bar">
+                        <div class="top-search-container" id="top-search-container" data-toggle="modal"
+                            data-target="#searchModal">
+                            <i class="sl-icon-magnifier"></i>
+                            <input type="text" class="form-control" id="top-search-form"
+                                placeholder="@lang('lang.search')">
+                        </div>
+                    </li>
                 @endif
 
 
                 <!--timer-->
-                @if(auth()->user()->is_team && config('visibility.modules.timetracking'))
-                <li class="nav-item dropdown hidden-xs-down my-timer-container {{ runtimeVisibility('topnav-timer', request('show_users_running_timer')) }}"
-                    id="my-timer-container-topnav">
-                    <a class="nav-link dropdown-toggle waves-effect waves-dark" href="javascript:void(0)"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="timer-container"><i class="ti-timer font-18"></i>
-                            <span class="my-timer-time-topnav" id="my-timer-time-topnav">{!!
-                                clean(runtimeSecondsHumanReadable(request('users_running_timer'),
-                                false)) !!}</span></span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-left">
-                        <div class="active-timer-topnav" id="active-timer-topnav-container">
-                            @if(request('users_running_timer_task'))
-                            @include('misc.timer-topnav-details')
-                            @else
-                            <div class="x-heading">@lang('lang.active_timer')</div>
-                            <div class="x-task">@lang('lang.task_not_found')</div>
-                            <div class="x-button"><button type="button"
-                                    class="btn waves-effect waves-light btn-sm btn-danger js-timer-button js-ajax-request timer-stop-button"
-                                    data-url="{{ url('tasks/timer/stop?source=topnav') }}"
-                                    data-form-id="tasks-list-table"
-                                    data-progress-bar='hidden'>@lang('lang.stop_timer')</button>
+                @if (auth()->user()->is_team && config('visibility.modules.timetracking'))
+                    <li class="nav-item dropdown hidden-xs-down my-timer-container {{ runtimeVisibility('topnav-timer', request('show_users_running_timer')) }}"
+                        id="my-timer-container-topnav">
+                        <a class="nav-link dropdown-toggle waves-effect waves-dark" href="javascript:void(0)"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="timer-container"><i class="ti-timer font-18"></i>
+                                <span class="my-timer-time-topnav"
+                                    id="my-timer-time-topnav">{!! clean(runtimeSecondsHumanReadable(request('users_running_timer'), false)) !!}</span></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-left">
+                            <div class="active-timer-topnav" id="active-timer-topnav-container">
+                                @if (request('users_running_timer_task'))
+                                    @include('misc.timer-topnav-details')
+                                @else
+                                    <div class="x-heading">@lang('lang.active_timer')</div>
+                                    <div class="x-task">@lang('lang.task_not_found')</div>
+                                    <div class="x-button"><button type="button"
+                                            class="btn waves-effect waves-light btn-sm btn-danger js-timer-button js-ajax-request timer-stop-button"
+                                            data-url="{{ url('tasks/timer/stop?source=topnav') }}"
+                                            data-form-id="tasks-list-table"
+                                            data-progress-bar='hidden'>@lang('lang.stop_timer')</button>
+                                    </div>
+                                @endif
                             </div>
-                            @endif
                         </div>
-                    </div>
-                </li>
+                    </li>
                 @endif
 
 
@@ -135,13 +136,13 @@
                     <div class="dropdown-menu dropdown-menu-right">
 
                         <!--projects-->
-                        <a class="dropdown-item js-toggle-side-panel-ajax" href="javascript:void(0);"
+                        {{-- <a class="dropdown-item js-toggle-side-panel-ajax" href="javascript:void(0);"
                             data-url="{{ url('/starred/view/projects?orderby=project_title&sortorder=asc') }}"
                             data-reset-body-id="sidepanel-starred-container"
                             data-loading-target="sidepanel-starred-container" data-target="sidepanel-starred"
                             data-progress-bar='hidden' data-target-menu="starred-projects">
                             <i class="ti-folder p-r-4"></i> @lang('lang.projects')
-                        </a>
+                        </a> --}}
 
                         <!--clients-->
                         <a class="dropdown-item js-toggle-side-panel-ajax" href="javascript:void(0);"
@@ -162,22 +163,22 @@
                         </a>
 
                         <!--invoices-->
-                        <a class="dropdown-item js-toggle-side-panel-ajax" href="javascript:void(0);"
+                        {{-- <a class="dropdown-item js-toggle-side-panel-ajax" href="javascript:void(0);"
                             data-url="{{ url('/starred/view/invoices?orderby=bill_date&sortorder=desc') }}"
                             data-reset-body-id="sidepanel-starred-container"
                             data-loading-target="sidepanel-starred-container" data-target="sidepanel-starred"
                             data-progress-bar='hidden' data-target-menu="starred-invoices">
                             <i class="ti-wallet p-r-4"></i> @lang('lang.invoices')
-                        </a>
+                        </a> --}}
 
                         <!--estimates-->
-                        <a class="dropdown-item js-toggle-side-panel-ajax" href="javascript:void(0);"
+                        {{-- <a class="dropdown-item js-toggle-side-panel-ajax" href="javascript:void(0);"
                             data-url="{{ url('/starred/view/estimates?orderby=bill_date&sortorder=desc') }}"
                             data-reset-body-id="sidepanel-starred-container"
                             data-loading-target="sidepanel-starred-container" data-target="sidepanel-starred"
                             data-progress-bar='hidden' data-target-menu="starred-estimates">
                             <i class="ti-receipt p-r-4"></i> @lang('lang.estimates')
-                        </a>
+                        </a> --}}
 
                         <!--leads-->
                         <a class="dropdown-item js-toggle-side-panel-ajax" href="javascript:void(0);"
@@ -189,13 +190,13 @@
                         </a>
 
                         <!--project comments-->
-                        <a class="dropdown-item js-toggle-side-panel-ajax" href="javascript:void(0);"
+                        {{-- <a class="dropdown-item js-toggle-side-panel-ajax" href="javascript:void(0);"
                             data-url="{{ url('/starred/view/project-comments?orderby=recent_activity&sortorder=desc') }}"
                             data-reset-body-id="sidepanel-starred-container"
                             data-loading-target="sidepanel-starred-container" data-target="sidepanel-starred"
                             data-progress-bar='hidden' data-target-menu="starred-project-comment">
                             <i class="ti-comment p-r-4"></i> @lang('lang.project_comments')
-                        </a>
+                        </a> --}}
 
                         <!--notes-->
                         <a class="dropdown-item js-toggle-side-panel-ajax" href="javascript:void(0);"
@@ -240,279 +241,288 @@
                 {!! config('modules.menus.topnav.parent3') !!}
 
                 <!-- record time -->
-                @if(auth()->user()->is_team && config('visibility.modules.timetracking'))
-                <li class="nav-item d-none d-sm-block" id="topnav-record-time-icon">
-                    <a class="nav-link waves-effect waves-dark font-22 p-t-9 p-r-10 edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                        href="#" id="32" data-toggle="modal" data-target="#commonModal"
-                        data-modal-title="@lang('lang.record_your_work_time')"
-                        data-url="{{ url('/timesheets/create') }}" data-action-url="{{ urlResource('/timesheets') }}"
-                        data-modal-size="modal-sm" data-loading-target="commonModalBody" data-action-method="POST"
-                        aria-expanded="false">
-                        <i class="ti-timer"></i>
-                    </a>
-                </li>
+                @if (auth()->user()->is_team && config('visibility.modules.timetracking'))
+                    <li class="nav-item d-none d-sm-block" id="topnav-record-time-icon">
+                        <a class="nav-link waves-effect waves-dark font-22 p-t-9 p-r-10 edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                            href="#" id="32" data-toggle="modal" data-target="#commonModal"
+                            data-modal-title="@lang('lang.record_your_work_time')" data-url="{{ url('/timesheets/create') }}"
+                            data-action-url="{{ urlResource('/timesheets') }}" data-modal-size="modal-sm"
+                            data-loading-target="commonModalBody" data-action-method="POST" aria-expanded="false">
+                            <i class="ti-timer"></i>
+                        </a>
+                    </li>
                 @endif
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.topnav.parent4') !!}
 
                 <!-- calendar -->
-                @if(config('visibility.modules.calendar'))
-                <li class="nav-item hidden-mobile">
-                    <a class="nav-link waves-effect waves-dark font-22 p-t-10 p-r-10" href="{{ url('/calendar') }}"
-                        aria-expanded="false">
-                        <i class="ti-calendar"></i>
-                    </a>
-                </li>
+                @if (config('visibility.modules.calendar'))
+                    <li class="nav-item hidden-mobile">
+                        <a class="nav-link waves-effect waves-dark font-22 p-t-10 p-r-10"
+                            href="{{ url('/calendar') }}" aria-expanded="false">
+                            <i class="ti-calendar"></i>
+                        </a>
+                    </li>
                 @endif
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.topnav.parent5') !!}
 
                 <!-- messages notification -->
-                @if(config('visibility.modules.messages'))
-                <li class="nav-item">
-                    <a class="nav-link waves-effect waves-dark font-22 p-t-10 p-r-10" href="{{ url('/messages') }}"
-                        aria-expanded="false">
-                        <i class="sl-icon-bubbles"></i>
-                        <div class="notify {{ runtimeVisibilityNotificationIcon(auth()->user()->count_message_notifications) }}"
-                            id="topnav-messages-notification-icon">
-                            <span class="heartbit"></span>
-                            <span class="point"></span>
-                        </div>
-                    </a>
-                </li>
+                @if (config('visibility.modules.messages'))
+                    <li class="nav-item">
+                        <a class="nav-link waves-effect waves-dark font-22 p-t-10 p-r-10"
+                            href="{{ url('/messages') }}" aria-expanded="false">
+                            <i class="sl-icon-bubbles"></i>
+                            <div class="notify {{ runtimeVisibilityNotificationIcon(auth()->user()->count_message_notifications) }}"
+                                id="topnav-messages-notification-icon">
+                                <span class="heartbit"></span>
+                                <span class="point"></span>
+                            </div>
+                        </a>
+                    </li>
                 @endif
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.topnav.parent6') !!}
 
                 <!-- settings -->
-                @if(auth()->user()->is_admin)
-                <li class="nav-item hidden-mobile">
-                    <a class="nav-link waves-effect waves-dark font-22 p-t-10 p-r-10" href="settings" id="32"
-                        aria-expanded="false">
-                        <i class="sl-icon-settings"></i>
-                    </a>
-                </li>
+                @if (auth()->user()->is_admin)
+                    <li class="nav-item hidden-mobile">
+                        <a class="nav-link waves-effect waves-dark font-22 p-t-10 p-r-10" href="settings"
+                            id="32" aria-expanded="false">
+                            <i class="sl-icon-settings"></i>
+                        </a>
+                    </li>
                 @endif
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.topnav.parent7') !!}
 
                 <!-- add content -->
-                @if(auth()->user()->is_team && auth()->user()->can_add_content)
-                @if(config('system.settings_type') == 'standalone' || in_array(config('system.settings_saas_status'),
-                ['active', 'free-trial']))
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle waves-effect waves-dark" href="javascript:void(0)"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="mdi mdi-plus-circle-multiple-outline text-danger font-28"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
+                @if (auth()->user()->is_team && auth()->user()->can_add_content)
+                    @if (config('system.settings_type') == 'standalone' ||
+                            in_array(config('system.settings_saas_status'), ['active', 'free-trial']))
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-dark" href="javascript:void(0)"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="mdi mdi-plus-circle-multiple-outline text-danger font-28"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
 
-                        <!-- client -->
-                        @if(auth()->user()->role->role_projects >= 2)
-                        <a href="javascript:void(0)"
-                            class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                            data-toggle="modal" data-target="#commonModal" data-url="{{ url('clients/create') }}"
-                            data-loading-target="commonModalBody"
-                            data-modal-title="{{ cleanLang(__('lang.add_client')) }}"
-                            data-action-url="{{ url('/clients') }}" data-action-method="POST"
-                            data-action-ajax-loading-target="commonModalBody" data-save-button-class=""
-                            data-project-progress="0">
-                            <i class="sl-icon-people"></i> {{ cleanLang(__('lang.client')) }}</a>
-                        @endif
+                                <!-- client -->
+                                @if (auth()->user()->role->role_projects >= 2)
+                                    <a href="javascript:void(0)"
+                                        class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                                        data-toggle="modal" data-target="#commonModal"
+                                        data-url="{{ url('clients/create') }}" data-loading-target="commonModalBody"
+                                        data-modal-title="{{ cleanLang(__('lang.add_client')) }}"
+                                        data-action-url="{{ url('/clients') }}" data-action-method="POST"
+                                        data-action-ajax-loading-target="commonModalBody" data-save-button-class=""
+                                        data-project-progress="0">
+                                        <i class="sl-icon-people"></i> {{ cleanLang(__('lang.client')) }}</a>
+                                @endif
 
-                        <!-- project -->
-                        @if(config('visibility.modules.projects') && auth()->user()->role->role_projects >= 2)
-                        <a href="javascript:void(0)"
-                            class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                            data-toggle="modal" data-target="#commonModal" data-url="{{ url('projects/create') }}"
-                            data-loading-target="commonModalBody"
-                            data-modal-title="{{ cleanLang(__('lang.add_project')) }}"
-                            data-action-url="{{ url('/projects') }}" data-action-method="POST"
-                            data-action-ajax-loading-target="commonModalBody" data-save-button-class=""
-                            data-project-progress="0">
-                            <i class="ti-folder"></i> {{ cleanLang(__('lang.project')) }}</a>
-                        @endif
+                                <!-- project -->
+                                @if (config('visibility.modules.projects') && auth()->user()->role->role_projects >= 2)
+                                    <a href="javascript:void(0)"
+                                        class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                                        data-toggle="modal" data-target="#commonModal"
+                                        data-url="{{ url('projects/create') }}" data-loading-target="commonModalBody"
+                                        data-modal-title="{{ cleanLang(__('lang.add_project')) }}"
+                                        data-action-url="{{ url('/projects') }}" data-action-method="POST"
+                                        data-action-ajax-loading-target="commonModalBody" data-save-button-class=""
+                                        data-project-progress="0">
+                                        <i class="ti-folder"></i> {{ cleanLang(__('lang.project')) }}</a>
+                                @endif
 
-                        <!-- task -->
-                        @if(config('visibility.modules.tasks') && auth()->user()->role->role_tasks >= 2)
-                        <a href="javascript:void(0)"
-                            class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                            data-toggle="modal" data-target="#commonModal"
-                            data-url="{{ url('/tasks/create?ref=quickadd') }}" data-loading-target="commonModalBody"
-                            data-modal-title="{{ cleanLang(__('lang.add_task')) }}"
-                            data-action-url="{{url('/tasks?ref=quickadd') }}" data-action-method="POST"
-                            data-action-ajax-loading-target="commonModalBody" data-save-button-class=""
-                            data-project-progress="0">
-                            <i class="ti-menu-alt"></i> {{ cleanLang(__('lang.task')) }}</a>
-                        @endif
+                                <!-- task -->
+                                @if (config('visibility.modules.tasks') && auth()->user()->role->role_tasks >= 2)
+                                    <a href="javascript:void(0)"
+                                        class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                                        data-toggle="modal" data-target="#commonModal"
+                                        data-url="{{ url('/tasks/create?ref=quickadd') }}"
+                                        data-loading-target="commonModalBody"
+                                        data-modal-title="{{ cleanLang(__('lang.add_task')) }}"
+                                        data-action-url="{{ url('/tasks?ref=quickadd') }}" data-action-method="POST"
+                                        data-action-ajax-loading-target="commonModalBody" data-save-button-class=""
+                                        data-project-progress="0">
+                                        <i class="ti-menu-alt"></i> {{ cleanLang(__('lang.task')) }}</a>
+                                @endif
 
-                        <!-- lead -->
-                        @if(config('visibility.modules.leads') && auth()->user()->role->role_leads >= 2)
-                        <a href="javascript:void(0)"
-                            class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                            data-toggle="modal" data-target="#commonModal"
-                            data-url="{{ url('/leads/create?ref=quickadd') }}" data-loading-target="commonModalBody"
-                            data-modal-title="{{ cleanLang(__('lang.add_lead')) }}"
-                            data-action-url="{{url('/leads?ref=quickadd') }}" data-action-method="POST"
-                            data-action-ajax-loading-target="commonModalBody" data-save-button-class=""
-                            data-project-progress="0">
-                            <i class="sl-icon-call-in"></i> {{ cleanLang(__('lang.lead')) }}</a>
-                        @endif
+                                <!-- lead -->
+                                @if (config('visibility.modules.leads') && auth()->user()->role->role_leads >= 2)
+                                    <a href="javascript:void(0)"
+                                        class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                                        data-toggle="modal" data-target="#commonModal"
+                                        data-url="{{ url('/leads/create?ref=quickadd') }}"
+                                        data-loading-target="commonModalBody"
+                                        data-modal-title="{{ cleanLang(__('lang.add_lead')) }}"
+                                        data-action-url="{{ url('/leads?ref=quickadd') }}" data-action-method="POST"
+                                        data-action-ajax-loading-target="commonModalBody" data-save-button-class=""
+                                        data-project-progress="0">
+                                        <i class="sl-icon-call-in"></i> {{ cleanLang(__('lang.lead')) }}</a>
+                                @endif
 
-                        <!-- invoice -->
-                        @if(config('visibility.modules.invoices') && auth()->user()->role->role_invoices >= 2)
-                        <a href="javascript:void(0)"
-                            class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                            data-toggle="modal" data-target="#commonModal"
-                            data-url="{{ url('/invoices/create?ref=quickadd') }}" data-loading-target="commonModalBody"
-                            data-modal-title="{{ cleanLang(__('lang.add_invoice')) }}"
-                            data-action-url="{{url('/invoices?ref=quickadd') }}" data-action-method="POST"
-                            data-action-ajax-loading-target="commonModalBody" data-save-button-class=""
-                            data-project-progress="0">
-                            <i class="sl-icon-doc"></i> {{ cleanLang(__('lang.invoice')) }}</a>
-                        @endif
-
-
-                        <!-- estimate -->
-                        @if(config('visibility.modules.estimates') && auth()->user()->role->role_estimates >= 2)
-                        <a href="javascript:void(0)"
-                            class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                            data-toggle="modal" data-target="#commonModal"
-                            data-url="{{ url('/estimates/create?ref=quickadd') }}" data-loading-target="commonModalBody"
-                            data-modal-title="{{ cleanLang(__('lang.add_estimate')) }}"
-                            data-action-url="{{url('/estimates?ref=quickadd') }}" data-action-method="POST"
-                            data-action-ajax-loading-target="commonModalBody" data-save-button-class=""
-                            data-project-progress="0">
-                            <i class="sl-icon-calculator"></i> {{ cleanLang(__('lang.estimate')) }}</a>
-                        @endif
+                                <!-- invoice -->
+                                @if (config('visibility.modules.invoices') && auth()->user()->role->role_invoices >= 2)
+                                    <a href="javascript:void(0)"
+                                        class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                                        data-toggle="modal" data-target="#commonModal"
+                                        data-url="{{ url('/invoices/create?ref=quickadd') }}"
+                                        data-loading-target="commonModalBody"
+                                        data-modal-title="{{ cleanLang(__('lang.add_invoice')) }}"
+                                        data-action-url="{{ url('/invoices?ref=quickadd') }}"
+                                        data-action-method="POST" data-action-ajax-loading-target="commonModalBody"
+                                        data-save-button-class="" data-project-progress="0">
+                                        <i class="sl-icon-doc"></i> {{ cleanLang(__('lang.invoice')) }}</a>
+                                @endif
 
 
-                        <!-- proposal -->
-                        @if(config('visibility.modules.proposals') && auth()->user()->role->role_proposals >= 2)
-                        <a href="javascript:void(0)"
-                            class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                            data-toggle="modal" data-target="#commonModal"
-                            data-url="{{ url('/proposals/create?ref=quickadd') }}" data-loading-target="commonModalBody"
-                            data-modal-title="{{ cleanLang(__('lang.add_proposal')) }}"
-                            data-action-url="{{url('/proposals?ref=quickadd') }}" data-action-method="POST"
-                            data-action-ajax-loading-target="commonModalBody" data-save-button-class=""
-                            data-project-progress="0">
-                            <i class="ti-bookmark-alt"></i> {{ cleanLang(__('lang.proposal')) }}</a>
-                        @endif
+                                <!-- estimate -->
+                                @if (config('visibility.modules.estimates') && auth()->user()->role->role_estimates >= 2)
+                                    <a href="javascript:void(0)"
+                                        class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                                        data-toggle="modal" data-target="#commonModal"
+                                        data-url="{{ url('/estimates/create?ref=quickadd') }}"
+                                        data-loading-target="commonModalBody"
+                                        data-modal-title="{{ cleanLang(__('lang.add_estimate')) }}"
+                                        data-action-url="{{ url('/estimates?ref=quickadd') }}"
+                                        data-action-method="POST" data-action-ajax-loading-target="commonModalBody"
+                                        data-save-button-class="" data-project-progress="0">
+                                        <i class="sl-icon-calculator"></i> {{ cleanLang(__('lang.estimate')) }}</a>
+                                @endif
 
 
-                        <!-- contract -->
-                        @if(config('visibility.modules.contracts') && auth()->user()->role->role_contracts >= 2)
-                        <a href="javascript:void(0)"
-                            class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                            data-toggle="modal" data-target="#commonModal"
-                            data-url="{{ url('/contracts/create?ref=quickadd') }}" data-loading-target="commonModalBody"
-                            data-modal-title="{{ cleanLang(__('lang.add_contract')) }}"
-                            data-action-url="{{url('/contracts?ref=quickadd') }}" data-action-method="POST"
-                            data-action-ajax-loading-target="commonModalBody" data-save-button-class=""
-                            data-project-progress="0">
-                            <i class="ti-write"></i> {{ cleanLang(__('lang.contract')) }}</a>
-                        @endif
-
-                        <!-- payment -->
-                        @if(config('visibility.modules.payments') && auth()->user()->role->role_invoices >= 2)
-                        <a href="javascript:void(0)"
-                            class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                            data-toggle="modal" data-target="#commonModal"
-                            data-url="{{ url('/payments/create?ref=quickadd') }}" data-loading-target="commonModalBody"
-                            data-modal-title="{{ cleanLang(__('lang.add_payment')) }}"
-                            data-action-url="{{url('/payments?ref=quickadd') }}" data-action-method="POST"
-                            data-action-ajax-loading-target="commonModalBody" data-save-button-class=""
-                            data-project-progress="0">
-                            <i class="ti-credit-card"></i> {{ cleanLang(__('lang.payment')) }}</a>
-                        @endif
-
-                        <!-- subscription -->
-                        @if(config('visibility.modules.subscriptions') && auth()->user()->role->role_subscriptions >= 2)
-                        <a href="javascript:void(0)"
-                            class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                            data-toggle="modal" data-target="#commonModal"
-                            data-url="{{ url('/subscriptions/create?ref=quickadd') }}"
-                            data-loading-target="commonModalBody"
-                            data-modal-title="{{ cleanLang(__('lang.add_subscription')) }}"
-                            data-action-url="{{url('/subscriptions?ref=quickadd') }}" data-action-method="POST"
-                            data-action-ajax-loading-target="commonModalBody"
-                            data-action-ajax-class="js-ajax-ux-request" data-project-progress="0">
-                            <i class="sl-icon-layers"></i> {{ cleanLang(__('lang.subscription')) }}</a>
-                        @endif
-
-                        <!-- expense -->
-                        @if(config('visibility.modules.expenses') && auth()->user()->role->role_expenses >= 2)
-                        <a href="javascript:void(0)"
-                            class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                            data-toggle="modal" data-target="#commonModal"
-                            data-url="{{ url('/expenses/create?ref=quickadd') }}" data-loading-target="commonModalBody"
-                            data-modal-title="{{ cleanLang(__('lang.add_expense')) }}"
-                            data-action-url="{{url('/expenses?ref=quickadd') }}" data-action-method="POST"
-                            data-action-ajax-loading-target="commonModalBody" data-save-button-class=""
-                            data-project-progress="0">
-                            <i class="ti-receipt"></i> {{ cleanLang(__('lang.expense')) }}</a>
-                        @endif
+                                <!-- proposal -->
+                                @if (config('visibility.modules.proposals') && auth()->user()->role->role_proposals >= 2)
+                                    <a href="javascript:void(0)"
+                                        class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                                        data-toggle="modal" data-target="#commonModal"
+                                        data-url="{{ url('/proposals/create?ref=quickadd') }}"
+                                        data-loading-target="commonModalBody"
+                                        data-modal-title="{{ cleanLang(__('lang.add_proposal')) }}"
+                                        data-action-url="{{ url('/proposals?ref=quickadd') }}"
+                                        data-action-method="POST" data-action-ajax-loading-target="commonModalBody"
+                                        data-save-button-class="" data-project-progress="0">
+                                        <i class="ti-bookmark-alt"></i> {{ cleanLang(__('lang.proposal')) }}</a>
+                                @endif
 
 
-                        <!-- knowledgebase article -->
-                        @if(config('visibility.modules.knowledgebase') && auth()->user()->role->role_knowledgebase >= 2)
-                        <a href="javascript:void(0)"
-                            class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                            data-toggle="modal" data-target="#commonModal" data-url="{{ url('kb/create') }}"
-                            data-loading-target="commonModalBody"
-                            data-modal-title="{{ cleanLang(__('lang.add_article')) }}" data-action-url="{{ url('kb') }}"
-                            data-action-method="POST" data-action-ajax-loading-target="commonModalBody"
-                            data-save-button-class="">
-                            <i class="sl-icon-docs"></i> {{ cleanLang(__('lang.article')) }}</a>
-                        @endif
+                                <!-- contract -->
+                                @if (config('visibility.modules.contracts') && auth()->user()->role->role_contracts >= 2)
+                                    <a href="javascript:void(0)"
+                                        class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                                        data-toggle="modal" data-target="#commonModal"
+                                        data-url="{{ url('/contracts/create?ref=quickadd') }}"
+                                        data-loading-target="commonModalBody"
+                                        data-modal-title="{{ cleanLang(__('lang.add_contract')) }}"
+                                        data-action-url="{{ url('/contracts?ref=quickadd') }}"
+                                        data-action-method="POST" data-action-ajax-loading-target="commonModalBody"
+                                        data-save-button-class="" data-project-progress="0">
+                                        <i class="ti-write"></i> {{ cleanLang(__('lang.contract')) }}</a>
+                                @endif
+
+                                <!-- payment -->
+                                @if (config('visibility.modules.payments') && auth()->user()->role->role_invoices >= 2)
+                                    <a href="javascript:void(0)"
+                                        class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                                        data-toggle="modal" data-target="#commonModal"
+                                        data-url="{{ url('/payments/create?ref=quickadd') }}"
+                                        data-loading-target="commonModalBody"
+                                        data-modal-title="{{ cleanLang(__('lang.add_payment')) }}"
+                                        data-action-url="{{ url('/payments?ref=quickadd') }}"
+                                        data-action-method="POST" data-action-ajax-loading-target="commonModalBody"
+                                        data-save-button-class="" data-project-progress="0">
+                                        <i class="ti-credit-card"></i> {{ cleanLang(__('lang.payment')) }}</a>
+                                @endif
+
+                                <!-- subscription -->
+                                @if (config('visibility.modules.subscriptions') && auth()->user()->role->role_subscriptions >= 2)
+                                    <a href="javascript:void(0)"
+                                        class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                                        data-toggle="modal" data-target="#commonModal"
+                                        data-url="{{ url('/subscriptions/create?ref=quickadd') }}"
+                                        data-loading-target="commonModalBody"
+                                        data-modal-title="{{ cleanLang(__('lang.add_subscription')) }}"
+                                        data-action-url="{{ url('/subscriptions?ref=quickadd') }}"
+                                        data-action-method="POST" data-action-ajax-loading-target="commonModalBody"
+                                        data-action-ajax-class="js-ajax-ux-request" data-project-progress="0">
+                                        <i class="sl-icon-layers"></i> {{ cleanLang(__('lang.subscription')) }}</a>
+                                @endif
+
+                                <!-- expense -->
+                                @if (config('visibility.modules.expenses') && auth()->user()->role->role_expenses >= 2)
+                                    <a href="javascript:void(0)"
+                                        class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                                        data-toggle="modal" data-target="#commonModal"
+                                        data-url="{{ url('/expenses/create?ref=quickadd') }}"
+                                        data-loading-target="commonModalBody"
+                                        data-modal-title="{{ cleanLang(__('lang.add_expense')) }}"
+                                        data-action-url="{{ url('/expenses?ref=quickadd') }}"
+                                        data-action-method="POST" data-action-ajax-loading-target="commonModalBody"
+                                        data-save-button-class="" data-project-progress="0">
+                                        <i class="ti-receipt"></i> {{ cleanLang(__('lang.expense')) }}</a>
+                                @endif
 
 
-                        <!-- knowledgebase article -->
-                        @if(config('visibility.modules.tickets') && auth()->user()->role->role_tickets >= 2)
-                        <a class="dropdown-item dropdown-item-iconed" href="{{ url('/tickets/create') }}">
-                            <i class="ti-comments"></i> {{ cleanLang(__('lang.ticket')) }}</a>
-                        @endif
+                                <!-- knowledgebase article -->
+                                @if (config('visibility.modules.knowledgebase') && auth()->user()->role->role_knowledgebase >= 2)
+                                    <a href="javascript:void(0)"
+                                        class="dropdown-item dropdown-item-iconed edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                                        data-toggle="modal" data-target="#commonModal"
+                                        data-url="{{ url('kb/create') }}" data-loading-target="commonModalBody"
+                                        data-modal-title="{{ cleanLang(__('lang.add_article')) }}"
+                                        data-action-url="{{ url('kb') }}" data-action-method="POST"
+                                        data-action-ajax-loading-target="commonModalBody" data-save-button-class="">
+                                        <i class="sl-icon-docs"></i> {{ cleanLang(__('lang.article')) }}</a>
+                                @endif
 
-                        <!--[MODULES] - dynamic menu-->
-                        {!! config('modules.menus.topnav.create') !!}
 
-                    </div>
-                </li>
-                @endif
+                                <!-- knowledgebase article -->
+                                @if (config('visibility.modules.tickets') && auth()->user()->role->role_tickets >= 2)
+                                    <a class="dropdown-item dropdown-item-iconed"
+                                        href="{{ url('/tickets/create') }}">
+                                        <i class="ti-comments"></i> {{ cleanLang(__('lang.ticket')) }}</a>
+                                @endif
+
+                                <!--[MODULES] - dynamic menu-->
+                                {!! config('modules.menus.topnav.create') !!}
+
+                            </div>
+                        </li>
+                    @endif
                 @endif
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.topnav.parent8') !!}
 
                 <!-- language -->
-                @if(config('system.settings_system_language_allow_users_to_change') == 'yes')
-                <li class="nav-item dropdown d-none d-sm-block" id="topnav-language-icon">
-                    <a class="nav-link dropdown-toggle p-t-10 waves-effect waves-dark" href="javascript:void(0)"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="sl-icon-globe"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right animated bounceInDown language">
-                        <div class="row">
-                            @foreach(request('system_languages') as $key => $language)
-                            <div class="col-6">
-                                <a class="dropdown-item js-ajax-request text-capitalize" href="javascript:void(0)"
-                                    data-url="{{ url('user/updatelanguage') }}" data-type="form" data-ajax-type="post"
-                                    data-form-id="topNavLangauage{{ $key }}">{{ $language }}
-                                </a>
-                                <span id="topNavLangauage{{ $key }}">
-                                    <input type="hidden" name="language" value="{{ $language }}">
-                                    <input type="hidden" name="current_url" value="{{ url()->full() }}">
-                                </span>
+                @if (config('system.settings_system_language_allow_users_to_change') == 'yes')
+                    <li class="nav-item dropdown d-none d-sm-block" id="topnav-language-icon">
+                        <a class="nav-link dropdown-toggle p-t-10 waves-effect waves-dark" href="javascript:void(0)"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="sl-icon-globe"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right animated bounceInDown language">
+                            <div class="row">
+                                @foreach (request('system_languages') as $key => $language)
+                                    <div class="col-6">
+                                        <a class="dropdown-item js-ajax-request text-capitalize"
+                                            href="javascript:void(0)" data-url="{{ url('user/updatelanguage') }}"
+                                            data-type="form" data-ajax-type="post"
+                                            data-form-id="topNavLangauage{{ $key }}">{{ $language }}
+                                        </a>
+                                        <span id="topNavLangauage{{ $key }}">
+                                            <input type="hidden" name="language" value="{{ $language }}">
+                                            <input type="hidden" name="current_url" value="{{ url()->full() }}">
+                                        </span>
+                                    </div>
+                                @endforeach
                             </div>
-                            @endforeach
                         </div>
-                    </div>
-                </li>
+                    </li>
                 @endif
                 <!--language -->
 
@@ -536,12 +546,13 @@
                                     <div class="u-text">
                                         <h4 id="topnav_dropdown_full_name">{{ auth()->user()->first_name }}
                                             {{ auth()->user()->last_name }}</h4>
-                                        <p class="text-muted" id="topnav_dropdown_email">{{ auth()->user()->email }}</p>
+                                        <p class="text-muted" id="topnav_dropdown_email">{{ auth()->user()->email }}
+                                        </p>
                                         <a href="javascript:void(0)"
                                             class="btn btn-rounded btn-danger btn-sm edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
                                             data-toggle="modal" data-target="#commonModal"
-                                            data-url="{{ url('/user/avatar') }}" data-loading-target="commonModalBody"
-                                            data-modal-size="modal-sm"
+                                            data-url="{{ url('/user/avatar') }}"
+                                            data-loading-target="commonModalBody" data-modal-size="modal-sm"
                                             data-modal-title="{{ cleanLang(__('lang.update_avatar')) }}"
                                             data-header-visibility="hidden" data-header-extra-close-icon="visible"
                                             data-action-url="{{ url('/user/avatar') }}"
@@ -555,10 +566,10 @@
                                 <a href="javascript:void(0)"
                                     class="edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
                                     data-toggle="modal" data-target="#commonModal"
-                                    data-url="{{ url('/contacts/'.auth()->id().'/edit?type=profile') }}"
+                                    data-url="{{ url('/contacts/' . auth()->id() . '/edit?type=profile') }}"
                                     data-loading-target="commonModalBody"
                                     data-modal-title="{{ cleanLang(__('lang.update_my_profile')) }}"
-                                    data-action-url="{{ url('/contacts/'.auth()->id()) }}" data-action-method="PUT"
+                                    data-action-url="{{ url('/contacts/' . auth()->id()) }}" data-action-method="PUT"
                                     data-action-ajax-class="" data-modal-size="modal-lg"
                                     data-action-ajax-loading-target="team-td-container">
                                     <i class="ti-user p-r-4"></i>
@@ -566,48 +577,49 @@
                             </li>
 
                             <!--my timesheets-->
-                            @if(auth()->user()->is_team && auth()->user()->role->role_timesheets >= 1)
-                            <li>
-                                <a href="{{ url('/timesheets/my') }}">
-                                    <i class="ti-timer p-r-4"></i>
-                                    {{ cleanLang(__('lang.my_time_sheets')) }}</a>
-                            </li>
+                            @if (auth()->user()->is_team && auth()->user()->role->role_timesheets >= 1)
+                                <li>
+                                    <a href="{{ url('/timesheets/my') }}">
+                                        <i class="ti-timer p-r-4"></i>
+                                        {{ cleanLang(__('lang.my_time_sheets')) }}</a>
+                                </li>
                             @endif
 
                             <!--my notes-->
-                            @if(auth()->user()->is_team)
-                            <li>
-                                <a href="{{ url('/notes') }}">
-                                    <i class="sl-icon-notebook p-r-4"></i>
-                                    {{ cleanLang(__('lang.my_notes')) }}</a>
-                            </li>
+                            @if (auth()->user()->is_team)
+                                <li>
+                                    <a href="{{ url('/notes') }}">
+                                        <i class="sl-icon-notebook p-r-4"></i>
+                                        {{ cleanLang(__('lang.my_notes')) }}</a>
+                                </li>
                             @endif
 
-                            @if(auth()->user()->is_client_owner)
-                            <!--edit company profile-->
-                            <li>
-                                <a href="javascript:void(0)"
-                                    class="edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                                    data-toggle="modal" data-target="#commonModal"
-                                    data-url="{{ url('/clients/'.auth()->user()->clientid.'/edit') }}"
-                                    data-loading-target="commonModalBody"
-                                    data-modal-title="{{ cleanLang(__('lang.company_details')) }}"
-                                    data-action-url="{{ url('/clients/'.auth()->user()->clientid) }}"
-                                    data-action-method="PUT">
-                                    <i class="ti-pencil-alt p-r-4"></i>
-                                    {{ cleanLang(__('lang.company_details')) }}</a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)"
-                                    class="edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
-                                    data-toggle="modal" data-target="#commonModal" data-url="{{ url('/clients/logo') }}"
-                                    data-loading-target="commonModalBody" data-modal-size="modal-sm"
-                                    data-modal-title="{{ cleanLang(__('lang.update_avatar')) }}"
-                                    data-header-visibility="hidden" data-header-extra-close-icon="visible"
-                                    data-action-url="{{ url('/clients/logo') }}" data-action-method="PUT">
-                                    <i class="ti-pencil-alt p-r-4"></i>
-                                    {{ cleanLang(__('lang.company_logo')) }}</a>
-                            </li>
+                            @if (auth()->user()->is_client_owner)
+                                <!--edit company profile-->
+                                <li>
+                                    <a href="javascript:void(0)"
+                                        class="edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                                        data-toggle="modal" data-target="#commonModal"
+                                        data-url="{{ url('/clients/' . auth()->user()->clientid . '/edit') }}"
+                                        data-loading-target="commonModalBody"
+                                        data-modal-title="{{ cleanLang(__('lang.company_details')) }}"
+                                        data-action-url="{{ url('/clients/' . auth()->user()->clientid) }}"
+                                        data-action-method="PUT">
+                                        <i class="ti-pencil-alt p-r-4"></i>
+                                        {{ cleanLang(__('lang.company_details')) }}</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)"
+                                        class="edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
+                                        data-toggle="modal" data-target="#commonModal"
+                                        data-url="{{ url('/clients/logo') }}" data-loading-target="commonModalBody"
+                                        data-modal-size="modal-sm"
+                                        data-modal-title="{{ cleanLang(__('lang.update_avatar')) }}"
+                                        data-header-visibility="hidden" data-header-extra-close-icon="visible"
+                                        data-action-url="{{ url('/clients/logo') }}" data-action-method="PUT">
+                                        <i class="ti-pencil-alt p-r-4"></i>
+                                        {{ cleanLang(__('lang.company_logo')) }}</a>
+                                </li>
                             @endif
 
                             <!--update notifcations-->
@@ -648,7 +660,8 @@
                                 <a href="javascript:void(0)" id="topnavUpdatePasswordButton"
                                     class="edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
                                     data-toggle="modal" data-target="#commonModal"
-                                    data-url="{{ url('user/updatepassword') }}" data-loading-target="commonModalBody"
+                                    data-url="{{ url('user/updatepassword') }}"
+                                    data-loading-target="commonModalBody"
                                     data-modal-title="{{ cleanLang(__('lang.update_password')) }}"
                                     data-action-url="{{ url('user/updatepassword') }}" data-action-method="PUT"
                                     data-action-ajax-class="" data-modal-size="modal-sm"
@@ -677,4 +690,3 @@
 
 
 </header>
-

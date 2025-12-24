@@ -1,5 +1,5 @@
     <!-- Column -->
-    <div class="col-lg-4 col-md-12" id="dashboard-widgets-leads">
+    <div class="col-lg-12 col-md-12" id="dashboard-widgets-leads">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex m-b-30 no-block">

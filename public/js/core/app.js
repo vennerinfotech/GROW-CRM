@@ -5412,3 +5412,15 @@ function NXChecklistDragDrop() {
         });
     }
 }
+
+/** --------------------------------------------------------------------------------------------------
+ *  [toggle hidden content] - used for toggling sections like leads details
+ * -------------------------------------------------------------------------------------------------*/
+NX.switchToggleHiddenContent = function ($obj) {
+    var target = $obj.attr('data-target');
+    if ($obj.is(':checked')) {
+        $("#" + target).removeClass('hidden');
+    } else {
+        $("#" + target).addClass('hidden');
+    }
+};

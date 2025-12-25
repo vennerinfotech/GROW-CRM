@@ -49,7 +49,7 @@ function NXbootstrap($self, action) {
     NX.varInitialProjectProgress = 0;
 
     //because we have added tinymce in common vendor.js - we must sent paths for it to use
-    tinyMCE.baseURL = NX.site_url + "/public/vendor/js/tinymce";
+    tinyMCE.baseURL = NX.site_url + "/vendor/js/tinymce";
     tinyMCE.suffix = '.min';
 
 

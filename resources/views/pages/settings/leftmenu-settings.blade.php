@@ -511,7 +511,7 @@
                 @stack('menu_settings_main_26')
 
                 <!--products-->
-                {{-- <li class="sidenav-menu-item">
+                <li class="sidenav-menu-item">
                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
                         id="settings-menu-items">
                         <span class="hide-menu">{{ cleanLang(__('lang.products')) }}
@@ -524,16 +524,16 @@
                             </a>
                         </li>
                         <li><a class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url hidden"
-                            id="settings-menu-units" href="javascript:void(0);"
-                            data-url="/settings/units">{{ cleanLang(__('lang.units')) }}
-                        </a>
+                                id="settings-menu-units" href="javascript:void(0);"
+                                data-url="/settings/units">{{ cleanLang(__('lang.units')) }}
+                            </a>
                         <li><a class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url hidden"
-                            id="settings-menu-units" href="javascript:void(0);"
-                            data-url="/settings/products/custom-fields">{{ cleanLang(__('lang.custom_fields')) }}
-                        </a>
-                    </li>
+                                id="settings-menu-units" href="javascript:void(0);"
+                                data-url="/settings/products/custom-fields">{{ cleanLang(__('lang.custom_fields')) }}
+                            </a>
+                        </li>
                     </ul>
-                </li> --}}
+                </li>
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.settings.parent14') !!}

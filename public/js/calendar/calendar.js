@@ -106,8 +106,40 @@ $(document).ready(function () {
       var event_id = info.event.id;
       var resource_type = info.event.extendedProps.resource_type;
       var resource_id = info.event.extendedProps.resource_id;
+
+      //[CUSTOM] - check if this event has a full url redirect
+      console.log('Event Clicked:', info.event);
+      console.log('Full URL:', info.event.extendedProps.full_url);
+      
+      if (info.event.extendedProps.full_url) {
+          console.log('Attempting to open new tab with URL:', info.event.extendedProps.full_url);
+          window.open(info.event.extendedProps.full_url, '_blank');
+          return;
+      }
+
       var current_url = $('#calendar-event-trigger').attr('data-url-backup');
       var new_url = current_url + event_id + '?resource_type=' + resource_type + '&resource_id=' + resource_id;
+
+      //[CUSTOM] - check if this event has a custom modal target
+      if (info.event.extendedProps.modal_target_url && info.event.extendedProps.modal_target_id) {
+        new_url = info.event.extendedProps.modal_target_url;
+        var modal_target_id = info.event.extendedProps.modal_target_id;
+        $('#calendar-event-trigger').attr('data-target', modal_target_id);
+        
+        //[CUSTOM] update loading target for card modal
+        if (modal_target_id == '#cardModal') {
+            $('#calendar-event-trigger').attr('data-loading-target', 'cardModalBody');
+            //explicitly unhide the content wrapper to ensure loader is visible
+            $('#cardModalContent').removeClass('hidden');
+        }
+        
+        //explicitly show the modal
+        $(modal_target_id).modal('show');
+      } else {
+        //reset to default
+        $('#calendar-event-trigger').attr('data-target', '#commonModal');
+        $('#calendar-event-trigger').attr('data-loading-target', 'commonModalBody');
+      }
 
       //update the url on the virtual 'show' button
       $('#calendar-event-trigger').attr('data-url', new_url);

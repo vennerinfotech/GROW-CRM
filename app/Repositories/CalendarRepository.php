@@ -1,11 +1,13 @@
 <?php
 
-/** --------------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------------
  * This repository class manages all the data absctration for templates
  *
  * @package    Grow CRM
  * @author     NextLoop
- *----------------------------------------------------------------------------------*/
+ * ----------------------------------------------------------------------------------
+ */
 
 namespace App\Repositories;
 
@@ -18,14 +20,16 @@ use App\Permissions\TaskPermissions;
 use App\Repositories\AttachmentRepository;
 use App\Repositories\FileRepository;
 use App\Repositories\TaskAssignedRepository;
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Facades\Log;
 
-class CalendarRepository {
-
+class CalendarRepository
+{
     /**
      * The repository instance.
      */
     protected $project;
+
     protected $task;
     protected $reminder;
     protected $calendarevent;
@@ -68,20 +72,20 @@ class CalendarRepository {
      *
      * @return array events array
      */
-    public function getEvents() {
-
+    public function getEvents()
+    {
         $events = [];
 
-        //merge project events
+        // merge project events
         $events = $this->projectEvents($events);
         $events = $this->taskEvents($events);
         $events = $this->calendarEvents($events);
+        $events = $this->reminderEvents($events);
 
-        Log::info("calendar entries have been processed", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'events' => $events]);
+        Log::info('calendar entries have been processed', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'events' => $events]);
 
-        //return all events
+        // return all events
         return $events;
-
     }
 
     /**
@@ -89,43 +93,43 @@ class CalendarRepository {
      *
      * @return array events array
      */
-    public function getEvent($data = []) {
-
-        Log::info("fetching a single calendar entry - started", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
+    public function getEvent($data = [])
+    {
+        Log::info('fetching a single calendar entry - started', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
 
         $event = [];
 
-        //validation
+        // validation
         if (!isset($data['event_id']) || !isset($data['resource_type'])) {
-            Log::error("fetching calendar entry failed - missing data", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error('fetching calendar entry failed - missing data', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
 
-        //validate event type
+        // validate event type
         if (!in_array($data['resource_type'], ['project', 'task', 'calendarevent'])) {
-            Log::error("fetching calendar entry failed - event type is invalid", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error('fetching calendar entry failed - event type is invalid', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
 
-        //get calendar entry
+        // get calendar entry
         if ($data['resource_type'] == 'calendarevent') {
             $event = $this->calendarEvents([], $data['event_id']);
             return $event;
         }
 
-        //get project event
+        // get project event
         if ($data['resource_type'] == 'project') {
             $event = $this->projectEvents([], $data['event_id']);
             return $event;
         }
 
-        //get calendar entry
+        // get calendar entry
         if ($data['resource_type'] == 'task') {
             $event = $this->taskEvents([], $data['event_id']);
             return $event;
         }
 
-        //return all events
+        // return all events
         return $event;
     }
 
@@ -134,32 +138,32 @@ class CalendarRepository {
      * @param array $all_events existing events array
      * @return array merged events
      */
-    public function projectEvents($all_events = [], $id = '') {
+    public function projectEvents($all_events = [], $id = '')
+    {
+        Log::info('fetching calendar entries of type [project] - started', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'id' => $id]);
 
-        Log::info("fetching calendar entries of type [project] - started", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'id' => $id]);
-
-        //defaults
+        // defaults
         $events = [];
         $event = [];
         $start = null;
         $end = null;
         $count = 0;
 
-        //start
+        // start
         $projects = $this->project->newQuery();
         $projects->selectRaw('*');
 
-        //filter - only projects
+        // filter - only projects
         $projects->where('project_type', 'project');
 
-        //specific event
+        // specific event
         if ($id) {
             $projects->Where('project_uniqueid', $id);
         }
 
-        //filter - assigned projects (if set or for all none admins)
+        // filter - assigned projects (if set or for all none admins)
         if (auth()->user()->pref_calendar_view == 'own' || !auth()->user()->is_admin) {
-            //projects assigned to me and those that I manage
+            // projects assigned to me and those that I manage
             $projects->where(function ($query) {
                 $query->whereHas('assigned', function ($q) {
                     $q->whereIn('projectsassigned_userid', [auth()->id()]);
@@ -170,29 +174,28 @@ class CalendarRepository {
             });
         }
 
-        //get results
+        // get results
         $rows = $projects->get();
 
-        //loop through all projects, create a new calendar array and merge it into the passed calendar array
+        // loop through all projects, create a new calendar array and merge it into the passed calendar array
         foreach ($rows as $project) {
-
-            //set event dates based on users preferences
+            // set event dates based on users preferences
             switch (auth()->user()->pref_calendar_dates_projects) {
-            case 'start':
-                $start = $project->project_date_start;
-                $end = $project->project_date_start;
-                break;
-            case 'due':
-                $start = $project->project_date_due;
-                $end = $project->project_date_due;
-                break;
-            case 'start_due':
-                $start = $project->project_date_start;
-                $end = $this->fixEndingDate($project->project_date_due);
-                break;
+                case 'start':
+                    $start = $project->project_date_start;
+                    $end = $project->project_date_start;
+                    break;
+                case 'due':
+                    $start = $project->project_date_due;
+                    $end = $project->project_date_due;
+                    break;
+                case 'start_due':
+                    $start = $project->project_date_start;
+                    $end = $this->fixEndingDate($project->project_date_due);
+                    break;
             }
 
-            //get sharing users - only do this when viewing a single event [to reduce server load]
+            // get sharing users - only do this when viewing a single event [to reduce server load]
             $users = [];
             if ($id) {
                 foreach ($project->assigned()->get() as $user) {
@@ -233,11 +236,12 @@ class CalendarRepository {
                 ],
             ];
 
-            //get file attachments
+            // get file attachments
             if ($id) {
                 if ($files = \App\Models\File::Where('fileresource_type', 'project')
-                    ->Where('fileresource_id', $project->project_id)
-                    ->orderBy('file_filename', 'asc')->get()) {
+                        ->Where('fileresource_id', $project->project_id)
+                        ->orderBy('file_filename', 'asc')
+                        ->get()) {
                     foreach ($files as $file) {
                         $event['extendedProps']['files'][] = [
                             'file_type' => 'file',
@@ -249,31 +253,30 @@ class CalendarRepository {
                 }
             }
 
-            //additional settings - only when viewing
+            // additional settings - only when viewing
             if ($id) {
-                //created by
+                // created by
                 $event['extendedProps']['creator'] = \App\Models\User::Where('id', $project->project_creatorid)->first();
                 $event['extendedProps']['creator_id'] = $project->project_creatorid;
-                //details
+                // details
                 $event['extendedProps']['details'] = $project->project_description;
-                //permissions - view
+                // permissions - view
                 $event['extendedProps']['view_permission'] = $this->projectpermissions->check('view', $project->project_id);
-                //permissions - edit
+                // permissions - edit
                 $event['extendedProps']['edit_permission'] = $this->projectpermissions->check('edit', $project->project_id);
-                //permissions - participate
+                // permissions - participate
                 $event['extendedProps']['participate_permission'] = $this->projectpermissions->check('participate', $project->project_id);
-                //permissions - assign
+                // permissions - assign
                 $event['extendedProps']['assign_permission'] = $this->projectpermissions->check('super-user', $project->project_id);
-                //permissions - assign
+                // permissions - assign
                 $event['extendedProps']['delete_permission'] = $this->projectpermissions->check('delete', $project->project_id);
 
-                //the object (this will make payload too big)
-                //$event['extendedProps']['object'] = $project;
+                // the object (this will make payload too big)
+                // $event['extendedProps']['object'] = $project;
 
                 $event['extendedProps']['project_id'] = $project->project_id;
                 $event['extendedProps']['project_title'] = $project->project_title;
                 $event['extendedProps']['project_status'] = $project->project_status;
-
             }
 
             $events[] = $event;
@@ -281,16 +284,15 @@ class CalendarRepository {
             $count++;
         }
 
-        //specific event
+        // specific event
         if ($id) {
             Log::info("fetching calendar entry of type [project] - finished - records found ($count)", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'event' => $event]);
             return $event;
         }
 
-        //return merged array
+        // return merged array
         Log::info("fetching calendar entries of type [project] - finished - records found ($count)", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'events' => $events]);
         return array_merge($all_events, $events);
-
     }
 
     /**
@@ -298,18 +300,18 @@ class CalendarRepository {
      * @param array $all_events existing events array
      * @return array merged events
      */
-    public function taskEvents($all_events = [], $id = '') {
+    public function taskEvents($all_events = [], $id = '')
+    {
+        Log::info('fetching calendar entries of type [task] - started', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'id' => $id]);
 
-        Log::info("fetching calendar entries of type [task] - started", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'id' => $id]);
-
-        //defaults
+        // defaults
         $events = [];
         $event = [];
         $start = null;
         $end = null;
         $count = 0;
 
-        //start
+        // start
         $tasks = $this->task->newQuery();
         $tasks->leftJoin('projects', 'projects.project_id', '=', 'tasks.task_projectid');
         $tasks->leftJoin('tasks_status', 'tasks_status.taskstatus_id', '=', 'tasks.task_status');
@@ -317,44 +319,43 @@ class CalendarRepository {
 
         $tasks->selectRaw('*');
 
-        //filter - only project tasks
+        // filter - only project tasks
         $tasks->where('task_projectid', '>', 0);
 
-        //specific event
+        // specific event
         if ($id) {
             $tasks->Where('task_uniqueid', $id);
         }
 
-        //filter - assigned tasks (if set or for all none admins)
+        // filter - assigned tasks (if set or for all none admins)
         if (auth()->user()->pref_calendar_view == 'own' || !auth()->user()->is_admin) {
             $tasks->whereHas('assigned', function ($query) {
                 $query->whereIn('tasksassigned_userid', [auth()->id()]);
             });
         }
 
-        //get results
+        // get results
         $rows = $tasks->get();
 
-        //loop through all tasks, create a new calendar array and merge it into the passed calendar array
+        // loop through all tasks, create a new calendar array and merge it into the passed calendar array
         foreach ($rows as $task) {
-
-            //set event dates based on users preferences
+            // set event dates based on users preferences
             switch (auth()->user()->pref_calendar_dates_tasks) {
-            case 'start':
-                $start = $task->task_date_start;
-                $end = $task->task_date_start;
-                break;
-            case 'due':
-                $start = $task->task_date_due;
-                $end = $task->task_date_due;
-                break;
-            case 'start_due':
-                $start = $task->task_date_start;
-                $end = $this->fixEndingDate($task->task_date_due);
-                break;
+                case 'start':
+                    $start = $task->task_date_start;
+                    $end = $task->task_date_start;
+                    break;
+                case 'due':
+                    $start = $task->task_date_due;
+                    $end = $task->task_date_due;
+                    break;
+                case 'start_due':
+                    $start = $task->task_date_start;
+                    $end = $this->fixEndingDate($task->task_date_due);
+                    break;
             }
 
-            //get sharing users - only do this when viewing a single event [to reduce server load]
+            // get sharing users - only do this when viewing a single event [to reduce server load]
             $users = [];
             if ($id) {
                 foreach ($task->assigned()->get() as $user) {
@@ -395,11 +396,12 @@ class CalendarRepository {
                 ],
             ];
 
-            //get file attachments
+            // get file attachments
             if ($id) {
                 if ($files = \App\Models\Attachment::Where('attachmentresource_type', 'task')
-                    ->Where('attachmentresource_id', $task->task_id)
-                    ->orderBy('attachment_filename', 'asc')->get()) {
+                        ->Where('attachmentresource_id', $task->task_id)
+                        ->orderBy('attachment_filename', 'asc')
+                        ->get()) {
                     foreach ($files as $file) {
                         $event['extendedProps']['files'][] = [
                             'file_type' => 'attachment',
@@ -411,27 +413,27 @@ class CalendarRepository {
                 }
             }
 
-            //additional settings - only when viewing
+            // additional settings - only when viewing
             if ($id) {
-                //created by
+                // created by
                 $event['extendedProps']['creator'] = \App\Models\User::Where('id', $task->task_creatorid)->first();
                 $event['extendedProps']['creator_id'] = $task->task_creatorid;
 
-                //details
+                // details
                 $event['extendedProps']['details'] = $task->task_description;
-                //permissions - view
+                // permissions - view
                 $event['extendedProps']['view_permission'] = $this->taskpermissions->check('view', $task->task_id);
-                //permissions - edit
+                // permissions - edit
                 $event['extendedProps']['edit_permission'] = $this->taskpermissions->check('edit', $task->task_id);
-                //permissions - participate
+                // permissions - participate
                 $event['extendedProps']['participate_permission'] = $this->taskpermissions->check('participate', $task->task_id);
-                //permissions - assign
+                // permissions - assign
                 $event['extendedProps']['assign_permission'] = $this->taskpermissions->check('super-user', $task->task_id);
-                //permissions - assign
+                // permissions - assign
                 $event['extendedProps']['delete_permission'] = $this->taskpermissions->check('delete', $task->task_id);
 
-                //the object (this will make payload too big)
-                //$event['extendedProps']['object'] = $task;
+                // the object (this will make payload too big)
+                // $event['extendedProps']['object'] = $task;
 
                 $event['extendedProps']['taskstatus_color'] = $task->taskstatus_color;
                 $event['extendedProps']['taskstatus_title'] = $task->taskstatus_title;
@@ -445,16 +447,15 @@ class CalendarRepository {
             $count++;
         }
 
-        //specific event
+        // specific event
         if ($id) {
             Log::info("fetching calendar entry of type [task] - finished - records found ($count)", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'event' => $event]);
             return $event;
         }
 
-        //return merged array
+        // return merged array
         Log::info("fetching calendar entries of type [task] - finished - records found ($count)", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'events' => $events]);
         return array_merge($all_events, $events);
-
     }
 
     /**
@@ -462,73 +463,73 @@ class CalendarRepository {
      * @param array $all_events existing events array
      * @return array merged events
      */
-    public function calendarEvents($all_events = [], $id = '') {
+    public function calendarEvents($all_events = [], $id = '')
+    {
+        Log::info('fetching calendar entries of type [event] - started', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'id' => $id]);
 
-        Log::info("fetching calendar entries of type [event] - started", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'id' => $id]);
-
-        //defaults
+        // defaults
         $events = [];
         $event = [];
         $start = null;
         $end = null;
         $count = 0;
 
-        //start
+        // start
         $calendarevent = $this->calendarevent->newQuery();
         $calendarevent->selectRaw('*');
 
-        //specific event
+        // specific event
         if ($id) {
             $calendarevent->Where('calendar_event_uniqueid', $id);
         }
 
         $calendarevent->where(function ($query) {
-            $query->whereHas('assigned', function ($query) {
-                $query->whereIn('calendarsharing_userid', [auth()->id()]);
-            })
+            $query
+                ->whereHas('assigned', function ($query) {
+                    $query->whereIn('calendarsharing_userid', [auth()->id()]);
+                })
                 ->orWhere('calendar_event_creatorid', auth()->id())
                 ->orWhere('calendar_event_sharing', 'whole-team');
         });
 
-        //get results
+        // get results
         $rows = $calendarevent->get();
 
-        //loop through all tasks, create a new calendar array and merge it into the passed calendar array
+        // loop through all tasks, create a new calendar array and merge it into the passed calendar array
         foreach ($rows as $calendarevent) {
-
-            //set all day or time event
+            // set all day or time event
             switch ($calendarevent->calendar_event_all_day) {
-            case 'yes':
-                $event_start = $calendarevent->calendar_event_start_date;
-                $event_end = $calendarevent->calendar_event_end_date;
-                $event_end_inclusive = $this->fixEndingDate($calendarevent->calendar_event_end_date);
-                break;
-            case 'no':
-                $start_time = ($calendarevent->calendar_event_start_time) ? $calendarevent->calendar_event_start_time : '00:00:00';
-                $end_time = ($calendarevent->calendar_event_end_time) ? $calendarevent->calendar_event_end_time : '00:00:00';
-                $event_start = $calendarevent->calendar_event_start_date . 'T' . $start_time;
-                $event_end = $calendarevent->calendar_event_end_date . 'T' . $end_time;
-                $event_end_inclusive = $event_end;
-                break;
+                case 'yes':
+                    $event_start = $calendarevent->calendar_event_start_date;
+                    $event_end = $calendarevent->calendar_event_end_date;
+                    $event_end_inclusive = $this->fixEndingDate($calendarevent->calendar_event_end_date);
+                    break;
+                case 'no':
+                    $start_time = ($calendarevent->calendar_event_start_time) ? $calendarevent->calendar_event_start_time : '00:00:00';
+                    $end_time = ($calendarevent->calendar_event_end_time) ? $calendarevent->calendar_event_end_time : '00:00:00';
+                    $event_start = $calendarevent->calendar_event_start_date . 'T' . $start_time;
+                    $event_end = $calendarevent->calendar_event_end_date . 'T' . $end_time;
+                    $event_end_inclusive = $event_end;
+                    break;
             }
 
-            //set event dates based on users preferences
+            // set event dates based on users preferences
             switch (auth()->user()->pref_calendar_dates_events) {
-            case 'start':
-                $start = $event_start;
-                $end = $event_start;
-                break;
-            case 'due':
-                $start = $event_end;
-                $end = $event_end;
-                break;
-            case 'start_due':
-                $start = $event_start;
-                $end = $event_end_inclusive;
-                break;
+                case 'start':
+                    $start = $event_start;
+                    $end = $event_start;
+                    break;
+                case 'due':
+                    $start = $event_end;
+                    $end = $event_end;
+                    break;
+                case 'start_due':
+                    $start = $event_start;
+                    $end = $event_end_inclusive;
+                    break;
             }
 
-            //get sharing users - only do this when viewing a single event [to reduce server load]
+            // get sharing users - only do this when viewing a single event [to reduce server load]
             $users = [];
             $user_is_creator = ($calendarevent->calendar_event_creatorid == auth()->id()) ? true : false;
             $user_is_assigned = false;
@@ -546,7 +547,7 @@ class CalendarRepository {
                 }
             }
 
-            //whole team sharing
+            // whole team sharing
             if ($calendarevent->calendar_event_sharing == 'whole-team') {
                 if (auth()->user()->is_team) {
                     $user_is_assigned = true;
@@ -581,11 +582,12 @@ class CalendarRepository {
                 ],
             ];
 
-            //get file attachments
+            // get file attachments
             if ($id) {
                 if ($files = \App\Models\Attachment::Where('attachmentresource_type', 'calendarevent')
-                    ->Where('attachmentresource_id', $calendarevent->calendar_event_id)
-                    ->orderBy('attachment_filename', 'asc')->get()) {
+                        ->Where('attachmentresource_id', $calendarevent->calendar_event_id)
+                        ->orderBy('attachment_filename', 'asc')
+                        ->get()) {
                     foreach ($files as $file) {
                         $event['extendedProps']['files'][] = [
                             'file_type' => 'attachment',
@@ -597,26 +599,26 @@ class CalendarRepository {
                 }
             }
 
-            //additional settings - only when viewing
+            // additional settings - only when viewing
             if ($id) {
-                //created by
+                // created by
                 $event['extendedProps']['creator'] = \App\Models\User::Where('id', $calendarevent->calendar_event_creatorid)->first();
                 $event['extendedProps']['creator_id'] = $calendarevent->calendar_event_creatorid;
-                //details
+                // details
                 $event['extendedProps']['details'] = $calendarevent->calendar_event_description;
-                //permissions - view
+                // permissions - view
                 $event['extendedProps']['view_permission'] = ($user_is_creator || $user_is_assigned || auth()->user()->is_admin) ? true : false;
-                //permissions - edit
+                // permissions - edit
                 $event['extendedProps']['edit_permission'] = ($user_is_creator || auth()->user()->is_admin) ? true : false;
-                //permissions - participate
+                // permissions - participate
                 $event['extendedProps']['participate_permission'] = ($user_is_creator || $user_is_assigned || auth()->user()->is_admin) ? true : false;
-                //permissions - assign
+                // permissions - assign
                 $event['extendedProps']['assign_permission'] = ($user_is_creator || auth()->user()->is_admin) ? true : false;
-                //permissions - assign
+                // permissions - assign
                 $event['extendedProps']['delete_permission'] = ($user_is_creator || auth()->user()->is_admin) ? true : false;
 
-                //the object (this will make payload too big)
-                //$event['extendedProps']['object'] = $calendarevent;
+                // the object (this will make payload too big)
+                // $event['extendedProps']['object'] = $calendarevent;
             }
 
             $events[] = $event;
@@ -624,16 +626,15 @@ class CalendarRepository {
             $count++;
         }
 
-        //specific event
+        // specific event
         if ($id) {
             Log::info("fetching calendar entry of type [event] - finished - records found ($count)", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'event' => $event]);
             return $event;
         }
 
-        //return merged array
+        // return merged array
         Log::info("fetching calendar entries of type [event] - finished - records found ($count)", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'events' => $events]);
         return array_merge($all_events, $events);
-
     }
 
     /**
@@ -641,23 +642,23 @@ class CalendarRepository {
      * @param string $event_id existing events array
      * @return bool
      */
-    public function updateEvent($data = []) {
+    public function updateEvent($data = [])
+    {
+        Log::info(' updating calender event type [event] - started', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'payload' => $data]);
 
-        Log::info(" updating calender event type [event] - started", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'payload' => $data]);
-
-        //validate
+        // validate
         if (!isset($data['event_id']) || !isset($data['resource_type'])) {
-            Log::error(" updating calender failed - required data missing", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error(' updating calender failed - required data missing', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
 
-        //fetch event
+        // fetch event
         if (!$event = \App\Models\CalendarEvent::Where('calendar_event_uniqueid', $data['event_id'])->first()) {
-            Log::error(" updating calender failed - event with event_id (" . $data['event_id'] . ") could not be fetched", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error(' updating calender failed - event with event_id (' . $data['event_id'] . ') could not be fetched', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
 
-        //save changes
+        // save changes
         $event->calendar_event_title = request('calendar_event_title');
         $event->calendar_event_location = request('calendar_event_location');
         $event->calendar_event_all_day = (request('calendar_event_all_day') == 'on') ? 'yes' : 'no';
@@ -668,7 +669,7 @@ class CalendarRepository {
         $event->calendar_event_end_time = request('calendar_event_end_time') ?? null;
         $event->calendar_event_description = request('calendar_event_description');
 
-        //reset reminder first
+        // reset reminder first
         $event->calendar_event_reminder = 'no';
         $event->calendar_event_reminder_date_sent = null;
         $event->calendar_event_reminder_duration = null;
@@ -683,22 +684,22 @@ class CalendarRepository {
         }
         $event->save();
 
-        //update reminder - if applicable
+        // update reminder - if applicable
         if (request('calendar_event_reminder') == 'on') {
-            //[FUTURE] - get this from the modal form and not the system default
+            // [FUTURE] - get this from the modal form and not the system default
             $duration = config('system.settings2_calendar_reminder_duration');
             $period = config('system.settings2_calendar_reminder_period');
-            //save
+            // save
             $event->calendar_event_reminder = 'yes';
             $event->calendar_event_reminder_duration = $duration;
             $event->calendar_event_reminder_period = $period;
             $event->save();
         }
 
-        //delete all current members
+        // delete all current members
         \App\Models\CalenderEventSharing::Where('calendarsharing_eventid', $event->calendar_event_id)->delete();
 
-        //add members
+        // add members
         if (request()->filled('sharing_team_members')) {
             foreach (request('sharing_team_members') as $user_id) {
                 $sharing = new \App\Models\CalenderEventSharing();
@@ -708,7 +709,7 @@ class CalendarRepository {
             }
         }
 
-        //save each attachment
+        // save each attachment
         if (request()->filled('attachments')) {
             foreach (request('attachments') as $uniqueid => $file_name) {
                 $attachment_data = [
@@ -720,15 +721,15 @@ class CalendarRepository {
                     'attachment_uniqiueid' => $uniqueid,
                     'attachment_filename' => $file_name,
                 ];
-                //process and save to db
+                // process and save to db
                 $this->attachmentrepo->process($attachment_data);
             }
         }
 
-        //get refreshed event
+        // get refreshed event
         $event = $this->getEvent($data);
 
-        Log::info(" updating calender event type [event] with id (" . $data['event_id'] . ") - completed", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'event' => $event]);
+        Log::info(' updating calender event type [event] with id (' . $data['event_id'] . ') - completed', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'event' => $event]);
 
         return $event;
     }
@@ -738,61 +739,61 @@ class CalendarRepository {
      * @param string $event_id existing events array
      * @return bool
      */
-    public function updateProject($data = []) {
+    public function updateProject($data = [])
+    {
+        Log::info(' updating calender event type [project] - started', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'payload' => $data]);
 
-        Log::info(" updating calender event type [project] - started", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'payload' => $data]);
-
-        //validate
+        // validate
         if (!isset($data['event_id']) || !isset($data['resource_type'])) {
-            Log::error(" updating calender failed - required data missing", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error(' updating calender failed - required data missing', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
 
-        //fetch event
+        // fetch event
         if (!$event = $this->getEvent($data)) {
-            Log::error(" updating calender failed - event with event_id (" . $data['event_id'] . ") could not be fetched", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error(' updating calender failed - event with event_id (' . $data['event_id'] . ') could not be fetched', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
 
-        //fetch the project
+        // fetch the project
         if (!$project = \App\Models\Project::Where('project_uniqueid', $data['event_id'])->first()) {
-            Log::error(" updating calender failed - project with project_uniqueid (" . $data['event_id'] . ") could not be fetched", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error(' updating calender failed - project with project_uniqueid (' . $data['event_id'] . ') could not be fetched', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
 
-        //update project
+        // update project
         $project->project_title = request('calendar_event_title');
         $project->project_date_start = request('calendar_event_start_date');
         $project->project_date_due = request('calendar_event_end_date');
         $project->project_description = request('calendar_event_description');
 
-        //reset reminder first
+        // reset reminder first
         $project->project_calendar_reminder = 'no';
         $project->project_calendar_reminder_date_sent = null;
         $project->project_calendar_reminder_duration = null;
         $project->project_calendar_reminder_period = null;
 
-        //save
+        // save
         $project->save();
 
-        //update reminder - if applicable
+        // update reminder - if applicable
         if (request('calendar_event_reminder') == 'on') {
-            //[FUTURE] - get this from the modal form and not the system default
+            // [FUTURE] - get this from the modal form and not the system default
             $duration = config('system.settings2_calendar_reminder_duration');
             $period = config('system.settings2_calendar_reminder_period');
-            //save
+            // save
             $project->project_calendar_reminder = 'yes';
             $project->project_calendar_reminder_duration = $duration;
             $project->project_calendar_reminder_period = $period;
             $project->save();
         }
 
-        //[save attachments] loop through and save each attachment
+        // [save attachments] loop through and save each attachment
         if (request()->filled('attachments')) {
-
-            //get the project default folder
+            // get the project default folder
             $default_folder = \App\Models\FileFolder::Where('filefolder_projectid', request('fileresource_id'))
-                ->Where('filefolder_default', 'yes')->first();
+                ->Where('filefolder_default', 'yes')
+                ->first();
 
             foreach (request('attachments') as $uniqueid => $file_name) {
                 $file_data = [
@@ -805,15 +806,15 @@ class CalendarRepository {
                     'file_folderid' => $default_folder->filefolder_id,
                     'file_filename' => $file_name,
                 ];
-                //process and save to db
+                // process and save to db
                 $this->filerepo->process($file_data);
             }
         }
 
-        //get refreshed event
+        // get refreshed event
         $event = $this->getEvent($data);
 
-        Log::info(" updating calender event type [project] with id (" . $data['event_id'] . ") - completed", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+        Log::info(' updating calender event type [project] with id (' . $data['event_id'] . ') - completed', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
 
         return $event;
 
@@ -825,56 +826,56 @@ class CalendarRepository {
      * @param string $event_id existing events array
      * @return bool
      */
-    public function updateTask($data = []) {
+    public function updateTask($data = [])
+    {
+        Log::info(' updating calender event type [task] - started', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'payload' => $data]);
 
-        Log::info(" updating calender event type [task] - started", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'payload' => $data]);
-
-        //validate
+        // validate
         if (!isset($data['event_id']) || !isset($data['resource_type'])) {
-            Log::error(" updating calender failed - required data missing", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error(' updating calender failed - required data missing', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
 
-        //fetch event
+        // fetch event
         if (!$event = $this->getEvent($data)) {
-            Log::error(" updating calender failed - event with event_id (" . $data['event_id'] . ") could not be fetched", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error(' updating calender failed - event with event_id (' . $data['event_id'] . ') could not be fetched', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
 
-        //fetch the task
+        // fetch the task
         if (!$task = \App\Models\Task::Where('task_uniqueid', $data['event_id'])->first()) {
-            Log::error(" updating calender failed - task with task_uniqueid (" . $data['event_id'] . ") could not be fetched", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error(' updating calender failed - task with task_uniqueid (' . $data['event_id'] . ') could not be fetched', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
 
-        //update task
+        // update task
         $task->task_title = request('calendar_event_title');
         $task->task_date_start = request('calendar_event_start_date');
         $task->task_date_due = request('calendar_event_end_date');
         $task->task_description = request('calendar_event_description');
 
-        //reset reminder first
+        // reset reminder first
         $task->task_calendar_reminder = 'no';
         $task->task_calendar_reminder_date_sent = null;
         $task->task_calendar_reminder_duration = null;
         $task->task_calendar_reminder_period = null;
 
-        //save
+        // save
         $task->save();
 
-        //update reminder - if applicable
+        // update reminder - if applicable
         if (request('calendar_event_reminder') == 'on') {
-            //[FUTURE] - get this from the modal form and not the system default
+            // [FUTURE] - get this from the modal form and not the system default
             $duration = config('system.settings2_calendar_reminder_duration');
             $period = config('system.settings2_calendar_reminder_period');
-            //save
+            // save
             $task->task_calendar_reminder = 'yes';
             $task->task_calendar_reminder_duration = $duration;
             $task->task_calendar_reminder_period = $period;
             $task->save();
         }
 
-        //save each attachment
+        // save each attachment
         if (request()->filled('attachments')) {
             foreach (request('attachments') as $uniqueid => $file_name) {
                 $attachment_data = [
@@ -886,15 +887,15 @@ class CalendarRepository {
                     'attachment_uniqiueid' => $uniqueid,
                     'attachment_filename' => $file_name,
                 ];
-                //process and save to db
+                // process and save to db
                 $this->attachmentrepo->process($attachment_data);
             }
         }
 
-        //get refreshed event
+        // get refreshed event
         $event = $this->getEvent($data);
 
-        Log::info(" updating calender event type [task] with id (" . $data['event_id'] . ") - completed", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+        Log::info(' updating calender event type [task] with id (' . $data['event_id'] . ') - completed', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
 
         return $event;
 
@@ -905,9 +906,9 @@ class CalendarRepository {
      * determine the date, start time and end time from the url passed when creating a new event (modal)
      * @return array
      */
-    public function createEventGetDateTime() {
-
-        //defaults
+    public function createEventGetDateTime()
+    {
+        // defaults
         $data = [
             'start_date' => \Carbon\Carbon::now()->format('Y-m-d'),
             'start_time' => '00:00',
@@ -921,24 +922,23 @@ class CalendarRepository {
 
         // the input/request date has both [date] and [time] specified. as well as a duration (e.g. '2024-06-26T05:00:00 02:00' )
         if (strpos(request('event_date'), 'T') !== false && strpos(request('event_date'), ' ') !== false) {
-
-            //get the start date_time and the duration
+            // get the start date_time and the duration
             list($date_time, $duration) = explode(' ', request('event_date'));
 
-            //create a carbon date_time from the date_time string
+            // create a carbon date_time from the date_time string
             $start_date_time = \Carbon\Carbon::parse($date_time);
 
-            //get just the date  (Y-m-d)
+            // get just the date  (Y-m-d)
             $start_date = $start_date_time->toDateString();
 
-            //get just the start time (23:00)
+            // get just the start time (23:00)
             $start_time = $start_date_time->format('H:i');
 
-            //add 1 hour to get the end time for the event
+            // add 1 hour to get the end time for the event
             $end_date_time = $start_date_time->copy()->addMinutes(config('system.settings2_calendar_default_event_duration'));
             $end_time = $end_date_time->format('H:i');
 
-            //save to an array
+            // save to an array
             $data = [
                 'start_date' => $start_date,
                 'start_time' => $start_time,
@@ -946,27 +946,25 @@ class CalendarRepository {
                 'all_day' => 'no',
             ];
         } else {
-
             $data['start_date'] = request('event_date');
-
         }
 
-        //return the date payload
+        // return the date payload
         return $data;
     }
 
     /**
      * determine the date, start time and end time from the url passed when creating a new event (modal)
-     * @return array
+     * @return string|null
      */
-    public function fixEndingDate($date = '') {
-
-        //validate
+    public function fixEndingDate($date = '')
+    {
+        // validate
         if ($date == '') {
             return null;
         }
 
-        //try and add 1 day to the end date
+        // try and add 1 day to the end date
         try {
             $carbon_date = \Carbon\Carbon::createFromFormat('Y-m-d', $date);
 
@@ -981,4 +979,104 @@ class CalendarRepository {
         return null;
     }
 
+    /**
+     * get reminder events
+     * @param array $all_events existing events array
+     * @return array merged events
+     */
+    public function reminderEvents($all_events = [], $id = '')
+    {
+        Log::info('fetching calendar entries of type [reminder] - started', ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'id' => $id]);
+
+        // defaults
+        $events = [];
+        $event = [];
+        $count = 0;
+
+        // start
+        $reminders = $this->reminder->newQuery();
+        $reminders->selectRaw('*');
+
+        // filter - my reminders
+        $reminders->where('reminder_userid', auth()->id());
+
+        // specific event (not really applicable for reminders usually, but for consistency)
+        if ($id) {
+            $reminders->Where('reminder_id', $id);
+        }
+
+        // get results
+        $rows = $reminders->with('reminderresource')->get();
+
+        // loop through all reminders
+        foreach ($rows as $reminder) {
+            $start = $reminder->reminder_datetime;
+            $end = $reminder->reminder_datetime;
+
+            // details
+            $modal_target_id = '#commonModal';
+            $modal_target_url = '';
+
+            // resource type
+            $resource_type = strtolower($reminder->reminderresource_type ?? '');
+
+            if ($resource_type == 'lead') {
+                $modal_target_id = '#cardModal';
+                $modal_target_url = url('leads/content/' . $reminder->reminderresource_id . '/show-main');
+                $full_url = url('leads/v/' . $reminder->reminderresource_id . '/' . str_slug($reminder->reminderresource->lead_title ?? 'lead'));
+            } elseif ($resource_type == 'task') {
+                $modal_target_id = '#cardModal';
+                $modal_target_url = url('tasks/content/' . $reminder->reminderresource_id . '/show-main');
+                $full_url = url('tasks/v/' . $reminder->reminderresource_id . '/' . str_slug($reminder->reminderresource->task_title ?? 'task'));
+            } else {
+                $full_url = '';
+            }
+
+            $event = [
+                'id' => 'reminder_' . $reminder->reminder_id,  // Ensure unique ID
+                'title' => $reminder->reminder_title,
+                'start' => $start,
+                'end' => $end,
+                'backgroundColor' => '#ffbb00',  // Distinct color for reminders (e.g., orange/yellow)
+                'borderColor' => '#ffbb00',
+                'textColor' => '#ffffff',
+                'className' => 'event-type-reminder',
+                'extendedProps' => [
+                    'start_date' => $start,
+                    'end_date' => $end,
+                    'start_time' => '',  // You might want to parse time if relevant
+                    'end_time' => '',
+                    'all_day' => 'no',  // Reminders are usually specific times
+                    'all_day_editable' => 'no',
+                    'resource_type' => 'reminder',  // New resource type
+                    'resource_id' => $reminder->reminder_id,
+                    'sharing' => 'myself',
+                    'location' => '',
+                    'files' => [],
+                    'users' => [],  // Reminders are usually personal
+                    'reminder' => 'yes',  // Using reminder as "yes" effectively
+                    'reminder_duration' => 0,
+                    'reminder_period' => 0,
+                    'details' => $reminder->reminder_notes,
+                    'modal_target_id' => $modal_target_id,
+                    'modal_target_url' => $modal_target_url,
+                    'full_url' => $full_url,
+                ],
+            ];
+
+            $events[] = $event;
+            $count++;
+        }
+
+        // specific event
+        if ($id) {
+            // Logic for single event if needed, but reminders are usually fetched in bulk for calendar
+            // Returning first if id is set, though rare
+            return isset($events[0]) ? $events[0] : [];
+        }
+
+        // return merged array
+        Log::info("fetching calendar entries of type [reminder] - finished - records found ($count)", ['process' => '[calender-get-events]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'events' => $events]);
+        return array_merge($all_events, $events);
+    }
 }

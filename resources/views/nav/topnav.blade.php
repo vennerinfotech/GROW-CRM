@@ -212,7 +212,7 @@
                 <!-- Reminders Notification-->
                 <li class="nav-item">
                     <a class="nav-link waves-effect waves-dark font-22 p-t-9 p-r-10 js-toggle-notifications-panel topnav-reminders-icon {{ request('user_has_due_reminder') }}"
-                        href="javascript:void(0);" data-url="{{ url('reminders/topnav-feed?status=due') }}"
+                        href="javascript:void(0);" data-url="{{ url('reminders/topnav-feed?status=pending_due') }}"
                         id="topnav-reminders-icon" data-loading-target="topnav-reminders-container"
                         data-target="sidepanel-reminders" data-progress-bar='hidden' aria-expanded="false">
                         <i class="ti-alarm-clock"></i>
@@ -499,7 +499,7 @@
                 {!! config('modules.menus.topnav.parent8') !!}
 
                 <!-- language -->
-                @if (config('system.settings_system_language_allow_users_to_change') == 'yes')
+                {{-- @if (config('system.settings_system_language_allow_users_to_change') == 'yes')
                     <li class="nav-item dropdown d-none d-sm-block" id="topnav-language-icon">
                         <a class="nav-link dropdown-toggle p-t-10 waves-effect waves-dark" href="javascript:void(0)"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -523,7 +523,7 @@
                             </div>
                         </div>
                     </li>
-                @endif
+                @endif --}}
                 <!--language -->
 
                 <!--[MODULES] - dynamic menu-->

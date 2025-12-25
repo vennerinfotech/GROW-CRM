@@ -4,6 +4,7 @@
 
 </div>
 @include('pages.calendar.components.misc.settings')
+@include('pages.calendar.components.modals.card-modal')
 
 
 <!--set the data payload-->

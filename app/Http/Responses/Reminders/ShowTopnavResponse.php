@@ -1,20 +1,24 @@
 <?php
 
-/** --------------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------------
  * This classes renders the response for the [create] process for the reminder
  * controller
  * @package    Grow CRM
  * @author     NextLoop
- *----------------------------------------------------------------------------------*/
+ * ----------------------------------------------------------------------------------
+ */
 
 namespace App\Http\Responses\Reminders;
+
 use Illuminate\Contracts\Support\Responsable;
 
-class ShowTopnavResponse implements Responsable {
-
+class ShowTopnavResponse implements Responsable
+{
     private $payload;
 
-    public function __construct($payload = array()) {
+    public function __construct($payload = array())
+    {
         $this->payload = $payload;
     }
 
@@ -24,23 +28,24 @@ class ShowTopnavResponse implements Responsable {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function toResponse($request) {
-
-        //set all data to arrays
+    public function toResponse($request)
+    {
+        // set all data to arrays
         foreach ($this->payload as $key => $value) {
             $$key = $value;
         }
 
         $payload = $this->payload;
 
-        //show reminders
+        // show reminders
         $html = view('pages/reminders/topnav/reminder', compact('reminders'))->render();
         $jsondata['dom_html'][] = array(
             'selector' => '#sidepanel-reminders-container',
             'action' => 'replace',
-            'value' => $html);
+            'value' => $html
+        );
 
-        //reset sidepanel menus active status
+        // reset sidepanel menus active status
         $jsondata['dom_classes'][] = [
             'selector' => '.right-sidepanel-reminders-menu',
             'action' => 'remove',
@@ -57,7 +62,8 @@ class ShowTopnavResponse implements Responsable {
             'value' => 'active',
         ];
 
-        //set correct sidepanel menu as active
+        // set correct sidepanel menu as active
+        // set correct sidepanel menu as active
         if ($status == 'due') {
             $jsondata['dom_classes'][] = [
                 'selector' => '#right-sidepanel-reminders-menu-due',
@@ -69,7 +75,7 @@ class ShowTopnavResponse implements Responsable {
                 'action' => 'add',
                 'value' => 'due',
             ];
-        } else {
+        } elseif ($status == 'active') {
             $jsondata['dom_classes'][] = [
                 'selector' => '#right-sidepanel-reminders-menu-active',
                 'action' => 'add',
@@ -82,7 +88,7 @@ class ShowTopnavResponse implements Responsable {
             ];
         }
 
-        //do we have reminders - remove highlight from topnav icon
+        // do we have reminders - remove highlight from topnav icon
         if ($count_due == 0) {
             $jsondata['dom_classes'][] = [
                 'selector' => '#topnav-reminders-icon',
@@ -91,9 +97,7 @@ class ShowTopnavResponse implements Responsable {
             ];
         }
 
-        //ajax response
+        // ajax response
         return response()->json($jsondata);
-
     }
-
 }

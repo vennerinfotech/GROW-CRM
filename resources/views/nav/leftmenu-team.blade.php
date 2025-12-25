@@ -207,20 +207,18 @@
                 @stack('menu_main_team_10')
 
                 <!--proposals [multiple]-->
-                {{-- @if (config('visibility.modules.proposals') && auth()->user()->role->role_templates_proposals > 0)
+                @if (config('visibility.modules.proposals') && auth()->user()->role->role_templates_proposals > 0)
                     <!--multipl menu-->
                     <li data-modular-id="main_menu_team_proposals"
                         class="sidenav-menu-item {{ $page['mainmenu_proposals'] ?? '' }}">
                         <!--multiple menu-->
-                        <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);"
-                            aria-expanded="false">
+                        <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false">
                             <i class="ti-bookmark-alt"></i>
                             <span class="hide-menu">{{ cleanLang(__('lang.proposals')) }}
                             </span>
                         </a>
                         <ul aria-expanded="false" class="collapse">
-                            <li class="sidenav-submenu {{ $page['submenu_proposals'] ?? '' }}"
-                                id="submenu_proposals">
+                            <li class="sidenav-submenu {{ $page['submenu_proposals'] ?? '' }}" id="submenu_proposals">
                                 <a href="{{ _url('/proposals') }}"
                                     class="{{ $page['submenu_proposals'] ?? '' }}">{{ cleanLang(__('lang.proposals')) }}</a>
                             </li>
@@ -234,7 +232,7 @@
                             @stack('menu_main_team_11')
                         </ul>
                     </li>
-                @endif --}}
+                @endif
                 <!--proposals-->
 
                 <!--[MODULES] - dynamic menu-->
@@ -296,7 +294,8 @@
                     <li data-modular-id="main_menu_team_contracts"
                         class="sidenav-menu-item {{ $page['mainmenu_contracts'] ?? '' }} menu-tooltip menu-with-tooltip"
                         title="{{ cleanLang(__('lang.contracts')) }}">
-                        <a class="waves-effect waves-dark p-r-20" href="contracts" aria-expanded="false" target="_self">
+                        <a class="waves-effect waves-dark p-r-20" href="contracts" aria-expanded="false"
+                            target="_self">
                             <i class="ti-write"></i>
                             <span class="hide-menu">{{ cleanLang(__('lang.contracts')) }}
                             </span>
@@ -313,7 +312,8 @@
                 @if (config('visibility.modules.spaces'))
                     <li data-modular-id="main_menu_team_spaces hidden"
                         class="sidenav-menu-item {{ $page['mainmenu_spaces'] ?? '' }}">
-                        <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false">
+                        <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);"
+                            aria-expanded="false">
                             <i class="ti-layers"></i>
                             <span class="hide-menu">@lang('lang.spaces')
                             </span>

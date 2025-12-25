@@ -6043,7 +6043,7 @@ sidebar navigation
   padding: 12px 35px 10px 15px;
   display: block;
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 500;
 }
 .sidebar-nav ul li a.active, .sidebar-nav ul li a:hover {
   color: #20aee3;
@@ -6296,7 +6296,7 @@ When click on sidebar toggler and also for tablet
   margin-bottom: 30px;
 }
 .card .card-subtitle {
-  font-weight: 300;
+  /* font-weight: 300; */
   margin-bottom: 15px;
   color: #868c98;
 }
@@ -6399,6 +6399,7 @@ When click on sidebar toggler and also for tablet
 }
 .topbar .dropdown-menu .dropdown-item {
   padding: 7px 1.5rem;
+  font-weight: 500;
 }
 .topbar .dropdown-menu .dropdown-item.dropdown-item-iconed {
   padding-left: 25px;
@@ -6633,7 +6634,7 @@ Notify
   padding: 0px;
   margin-bottom: 0px;
   background: transparent;
-  font-size: 12px;
+  /* font-size: 12px; */
 }
 .page-titles .breadcrumb li {
   margin-top: 5px;

@@ -46,22 +46,22 @@ return [
         ],
         'local' => [
             'driver' => 'local',
-            'root' => BASE_DIR . '/public/storage',
+            'root' => BASE_DIR . '/storage',
             'url' => '/storage',
             'visibility' => 'public',
         ],
         // [nextloop] public storage folder
         'public' => [
             'driver' => 'local',
-            'root' => BASE_DIR . '/public/storage',
+            'root' => BASE_DIR . '/storage',
             'url' => '/storage',
             'visibility' => 'public',
         ],
         // [nextloop] Laravel Application Storage Folder
         'app-storage' => [
             'driver' => 'local',
-            'root' => BASE_DIR . '/public/storage',
-            'url' => '/storage',
+            'root' => BASE_DIR . '/application/storage',
+            'url' => '/application/storage',
             'visibility' => 'public',
         ],
         's3' => [

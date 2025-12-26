@@ -218,6 +218,34 @@ class Reminders extends Controller
             'resource_id' => request('resource_id'),
         ];
 
+        // [lead log] - if this reminder is for a lead, create a log
+        if (request('resource_type') == 'lead') {
+            $lead_id = request('resource_id');
+            // create log
+            $log = new \App\Models\LeadLog();
+            $log->lead_log_creatorid = auth()->id();
+            $log->lead_log_leadid = $lead_id;
+            $log->lead_log_text = __('lang.reminder') . ': ' . $reminder->reminder_title . ' - ' . runtimeDate($reminder->reminder_datetime) . ' ' . runtimeTime($reminder->reminder_datetime);
+            $log->lead_log_type = 'general';
+            $log->lead_log_uniqueid = str_unique();
+            $log->save();
+
+            // load creator
+            $log->load('creator');
+
+            // get lead
+            if ($lead = \App\Models\Lead::find($lead_id)) {
+                // render log html
+                $log_html = view('pages/lead/content/logs/log', [
+                    'logs' => collect([$log]),
+                    'lead' => $lead
+                ])->render();
+
+                // add to payload
+                $payload['lead_log_html'] = $log_html;
+            }
+        }
+
         // card
         if (request('ref') == 'card') {
             return new StoreCardResponse($payload);

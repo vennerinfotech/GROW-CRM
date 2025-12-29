@@ -21,6 +21,12 @@
             data-action-url="{{ urlResource('/leads/'.$lead->lead_id.'/add-checklist') }}"
             data-toggle="new">{{ cleanLang(__('lang.add_new_item')) }}</a>
 
+        <!-- Add Item Products Link -->
+        <a href="javascript:void(0)" class="js-lead-checklist-add-product p-l-10"
+            data-url="{{ url('items/search?action=search&ref=list') }}"
+            data-save-url="{{ urlResource('/leads/'.$lead->lead_id.'/add-checklist-items') }}"
+            data-loading-target="items-table-wrapper">{{ cleanLang(__('lang.add_item_products')) }}</a>
+
         <!-- Import Checklist Items Link -->
         <a href="javascript:void(0);" id="import-checklist-link" class="p-l-10">@lang('lang.import_checklist_items')</a>
 

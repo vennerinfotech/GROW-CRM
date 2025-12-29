@@ -47,6 +47,9 @@
     </div>
 </div>
 
+<!--items modal-->
+@include('pages.bill.components.modals.items')
+
 <!--js dom elements-->
 @include('pages.lead.components.js-elements')
 

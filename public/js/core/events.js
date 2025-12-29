@@ -648,6 +648,41 @@ $(document).ready(function () {
         NX.toggleEditTaskChecklist($(this));
     });
 
+    /** --------------------------------------------------------------------------------------------------
+     *  [lead - add product to checklist]
+     * -------------------------------------------------------------------------------------------------*/
+    $(document).on("click", '.js-lead-checklist-add-product', function (e) {
+        e.preventDefault();
+        var url = $(this).attr('data-url');
+        var saveUrl = $(this).attr('data-save-url');
+        
+        //reset search
+        $("#search_query").val('');
+        
+        //update search url
+        $("#itemsModal").find("#search_query").attr('data-url', url);
+        
+        //update modal title
+        $("#itemsModalTitle").html(NXLANG.add_product);
+        
+        //show the select button and update its url
+        $("#itemsModalSelectButton").removeClass('hidden');
+        $("#itemsModalSelectButton").attr('data-url', saveUrl);
+        $("#itemsModalSelectButton").attr('data-action-url', saveUrl);
+        $("#itemsModalSelectButton").attr('data-action-method', 'POST');
+        $("#itemsModalSelectButton").attr('data-action-ajax-loading-target', 'card-checklists-container');
+        $("#itemsModalSelectButton").addClass('js-ajax-ux-request');
+        $("#itemsModalSelectButton").addClass('reset-target-modal-form');
+        $("#itemsModalSelectButton").attr('data-form-id', 'itemsModalBody');
+        $("#itemsModalSelectButton").attr('data-ajax-type', 'post');
+        
+        //open the modal
+        $("#itemsModal").modal('show'); 
+        
+        //load items
+        nxAjaxUxRequest($(this));
+    });
+
 
     /** --------------------------------------------------------------------------------------------------
      *  [task - reset the task form]

@@ -56,6 +56,25 @@
         </div>
 
 
+        <!--product selection-->
+        <div class="form-group row">
+            <label class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.product')) }}</label>
+            <div class="col-sm-12 col-lg-9">
+                <div class="input-group">
+                    <input type="text" class="form-control form-control-sm" id="lead_product_name" name="lead_product_name" readonly placeholder="{{ cleanLang(__('lang.select_product')) }}">
+                    <input type="hidden" id="lead_product_id" name="lead_product_id">
+                    <div class="input-group-append">
+                        <button class="btn btn-secondary btn-sm js-lead-add-product" type="button" 
+                                data-url="{{ url('items/search?action=search&ref=list&itemresource_type=invoice') }}"
+                                data-loading-target="items-table-wrapper"
+                                data-toggle="modal" data-target="#itemsModal">
+                            {{ cleanLang(__('lang.select')) }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!--value-->
         <div class="form-group row">
             <label

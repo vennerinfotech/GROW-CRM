@@ -688,6 +688,73 @@ $(document).ready(function () {
         nxAjaxUxRequest($(this));
     });
 
+    /** --------------------------------------------------------------------------------------------------
+     *  [lead - add product] - open modal
+     * -------------------------------------------------------------------------------------------------*/
+     $(document).on("click", '.js-lead-add-product', function (e) {
+        e.preventDefault();
+        var url = $(this).attr('data-url');
+        
+        //reset search
+        $("#search_query").val('');
+
+        //reset checkboxes
+        $("#items-list-table input[type='checkbox']").prop('checked', false);
+        
+        //update search url
+        $("#itemsModal").find("#search_query").attr('data-url', url);
+        
+        //update modal title
+        $("#itemsModalTitle").html(NXLANG.add_product);
+        
+        //show the select button
+        var $btn = $("#itemsModalSelectButton");
+        $btn.removeClass('hidden');
+        $btn.removeClass('js-ajax-ux-request'); 
+        $btn.addClass('js-lead-confirm-product-selection'); 
+        
+        //open the modal
+        $("#itemsModal").modal('show'); 
+        
+        //fix z-index for nested/stacked modals
+        $("#itemsModal").one('shown.bs.modal', function () {
+             $(this).css('z-index', '1100');
+             $('.modal-backdrop').last().css('z-index', '1090');
+        });
+
+        //load items
+        nxAjaxUxRequest($(this));
+    });
+
+    /** --------------------------------------------------------------------------------------------------
+     *  [lead - product selected] - update lead form
+     * -------------------------------------------------------------------------------------------------*/
+     $(document).on("click", '.js-lead-confirm-product-selection', function (e) {
+        e.preventDefault();
+        
+        var $btn = $(this);
+        
+        //get selected item
+        var $selected = $("#items-list-table input[type='checkbox']:checked").first();
+        
+        if($selected.length > 0){
+             var price = $selected.attr('data-rate');
+             var name = $selected.attr('data-description');
+             var id = $selected.attr('data-item-id');
+
+             $("#lead_product_id").val(id);
+             $("#lead_product_name").val(name);
+             $("#lead_value").val(price);
+             
+             //close modal
+             $("#itemsModal").modal('hide');
+             
+             //reset button state
+             $btn.removeClass('js-lead-confirm-product-selection');
+             $btn.addClass('hidden');
+        }
+     });
+
 
     /** --------------------------------------------------------------------------------------------------
      *  [task - reset the task form]

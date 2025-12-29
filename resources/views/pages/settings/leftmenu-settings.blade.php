@@ -327,6 +327,38 @@
                     </ul>
                 </li>
 
+                <!--refunds-->
+                <li class="sidenav-menu-item">
+                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
+                        id="settings-menu-refunds">
+                        <span class="hide-menu">Refunds
+                        </span>
+                    </a>
+                    <ul aria-expanded="false" class="collapse">
+                        <li>
+                            <a href="javascript:void(0);" data-url="/settings/refunds/statuses"
+                                id="settings-menu-refunds-statuses"
+                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Status</a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-url="/settings/refunds/payment-modes"
+                                id="settings-menu-refunds-paymentmodes"
+                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Mode of Payment</a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-url="/settings/refunds/error-sources"
+                                id="settings-menu-refunds-errorsources"
+                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Error Sources</a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-url="/settings/refunds/sales-sources"
+                                id="settings-menu-refunds-salessources"
+                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Sales Sources</a>
+                        </li>
+                    </ul>
+                </li>
+
+
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.settings.parent8') !!}
                 @stack('menu_settings_main_15')

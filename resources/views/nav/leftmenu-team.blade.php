@@ -209,6 +209,19 @@
                 @endif
                 <!--billing-->
 
+                <!--refunds-->
+                <li data-modular-id="main_menu_refunds"
+                    class="sidenav-menu-item {{ $page['mainmenu_refunds'] ?? '' }} menu-tooltip menu-with-tooltip"
+                    title="Refunds">
+                    <a class="waves-effect waves-dark p-r-20" href="refunds" aria-expanded="false"
+                        target="_self">
+                        <i class="sl-icon-reload"></i>
+                        <span class="hide-menu">Refunds
+                        </span>
+                    </a>
+                </li>
+
+
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.main.parent7') !!}
                 @stack('menu_main_team_10')

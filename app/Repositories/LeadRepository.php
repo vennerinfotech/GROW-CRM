@@ -1,11 +1,13 @@
 <?php
 
-/** --------------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------------
  * This repository class manages all the data absctration for leads
  *
  * @package    Grow CRM
  * @author     NextLoop
- *----------------------------------------------------------------------------------*/
+ * ----------------------------------------------------------------------------------
+ */
 
 namespace App\Repositories;
 
@@ -16,8 +18,8 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Log;
 
-class LeadRepository {
-
+class LeadRepository
+{
     /**
      * The leads repository instance.
      */
@@ -26,7 +28,8 @@ class LeadRepository {
     /**
      * Inject dependecies
      */
-    public function __construct(Lead $leads) {
+    public function __construct(Lead $leads)
+    {
         $this->leads = $leads;
     }
 
@@ -35,31 +38,33 @@ class LeadRepository {
      * @param int $id optional for getting a single, specified record
      * @return object lead collection
      */
-    public function search($id = '', $data = []) {
-
+    public function search($id = '', $data = [])
+    {
         $leads = $this->leads->newQuery();
 
-        //default - always apply filters
+        // default - always apply filters
         if (!isset($data['apply_filters'])) {
             $data['apply_filters'] = true;
         }
 
-        //joins
+        // joins
         $leads->leftJoin('categories', 'categories.category_id', '=', 'leads.lead_categoryid');
         $leads->leftJoin('users', 'users.id', '=', 'leads.lead_creatorid');
         $leads->leftJoin('leads_status', 'leads_status.leadstatus_id', '=', 'leads.lead_status');
         $leads->leftJoin('pinned', function ($join) {
-            $join->on('pinned.pinnedresource_id', '=', 'leads.lead_id')
+            $join
+                ->on('pinned.pinnedresource_id', '=', 'leads.lead_id')
                 ->where('pinned.pinnedresource_type', '=', 'lead');
             if (auth()->check()) {
                 $join->where('pinned.pinned_userid', auth()->id());
             }
         });
 
-        //join: users reminders - do not do this for cronjobs
+        // join: users reminders - do not do this for cronjobs
         if (auth()->check()) {
             $leads->leftJoin('reminders', function ($join) {
-                $join->on('reminders.reminderresource_id', '=', 'leads.lead_id')
+                $join
+                    ->on('reminders.reminderresource_id', '=', 'leads.lead_id')
                     ->where('reminders.reminderresource_type', '=', 'lead')
                     ->where('reminders.reminder_userid', '=', auth()->id());
             });
@@ -68,7 +73,7 @@ class LeadRepository {
         // select all
         $leads->selectRaw('*');
 
-        //count unread notifications
+        // count unread notifications
         $leads->selectRaw('(SELECT COUNT(*)
                                       FROM events_tracking
                                       LEFT JOIN events ON events.event_id = events_tracking.eventtracking_eventid
@@ -79,7 +84,7 @@ class LeadRepository {
                                       AND events.event_item = "comment")
                                       AS count_unread_comments');
 
-        //count unread notifications
+        // count unread notifications
         $leads->selectRaw('(SELECT COUNT(*)
                                       FROM events_tracking
                                       LEFT JOIN events ON events.event_id = events_tracking.eventtracking_eventid
@@ -89,12 +94,12 @@ class LeadRepository {
                                       AND events.event_parent_id = leads.lead_id
                                       AND events.event_item = "attachment")
                                       AS count_unread_attachments');
-        //converted by details
+        // converted by details
         $leads->selectRaw('(SELECT first_name
                                       FROM users
                                       WHERE users.id = leads.lead_converted_by_userid)
                                       AS converted_by_first_name');
-        //converted by details
+        // converted by details
         $leads->selectRaw('(SELECT last_name
                                       FROM users
                                       WHERE users.id = leads.lead_converted_by_userid)
@@ -104,17 +109,17 @@ class LeadRepository {
                                    FROM users WHERE users.id = leads.lead_converted_by_userid)
                                    AS converted_by_full_name');
 
-        //default where
-        $leads->whereRaw("1 = 1");
+        // default where
+        $leads->whereRaw('1 = 1');
 
-        //filter for active or archived (default to active) - do not use this when a lead id has been specified
+        // filter for active or archived (default to active) - do not use this when a lead id has been specified
         if (!is_numeric($id)) {
             if (!request()->filled('filter_show_archived_leads') && !request()->filled('filter_lead_state')) {
                 $leads->where('lead_active_state', 'active');
             }
         }
 
-        //filters: id
+        // filters: id
         if (request()->filled('filter_lead_id')) {
             $leads->where('lead_id', request('filter_lead_id'));
         }
@@ -122,53 +127,52 @@ class LeadRepository {
             $leads->where('lead_id', $id);
         }
 
-        //do not show items that not yet ready (i.e exclude items in the process of being cloned that have status 'invisible')
+        // do not show items that not yet ready (i.e exclude items in the process of being cloned that have status 'invisible')
         $leads->where('lead_visibility', 'visible');
 
-        //apply filters
+        // apply filters
         if ($data['apply_filters']) {
-
-            //filter archived leads
+            // filter archived leads
             if (request()->filled('filter_lead_state') && (request('filter_lead_state') == 'active' || request('filter_lead_state') == 'archived')) {
                 $leads->where('lead_active_state', request('filter_lead_state'));
             }
 
-            //filter: added date (start)
+            // filter: added date (start)
             if (request()->filled('filter_lead_created_start')) {
                 $leads->whereDate('lead_created', '>=', request('filter_lead_created_start'));
             }
 
-            //filter: added date (end)
+            // filter: added date (end)
             if (request()->filled('filter_lead_created_end')) {
                 $leads->whereDate('lead_created', '<=', request('filter_lead_created_end'));
             }
 
-            //filter: last contacted date (start)
+            // filter: last contacted date (start)
             if (request()->filled('filter_lead_last_contacted_start')) {
                 $leads->whereDate('lead_last_contacted', '>=', request('filter_lead_last_contacted_start'));
             }
 
-            //filter: last contacted date (end)
+            // filter: last contacted date (end)
             if (request()->filled('filter_lead_last_contacted_end')) {
                 $leads->whereDate('lead_last_contacted', '<=', request('filter_lead_last_contacted_end'));
             }
 
-            //filter: value (min)
+            // filter: value (min)
             if (request()->filled('filter_lead_value_min')) {
                 $leads->where('lead_value', '>=', request('filter_lead_value_min'));
             }
 
-            //filter: value (max)
+            // filter: value (max)
             if (request()->filled('filter_lead_value_max')) {
                 $leads->where('lead_value', '<=', request('filter_lead_value_max'));
             }
 
-            //filter: board
+            // filter: board
             if (request()->filled('filter_single_lead_status')) {
                 $leads->where('lead_status', request('filter_single_lead_status'));
             }
 
-            //filter status
+            // filter status
             if (is_numeric(request('filter_lead_status'))) {
                 $leads->where('lead_status', request('filter_lead_status'));
             }
@@ -176,46 +180,46 @@ class LeadRepository {
                 $leads->whereIn('lead_status', request('filter_lead_status'));
             }
 
-            //filter assigned
+            // filter assigned
             if (is_array(request('filter_assigned')) && !empty(array_filter(request('filter_assigned')))) {
                 $leads->whereHas('assigned', function ($query) {
                     $query->whereIn('leadsassigned_userid', request('filter_assigned'));
                 });
             }
 
-            //filter content created by me or assigned to me
+            // filter content created by me or assigned to me
             if (request()->filled('filter_created_by_or_assigned_to_me')) {
                 $leads->where(function ($query) {
-                    //where created by me
-                    $query->where('lead_creatorid', auth()->id())
-                    //or where assigned to me
+                    // where created by me
+                    $query
+                        ->where('lead_creatorid', auth()->id())
+                        // or where assigned to me
                         ->orWhereHas('assigned', function ($subquery) {
                             $subquery->where('leadsassigned_userid', auth()->id());
                         });
                 });
             }
 
-            //filter my leads (using the actions button)
+            // filter my leads (using the actions button)
             if (request()->filled('filter_my_leads')) {
-                //leads assigned to me
+                // leads assigned to me
                 $leads->whereHas('assigned', function ($query) {
                     $query->whereIn('leadsassigned_userid', [auth()->id()]);
                 });
             }
 
-            //filter: tags
+            // filter: tags
             if (is_array(request('filter_tags')) && !empty(array_filter(request('filter_tags')))) {
                 $leads->whereHas('tags', function ($query) {
                     $query->whereIn('tag_title', request('filter_tags'));
                 });
             }
-
         }
-        //custom fields filtering
+        // custom fields filtering
         if (request('action') == 'search') {
             if ($fields = \App\Models\CustomField::Where('customfields_type', 'leads')->Where('customfields_show_filter_panel', 'yes')->get()) {
                 foreach ($fields as $field) {
-                    //field name, as posted by the filter panel (e.g. filter_ticket_custom_field_70)
+                    // field name, as posted by the filter panel (e.g. filter_ticket_custom_field_70)
                     $field_name = 'filter_' . $field->customfields_name;
                     if ($field->customfields_name != '' && request()->filled($field_name)) {
                         if (in_array($field->customfields_datatype, ['number', 'decimal', 'dropdown', 'date', 'checkbox'])) {
@@ -229,14 +233,14 @@ class LeadRepository {
             }
         }
 
-        //search: various client columns and relationships (where first, then wherehas)
+        // search: various client columns and relationships (where first, then wherehas)
         if (request()->filled('search_query') || request()->filled('query')) {
             $leads->where(function ($query) {
                 $query->Where('lead_id', '=', request('search_query'));
                 $query->orWhere('lead_created', 'LIKE', '%' . date('Y-m-d', strtotime(request('search_query'))) . '%');
                 $query->orWhere('lead_last_contacted', 'LIKE', '%' . date('Y-m-d', strtotime(request('search_query'))) . '%');
-                $query->orWhereRaw("YEAR(lead_created) = ?", [request('search_query')]); //example binding
-                $query->orWhereRaw("YEAR(lead_last_contacted) = ?", [request('search_query')]); //example binding
+                $query->orWhereRaw('YEAR(lead_created) = ?', [request('search_query')]);  // example binding
+                $query->orWhereRaw('YEAR(lead_last_contacted) = ?', [request('search_query')]);  // example binding
                 $query->orWhere('lead_title', 'LIKE', '%' . request('search_query') . '%');
                 $query->orWhere('lead_firstname', 'LIKE', '%' . request('search_query') . '%');
                 $query->orWhere('lead_lastname', 'LIKE', '%' . request('search_query') . '%');
@@ -259,39 +263,43 @@ class LeadRepository {
                     $q->where('tag_title', 'LIKE', '%' . request('search_query') . '%');
                 });
             });
-
         }
 
-        //sorting
+        // sorting
         if (in_array(request('sortorder'), array('desc', 'asc')) && request('orderby') != '') {
-            //direct column name
+            // direct column name
             if (Schema::hasColumn('leads', request('orderby'))) {
-                $leads->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC')
+                $leads
+                    ->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC')
                     ->orderBy(request('orderby'), request('sortorder'));
             }
-            //others
+            // others
             switch (request('orderby')) {
-            case 'status':
-                $leads->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC')
-                    ->orderBy('leadstatus_title', request('sortorder'));
-                break;
-            case 'lead_category_name':
-                $leads->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC')
-                    ->orderBy('category_name', request('sortorder'));
-                break;
+                case 'status':
+                    $leads
+                        ->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC')
+                        ->orderBy('leadstatus_title', request('sortorder'));
+                    break;
+                case 'lead_category_name':
+                    $leads
+                        ->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC')
+                        ->orderBy('category_name', request('sortorder'));
+                    break;
             }
         } else {
-            //default sorting
+            // default sorting
             if (request('query_type') == 'kanban') {
-                $leads->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC')
+                $leads
+                    ->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC')
                     ->orderBy('lead_position', 'asc');
             } else {
-                $leads->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC')
+                $leads
+                    ->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC')
                     ->orderBy('lead_id', 'desc');
             }
         }
 
-        //eager load
+        // eager load
         $leads->with([
             'tags',
             'leadstatus',
@@ -300,7 +308,7 @@ class LeadRepository {
             'reminders',
         ]);
 
-        //count relationships
+        // count relationships
         $leads->withCount([
             'tags',
             'comments',
@@ -317,18 +325,18 @@ class LeadRepository {
      * @param array $position new record position
      * @return mixed object|bool
      */
-    public function create($position = '') {
-
-        //validate
+    public function create($position = '')
+    {
+        // validate
         if (!is_numeric($position)) {
-            Log::error("validation error - invalid params", ['process' => '[LeadRepository]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'project_id' => 1]);
+            Log::error('validation error - invalid params', ['process' => '[LeadRepository]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'project_id' => 1]);
             return false;
         }
 
-        //save new user
+        // save new user
         $lead = new $this->leads;
 
-        //data
+        // data
         $lead->lead_creatorid = auth()->id();
         $lead->lead_uniqueid = str_unique();
         $lead->lead_firstname = request('lead_firstname');
@@ -347,14 +355,15 @@ class LeadRepository {
         $lead->lead_title = request('lead_title');
         $lead->lead_description = request('lead_description');
         $lead->lead_value = request('lead_value');
-        $lead->lead_last_contacted = request('lead_last_contacted'); //or \Carbon\Carbon::now()
+        $lead->lead_last_contacted = request('lead_last_contacted');  // or \Carbon\Carbon::now()
         $lead->lead_status = request('lead_status');
         $lead->lead_position = $position;
         $lead->lead_categoryid = request('lead_categoryid');
+        $lead->lead_product_id = request('lead_product_id');
 
-        //save and return id
+        // save and return id
         if ($lead->save()) {
-            //apply custom fields data
+            // apply custom fields data
             $this->applyCustomFields($lead->lead_id);
             return $lead->lead_id;
         } else {
@@ -367,18 +376,18 @@ class LeadRepository {
      * @param int $id record id
      * @return mixed int|bool
      */
-    public function update($id) {
-
-        //get the record
+    public function update($id)
+    {
+        // get the record
         if (!$lead = $this->leads->find($id)) {
-            Log::error("record could not be found", ['process' => '[LeadAssignedRepository]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'lead_id' => $id ?? '']);
+            Log::error('record could not be found', ['process' => '[LeadAssignedRepository]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'lead_id' => $id ?? '']);
             return false;
         }
 
-        //last updated
+        // last updated
         $lead->lead_updatorid = auth()->id();
 
-        //general
+        // general
         $lead->lead_firstname = request('lead_firstname');
         $lead->lead_lastname = request('lead_lastname');
         $lead->lead_email = request('lead_email');
@@ -397,10 +406,11 @@ class LeadRepository {
         $lead->lead_value = request('lead_value');
         $lead->lead_last_contacted = request('lead_last_contacted');
         $lead->lead_status = request('lead_status');
+        $lead->lead_product_id = request('lead_product_id');
 
-        //save
+        // save
         if ($lead->save()) {
-            //apply custom fields data
+            // apply custom fields data
             $this->applyCustomFields($lead->lead_id);
             return $lead->lead_id;
         } else {
@@ -415,18 +425,18 @@ class LeadRepository {
      * @param string $searchterm
      * @return array
      */
-    public function autocompleteFeed($status = '', $limit = '', $searchterm = '') {
-
-        //validation
+    public function autocompleteFeed($status = '', $limit = '', $searchterm = '')
+    {
+        // validation
         if ($searchterm == '') {
             return [];
         }
 
-        //start
+        // start
         $query = $this->leads->newQuery();
-        $query->selectRaw("lead_title AS value, lead_id AS id");
+        $query->selectRaw('lead_title AS value, lead_id AS id');
 
-        //[filter] lead status
+        // [filter] lead status
         if ($status != '') {
             if ($status == 'active') {
                 $query->where('lead_status', '!=', 'completed');
@@ -435,17 +445,17 @@ class LeadRepository {
             }
         }
 
-        //[filter] search term
+        // [filter] search term
         $query->where('lead_title', 'like', '%' . $searchterm . '%');
 
-        //[filter] assigned
+        // [filter] assigned
         if ($limit == 'assigned') {
             $leads->whereHas('assigned', function ($query) {
                 $query->whereIn('leadsassigned_userid', auth()->user()->id);
             });
         }
 
-        //return
+        // return
         return $query->get();
     }
 
@@ -456,18 +466,18 @@ class LeadRepository {
      * @param string $searchterm
      * @return array
      */
-    public function autocompleteFeedNames($status = '', $limit = '', $searchterm = '') {
-
-        //validation
+    public function autocompleteFeedNames($status = '', $limit = '', $searchterm = '')
+    {
+        // validation
         if ($searchterm == '') {
             return [];
         }
 
-        //start
+        // start
         $query = $this->leads->newQuery();
         $query->selectRaw("CONCAT(lead_firstname , ' ' , lead_lastname , ' - ' , lead_title) AS value, lead_title, lead_id AS id");
 
-        //[filter] lead status
+        // [filter] lead status
         if ($status != '') {
             if ($status == 'active') {
                 $query->where('lead_status', '!=', 'completed');
@@ -476,26 +486,26 @@ class LeadRepository {
             }
         }
 
-        //[filter] search term
+        // [filter] search term
         $query->where('lead_title', 'like', '%' . $searchterm . '%');
 
-        //[filter] assigned
+        // [filter] assigned
         if ($limit == 'assigned') {
             $leads->whereHas('assigned', function ($query) {
                 $query->whereIn('leadsassigned_userid', auth()->user()->id);
             });
         }
 
-        //return
+        // return
         return $query->get();
     }
 
     /**
      * update model wit custom fields data (where enabled)
      */
-    public function applyCustomFields($id = '') {
-
-        //custom fields
+    public function applyCustomFields($id = '')
+    {
+        // custom fields
         $fields = \App\Models\CustomField::Where('customfields_type', 'leads')->get();
         foreach ($fields as $field) {
             if ($field->customfields_standard_form_status == 'enabled') {
@@ -512,9 +522,9 @@ class LeadRepository {
      * clone a leads
      * @return bool
      */
-    public function cloneLead($lead = '', $data = []) {
-
-        //we are copying
+    public function cloneLead($lead = '', $data = [])
+    {
+        // we are copying
         $new_lead = $lead->replicate();
         $new_lead->lead_created = now();
         $new_lead->lead_creatorid = auth()->id();
@@ -536,7 +546,7 @@ class LeadRepository {
         $new_lead->lead_active_state = 'active';
         $new_lead->save();
 
-        //copy check list
+        // copy check list
         if ($data['copy_checklist']) {
             if ($checklists = \App\Models\Checklist::Where('checklistresource_type', 'lead')->Where('checklistresource_id', $lead->lead_id)->get()) {
                 foreach ($checklists as $checklist) {
@@ -552,20 +562,20 @@ class LeadRepository {
             }
         }
 
-        //copy attachements
+        // copy attachements
         if ($data['copy_files']) {
             if ($attachments = \App\Models\Attachment::Where('attachmentresource_type', 'lead')->Where('attachmentresource_id', $lead->lead_id)->get()) {
                 foreach ($attachments as $attachment) {
-                    //unique key
+                    // unique key
                     $unique_key = Str::random(50);
-                    //directory
+                    // directory
                     $directory = Str::random(40);
-                    //paths
-                    $source = BASE_DIR . "/storage/files/" . $attachment->attachment_directory;
+                    // paths
+                    $source = BASE_DIR . '/storage/files/' . $attachment->attachment_directory;
                     $destination = BASE_DIR . "/storage/files/$directory";
-                    //validate
+                    // validate
                     if (is_dir($source)) {
-                        //copy the database record
+                        // copy the database record
                         $new_attachment = $attachment->replicate();
                         $new_attachment->attachment_creatorid = auth()->id();
                         $new_attachment->attachment_created = now();
@@ -576,14 +586,14 @@ class LeadRepository {
                         $new_attachment->attachmentresource_type = 'lead';
                         $new_attachment->attachmentresource_id = $new_lead->lead_id;
                         $new_attachment->save();
-                        //copy folder
+                        // copy folder
                         File::copyDirectory($source, $destination);
                     }
                 }
             }
         }
 
-        //all done
+        // all done
         return $new_lead;
     }
 
@@ -593,14 +603,14 @@ class LeadRepository {
      * @param string $result null | feed | list
      * @return mixed returns collection by default or a feed obj or an array of lead id's
      */
-    public function usersAssignedLeads($userid = '', $result = '') {
-
-        //sanity
+    public function usersAssignedLeads($userid = '', $result = '')
+    {
+        // sanity
         if (!is_numeric($userid)) {
             $userid = -1;
         }
 
-        //save userid to usein subquery
+        // save userid to usein subquery
         request()->merge([
             'temp_query_userid' => $userid,
         ]);
@@ -611,12 +621,12 @@ class LeadRepository {
             $q->whereIn('leadsassigned_userid', [request('temp_query_userid')]);
         });
 
-        //sorting
+        // sorting
         $leads->orderBy('lead_title', 'asc');
 
         $collection = $leads->get();
 
-        //array result
+        // array result
         if ($result == 'list') {
             $list = [];
             foreach ($collection as $lead) {
@@ -625,9 +635,7 @@ class LeadRepository {
             return $list;
         }
 
-        //return
+        // return
         return $collection;
-
     }
-
 }

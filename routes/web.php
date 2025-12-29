@@ -1388,3 +1388,47 @@ Route::resource('cs/affiliates/earnings', 'CS_Affiliates\Earnings');
 
 // AFFILATE PROFIT
 Route::get('/cs/affiliate/my/earnings', 'CS_Affiliates\Profit@index');
+
+// REFUNDS
+Route::resource('refunds', 'Refunds');
+
+// SETTINGS - REFUNDS
+Route::group(['prefix' => 'settings/refunds'], function () {
+    Route::get('/', 'Settings\Refunds@index');
+
+    // Statuses
+    Route::get('/statuses', 'Settings\Refunds@statuses');
+    Route::get('/statuses/create', 'Settings\Refunds@createStatus');
+    Route::post('/statuses', 'Settings\Refunds@storeStatus');
+    Route::get('/statuses/{id}/edit', 'Settings\Refunds@editStatus')->where('id', '[0-9]+');
+    Route::put('/statuses/{id}', 'Settings\Refunds@updateStatus')->where('id', '[0-9]+');
+    Route::delete('/statuses/{id}', 'Settings\Refunds@destroyStatus')->where('id', '[0-9]+');
+    Route::post('/statuses/create', 'Settings\Refunds@storeStatus');
+
+    // Payment Modes
+    Route::get('/payment-modes', 'Settings\Refunds@paymentModes');
+    Route::get('/payment-modes/create', 'Settings\Refunds@createPaymentMode');
+    Route::post('/payment-modes', 'Settings\Refunds@storePaymentMode');
+    Route::get('/payment-modes/{id}/edit', 'Settings\Refunds@editPaymentMode')->where('id', '[0-9]+');
+    Route::put('/payment-modes/{id}', 'Settings\Refunds@updatePaymentMode')->where('id', '[0-9]+');
+    Route::delete('/payment-modes/{id}', 'Settings\Refunds@destroyPaymentMode')->where('id', '[0-9]+');
+    Route::post('/payment-modes/create', 'Settings\Refunds@storePaymentMode');
+
+    // Error Sources
+    Route::get('/error-sources', 'Settings\Refunds@errorSources');
+    Route::get('/error-sources/create', 'Settings\Refunds@createErrorSource');
+    Route::post('/error-sources', 'Settings\Refunds@storeErrorSource');
+    Route::get('/error-sources/{id}/edit', 'Settings\Refunds@editErrorSource')->where('id', '[0-9]+');
+    Route::put('/error-sources/{id}', 'Settings\Refunds@updateErrorSource')->where('id', '[0-9]+');
+    Route::delete('/error-sources/{id}', 'Settings\Refunds@destroyErrorSource')->where('id', '[0-9]+');
+    Route::post('/error-sources/create', 'Settings\Refunds@storeErrorSource');
+
+    // Sales Sources
+    Route::get('/sales-sources', 'Settings\Refunds@salesSources');
+    Route::get('/sales-sources/create', 'Settings\Refunds@createSalesSource');
+    Route::post('/sales-sources', 'Settings\Refunds@storeSalesSource');
+    Route::get('/sales-sources/{id}/edit', 'Settings\Refunds@editSalesSource')->where('id', '[0-9]+');
+    Route::put('/sales-sources/{id}', 'Settings\Refunds@updateSalesSource')->where('id', '[0-9]+');
+    Route::delete('/sales-sources/{id}', 'Settings\Refunds@destroySalesSource')->where('id', '[0-9]+');
+    Route::post('/sales-sources/create', 'Settings\Refunds@storeSalesSource');
+});

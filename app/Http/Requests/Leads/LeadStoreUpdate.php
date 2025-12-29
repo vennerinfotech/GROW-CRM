@@ -1,11 +1,13 @@
 <?php
 
-/** --------------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------------
  * This middleware class validates input requests for the leads controller
  *
  * @package    Grow CRM
  * @author     NextLoop
- *----------------------------------------------------------------------------------*/
+ * ----------------------------------------------------------------------------------
+ */
 
 namespace App\Http\Requests\Leads;
 
@@ -14,14 +16,15 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class LeadStoreUpdate extends FormRequest {
-
+class LeadStoreUpdate extends FormRequest
+{
     /**
      * we are checking authorised users via the middleware
      * so just retun true here
      * @return bool
      */
-    public function authorize() {
+    public function authorize()
+    {
         return true;
     }
 
@@ -30,7 +33,8 @@ class LeadStoreUpdate extends FormRequest {
      * @optional
      * @return array
      */
-    public function messages() {
+    public function messages()
+    {
         return [
             'project_categoryid.exists' => __('lang.item_not_found'),
         ];
@@ -40,15 +44,17 @@ class LeadStoreUpdate extends FormRequest {
      * Validate the request
      * @return array
      */
-    public function rules() {
-
-        //initialize
+    public function rules()
+    {
+        // initialize
         $rules = [];
 
-        /**-------------------------------------------------------
+        /*
+         * -------------------------------------------------------
          * common rules for both [create] and [update] requests
-         * ------------------------------------------------------*/
-        //validate
+         * ------------------------------------------------------
+         */
+        // validate
         $rules += [
             'lead_title' => [
                 'required',
@@ -67,6 +73,10 @@ class LeadStoreUpdate extends FormRequest {
             'lead_value' => [
                 'nullable',
                 'numeric',
+            ],
+            'lead_product_id' => [
+                'nullable',
+                Rule::exists('items', 'item_id'),
             ],
             'assigned' => [
                 'sometimes',
@@ -145,15 +155,15 @@ class LeadStoreUpdate extends FormRequest {
             ],
         ];
 
-        //validate
+        // validate
         return $rules;
     }
 
     /**
      * Deal with the errors - send messages to the frontend
      */
-    public function failedValidation(Validator $validator) {
-
+    public function failedValidation(Validator $validator)
+    {
         $errors = $validator->errors();
         $messages = '';
         foreach ($errors->all() as $message) {

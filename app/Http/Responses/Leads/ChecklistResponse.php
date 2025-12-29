@@ -1,20 +1,24 @@
 <?php
 
-/** --------------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------------
  * This classes renders the response for the [checklist] process for the leads
  * controller
  * @package    Grow CRM
  * @author     NextLoop
- *----------------------------------------------------------------------------------*/
+ * ----------------------------------------------------------------------------------
+ */
 
 namespace App\Http\Responses\Leads;
+
 use Illuminate\Contracts\Support\Responsable;
 
-class ChecklistResponse implements Responsable {
-
+class ChecklistResponse implements Responsable
+{
     private $payload;
 
-    public function __construct($payload = array()) {
+    public function __construct($payload = array())
+    {
         $this->payload = $payload;
     }
 
@@ -24,9 +28,9 @@ class ChecklistResponse implements Responsable {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function toResponse($request) {
-
-        //set all data to arrays
+    public function toResponse($request)
+    {
+        // set all data to arrays
         foreach ($this->payload as $key => $value) {
             $$key = $value;
         }
@@ -36,16 +40,18 @@ class ChecklistResponse implements Responsable {
         $jsondata['dom_html'][] = array(
             'selector' => '#card-checklist-progress-container',
             'action' => 'replace',
-            'value' => $html);
+            'value' => $html
+        );
 
         // CHECKLIST PROGRESS COUNTER---
 
         $jsondata['dom_html'][] = array(
             'selector' => '#card-checklist-progress',
             'action' => 'replace',
-            'value' => $progress['completed']);
+            'value' => $progress['completed']
+        );
 
-        //DELETING A ROW
+        // DELETING A ROW
         if (isset($action) && $action == 'delete') {
             $jsondata['dom_visibility'][] = array(
                 'selector' => "#lead_checklist_container_$checklistid",
@@ -53,9 +59,16 @@ class ChecklistResponse implements Responsable {
             );
         }
 
-        //response
+        // UPDATE LEAD VALUE
+        if (isset($lead) && $lead) {
+            $jsondata['dom_html'][] = array(
+                'selector' => '#card-lead-value',
+                'action' => 'replace',
+                'value' => runtimeMoneyFormat($lead->lead_value)
+            );
+        }
+
+        // response
         return response()->json($jsondata);
-
     }
-
 }

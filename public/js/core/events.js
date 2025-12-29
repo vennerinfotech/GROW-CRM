@@ -651,13 +651,18 @@ $(document).ready(function () {
     /** --------------------------------------------------------------------------------------------------
      *  [lead - add product to checklist]
      * -------------------------------------------------------------------------------------------------*/
-    $(document).on("click", '.js-lead-checklist-add-product', function (e) {
+    $(document).off("click", '.js-lead-checklist-add-product').on("click", '.js-lead-checklist-add-product', function (e) {
         e.preventDefault();
         var url = $(this).attr('data-url');
         var saveUrl = $(this).attr('data-save-url');
         
         //reset search
         $("#search_query").val('');
+
+        //reset checkboxes
+        $("#items-list-table input[type='checkbox']").prop('checked', false);
+        
+        //update search url
         
         //update search url
         $("#itemsModal").find("#search_query").attr('data-url', url);

@@ -23,7 +23,7 @@
 
             <!-- Add Item Products Link -->
             <a href="javascript:void(0)" class="js-lead-checklist-add-product p-l-10"
-                data-url="{{ url('items/search?action=search&ref=list') }}"
+                data-url="{{ url('items/search?action=search&ref=list&itemresource_type=lead') }}"
                 data-save-url="{{ urlResource('/leads/' . $lead->lead_id . '/add-checklist-items') }}"
                 data-loading-target="items-table-wrapper">add item products</a>
 

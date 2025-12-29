@@ -1944,6 +1944,30 @@ class Leads extends Controller
         $resource_id = $checklist->checklistresource_id;
         $checklist_id = $checklist->checklist_id;
 
+        // deduct value from lead if applicable
+        if ($checklist->checklistresource_type == 'lead') {
+            // parse quantity and name: "Product Name (Qty: 2)"
+            if (preg_match('/^(.*?) \(Qty: (\d+)\)$/', $checklist->checklist_text, $matches)) {
+                $name = $matches[1];
+                $qty = intval($matches[2]);
+                // lookup item
+                $item = \App\Models\Item::where('item_description', $name)->first();
+                if ($item) {
+                    $deduction = $item->item_rate * $qty;
+                    $lead = \App\Models\Lead::find($resource_id);
+                    if ($lead) {
+                        $lead->lead_value -= $deduction;
+                        if ($lead->lead_value < 0) {
+                            $lead->lead_value = 0;
+                        }
+                        $lead->save();
+                        // add to payload
+                        $payload['lead'] = $lead;
+                    }
+                }
+            }
+        }
+
         // delete
         $checklist->delete();
 
@@ -1959,6 +1983,7 @@ class Leads extends Controller
             'progress' => $this->checklistProgress($checklists),
             'action' => 'delete',
             'checklistid' => $checklist_id,
+            'lead' => $lead ?? null,
         ];
 
         // fire LeadChecklistDeleted event
@@ -4678,26 +4703,38 @@ class Leads extends Controller
                         $position = config('settings.db_position_increment');
                     }
 
-                    // check if item already exists
+                    // get quantity
+                    $quantity = request('quantity')[$item_id] ?? 1;
+
+                    // format text
+                    $checklist_text = $item->item_description . " (Qty: $quantity)";
+
+                    // check if item already exists (matches exact text including quantity)
                     $exists = \App\Models\Checklist::Where('checklistresource_type', 'lead')
                         ->Where('checklistresource_id', $id)
-                        ->Where('checklist_text', $item->item_description)
+                        ->where('checklist_text', $checklist_text)
                         ->exists();
 
                     if (!$exists) {
                         // create checklist item
                         $checklist = new \App\Models\Checklist();
                         $checklist->checklist_creatorid = auth()->id();
-                        $checklist->checklist_text = $item->item_description;
+                        $checklist->checklist_text = $checklist_text;
                         $checklist->checklistresource_type = 'lead';
                         $checklist->checklistresource_id = $id;
                         $checklist->checklist_position = $position;
                         $checklist->checklist_status = 'pending';
                         $checklist->save();
+
+                        // update lead value
+                        $lead->lead_value += ($item->item_rate * $quantity);
                     }
                 }
             }
         }
+
+        // save lead value
+        $lead->save();
 
         // get checklists
         $checklists = \App\Models\Checklist::Where('checklistresource_type', 'lead')

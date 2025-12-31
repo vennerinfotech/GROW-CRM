@@ -667,6 +667,19 @@ class Leads extends Controller
             }
         }
 
+        // [save checklist items] from products
+        if (request()->filled('assigned_products') && is_array(request('assigned_products'))) {
+            foreach (request('assigned_products') as $product) {
+                $checklist = new \App\Models\Checklist();
+                $checklist->checklist_text = $product['name'] . ' (Qty: ' . $product['quantity'] . ')';
+                $checklist->checklistresource_type = 'lead';
+                $checklist->checklistresource_id = $lead_id;
+                $checklist->checklist_creatorid = auth()->id();
+                $checklist->checklist_created = now();
+                $checklist->save();
+            }
+        }
+
         // get the lead
         $leads = $this->leadrepo->search($lead_id, ['apply_filters' => false]);
         $lead = $leads->first();

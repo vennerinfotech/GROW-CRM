@@ -95,8 +95,8 @@ class RefundRepository
 
         $refund->refund_bill_no = request('refund_bill_no');
         $refund->refund_amount = request('refund_amount');
-        $refund->refund_reason = request('refund_reason');
-        $refund->refund_courier = request('refund_courier');
+        $refund->refund_reasonid = request('refund_reasonid');
+        $refund->refund_courierid = request('refund_courierid');
         $refund->refund_docket_no = request('refund_docket_no');
         $refund->refund_payment_modeid = request('refund_payment_modeid');
         $refund->refund_statusid = request('refund_statusid');
@@ -124,8 +124,8 @@ class RefundRepository
 
         $refund->refund_bill_no = request('refund_bill_no');
         $refund->refund_amount = request('refund_amount');
-        $refund->refund_reason = request('refund_reason');
-        $refund->refund_courier = request('refund_courier');
+        $refund->refund_reasonid = request('refund_reasonid');
+        $refund->refund_courierid = request('refund_courierid');
         $refund->refund_docket_no = request('refund_docket_no');
         $refund->refund_payment_modeid = request('refund_payment_modeid');
         $refund->refund_statusid = request('refund_statusid');

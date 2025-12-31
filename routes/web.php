@@ -787,6 +787,25 @@ Route::group(['prefix' => 'settings/products'], function () {
     Route::put('/custom-fields', [App\Http\Controllers\Settings\ProductCustomFields::class, 'update']);
 });
 
+// SETTINGS - REFUNDS
+Route::group(['prefix' => 'settings/refunds'], function () {
+    // reasons
+    Route::get('reasons', 'Settings\Refunds@reasons');
+    Route::get('reasons/create', 'Settings\Refunds@createReason');
+    Route::post('reasons', 'Settings\Refunds@storeReason');
+    Route::get('reasons/{id}/edit', 'Settings\Refunds@editReason');
+    Route::put('reasons/{id}', 'Settings\Refunds@updateReason');
+    Route::delete('reasons/{id}', 'Settings\Refunds@destroyReason');
+
+    // couriers
+    Route::get('couriers', 'Settings\Refunds@couriers');
+    Route::get('couriers/create', 'Settings\Refunds@createCourier');
+    Route::post('couriers', 'Settings\Refunds@storeCourier');
+    Route::get('couriers/{id}/edit', 'Settings\Refunds@editCourier');
+    Route::put('couriers/{id}', 'Settings\Refunds@updateCourier');
+    Route::delete('couriers/{id}', 'Settings\Refunds@destroyCourier');
+});
+
 // SETTINGS - TIMESHEETS
 Route::group(['prefix' => 'settings/timesheets'], function () {
     Route::get('/', 'Settings\Timesheets@index');

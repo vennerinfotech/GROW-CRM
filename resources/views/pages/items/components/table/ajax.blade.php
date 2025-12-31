@@ -26,8 +26,8 @@
             id="items_col_description_{{ $item->item_id }}">
             <a href="javascript:void(0);" class="edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
                 data-toggle="modal" data-target="#commonModal"
-                data-url="{{ urlResource('/items/' . $item->item_id . '/edit') }}" data-loading-target="commonModalBody"
-                data-modal-title="{{ cleanLang(__('lang.edit_product')) }}"
+                data-url="{{ urlResource('/items/' . $item->item_id . '/edit') }}"
+                data-loading-target="commonModalBody" data-modal-title="{{ cleanLang(__('lang.edit_product')) }}"
                 data-action-url="{{ urlResource('/items/' . $item->item_id . '?ref=list') }}" data-action-method="PUT"
                 data-action-ajax-class="" data-action-ajax-loading-target="items-td-container">
                 @if (config('settings.trimmed_title'))
@@ -36,6 +36,12 @@
                     {{ runtimeProductStripTags($item->item_description) }}
                 @endif
             </a>
+            @if (request('itemresource_type') == 'lead')
+                <div class="m-t-4 hidden js-item-total-container text-muted small">
+                    @lang('lang.total'): <span
+                        class="js-item-calculated-total">{{ runtimeMoneyFormat($item->item_rate) }}</span>
+                </div>
+            @endif
         </td>
 
         <!--tableconfig_column_2 [rate]-->
@@ -198,8 +204,9 @@
                             class="data-toggle-action-tooltip btn btn-outline-success btn-circle btn-sm js-toggle-side-panel"
                             data-create-task-action-url="{{ url('items/tasks?item_id=' . $item->item_id) }}"
                             data-create-task-url="{{ url('items/tasks/create?item_id=' . $item->item_id) }}"
-                            id="js-products-automation-tasks" data-url="{{ url('items/' . $item->item_id . '/tasks') }}"
-                            data-progress-bar="hidden" data-loading-target="products-tasks-side-panel-content"
+                            id="js-products-automation-tasks"
+                            data-url="{{ url('items/' . $item->item_id . '/tasks') }}" data-progress-bar="hidden"
+                            data-loading-target="products-tasks-side-panel-content"
                             data-target="products-tasks-side-panel">
                             <i class="ti-menu-alt"></i>
                         </button>

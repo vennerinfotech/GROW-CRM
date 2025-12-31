@@ -65,7 +65,7 @@
                     <input type="hidden" id="lead_product_id" name="lead_product_id">
                     <div class="input-group-append">
                         <button class="btn btn-secondary btn-sm js-lead-add-product" type="button" 
-                                data-url="{{ url('items/search?action=search&ref=list&itemresource_type=invoice') }}"
+                                data-url="{{ url('items/search?action=search&ref=list&itemresource_type=lead') }}"
                                 data-loading-target="items-table-wrapper"
                                 data-toggle="modal" data-target="#itemsModal">
                             {{ cleanLang(__('lang.select')) }}
@@ -191,7 +191,7 @@
                         $source->leadsources_title }}</option>
                         @endforeach
                         @if(isset($page['section']) && $page['section'] == 'edit')
-                        {{!! clean(runtimeLeadSourceCustom($sourcelist, $lead->lead_source  ?? '')) !!}}
+                        {!! clean(runtimeLeadSourceCustom($sourcelist, $lead->lead_source  ?? '')) !!}
                         @endif
                     </select>
                 </div>

@@ -54,11 +54,29 @@ class Refund extends Model
         return $this->belongsTo('App\Models\User', 'refund_error_by_userid', 'id');
     }
 
+    /** Relationship: Sales By User */
+
     /**
      * Relationship: Sales By User
      */
     public function sales_by()
     {
         return $this->belongsTo('App\Models\User', 'refund_sales_by_userid', 'id');
+    }
+
+    /**
+     * Relationship: Refund has one Reason
+     */
+    public function reason()
+    {
+        return $this->belongsTo('App\Models\RefundReason', 'refund_reasonid', 'refundreason_id');
+    }
+
+    /**
+     * Relationship: Refund has one Courier
+     */
+    public function courier()
+    {
+        return $this->belongsTo('App\Models\RefundCourier', 'refund_courierid', 'refundcourier_id');
     }
 }

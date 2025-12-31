@@ -1,5 +1,6 @@
 <!--modal-->
-<div class="modal" role="dialog" aria-labelledby="itemsModal" id="itemsModal" {!! runtimeAllowCloseModalOptions() !!}>
+<div class="modal product-itemsModal" role="dialog" aria-labelledby="itemsModal" id="itemsModal" {!! runtimeAllowCloseModalOptions() !!}
+    style="z-index: 9999;">
     <div class="modal-dialog modal-xl" id="itemsModalContainer">
         <div class="modal-content">
             <div class="modal-header">

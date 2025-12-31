@@ -56,8 +56,15 @@
         <div class="form-group row">
             <label class="col-sm-12 col-lg-3 text-left control-label col-form-label">Reason</label>
             <div class="col-sm-12 col-lg-9">
-                <textarea class="form-control form-control-sm tinymce-textarea" rows="5" name="refund_reason"
-                    id="refund_reason">{{ $refund->refund_reason ?? '' }}</textarea>
+                <select class="select2-basic form-control form-control-sm" id="refund_reasonid" name="refund_reasonid">
+                    <option value=""></option>
+                    @foreach($reasons as $reason)
+                    <option value="{{ $reason->refundreason_id }}"
+                        {{ runtimePreselected($refund->refund_reasonid ?? '', $reason->refundreason_id) }}>
+                        {{ $reason->refundreason_title }}
+                    </option>
+                    @endforeach
+                </select>
             </div>
         </div>
         
@@ -65,8 +72,15 @@
         <div class="form-group row">
             <label class="col-sm-12 col-lg-3 text-left control-label col-form-label">Courier</label>
             <div class="col-sm-12 col-lg-9">
-                <input type="text" class="form-control form-control-sm" id="refund_courier" name="refund_courier"
-                    value="{{ $refund->refund_courier ?? '' }}">
+                <select class="select2-basic form-control form-control-sm" id="refund_courierid" name="refund_courierid">
+                    <option value=""></option>
+                    @foreach($couriers as $courier)
+                    <option value="{{ $courier->refundcourier_id }}"
+                        {{ runtimePreselected($refund->refund_courierid ?? '', $courier->refundcourier_id) }}>
+                        {{ $courier->refundcourier_title }}
+                    </option>
+                    @endforeach
+                </select>
             </div>
         </div>
 

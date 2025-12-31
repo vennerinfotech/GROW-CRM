@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\RefundCourierRepository;
 use App\Repositories\RefundErrorSourceRepository;
 use App\Repositories\RefundPaymentModeRepository;
+use App\Repositories\RefundReasonRepository;
 use App\Repositories\RefundRepository;
 use App\Repositories\RefundSalesSourceRepository;
 use App\Repositories\RefundStatusRepository;
@@ -19,7 +21,10 @@ class Refunds extends Controller
     protected $moderepo;
     protected $userrepo;
     protected $errorsourcerepo;
+    //
     protected $salessourcerepo;
+    protected $reasonrepo;
+    protected $courierrepo;
 
     public function __construct(
         RefundRepository $refundrepo,
@@ -27,7 +32,9 @@ class Refunds extends Controller
         RefundPaymentModeRepository $moderepo,
         UserRepository $userrepo,
         RefundErrorSourceRepository $errorsourcerepo,
-        RefundSalesSourceRepository $salessourcerepo
+        RefundSalesSourceRepository $salessourcerepo,
+        RefundReasonRepository $reasonrepo,
+        RefundCourierRepository $courierrepo
     ) {
         parent::__construct();
         $this->middleware('auth');
@@ -36,7 +43,10 @@ class Refunds extends Controller
         $this->moderepo = $moderepo;
         $this->userrepo = $userrepo;
         $this->errorsourcerepo = $errorsourcerepo;
+        //
         $this->salessourcerepo = $salessourcerepo;
+        $this->reasonrepo = $reasonrepo;
+        $this->courierrepo = $courierrepo;
     }
 
     /**
@@ -86,9 +96,12 @@ class Refunds extends Controller
         $payment_modes = $this->moderepo->search();
         $users = $this->userrepo->getTeamMembers();
         $error_sources = $this->errorsourcerepo->search();
+        $error_sources = $this->errorsourcerepo->search();
         $sales_sources = $this->salessourcerepo->search();
+        $reasons = $this->reasonrepo->search();
+        $couriers = $this->courierrepo->search();
 
-        $html = view('pages/refunds/components/modals/add-edit-inc', compact('page', 'statuses', 'payment_modes', 'users', 'error_sources', 'sales_sources'))->render();
+        $html = view('pages/refunds/components/modals/add-edit-inc', compact('page', 'statuses', 'payment_modes', 'users', 'error_sources', 'sales_sources', 'reasons', 'couriers'))->render();
 
         $jsondata['dom_html'][] = [
             'selector' => '#commonModalBody',
@@ -154,9 +167,12 @@ class Refunds extends Controller
         $payment_modes = $this->moderepo->search();
         $users = $this->userrepo->getTeamMembers();
         $error_sources = $this->errorsourcerepo->search();
+        $error_sources = $this->errorsourcerepo->search();
         $sales_sources = $this->salessourcerepo->search();
+        $reasons = $this->reasonrepo->search();
+        $couriers = $this->courierrepo->search();
 
-        $html = view('pages/refunds/components/modals/add-edit-inc', compact('page', 'refund', 'statuses', 'payment_modes', 'users', 'error_sources', 'sales_sources'))->render();
+        $html = view('pages/refunds/components/modals/add-edit-inc', compact('page', 'refund', 'statuses', 'payment_modes', 'users', 'error_sources', 'sales_sources', 'reasons', 'couriers'))->render();
 
         $jsondata['dom_html'][] = [
             'selector' => '#commonModalBody',

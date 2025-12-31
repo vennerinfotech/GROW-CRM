@@ -355,6 +355,16 @@
                                 id="settings-menu-refunds-salessources"
                                 class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Sales Sources</a>
                         </li>
+                        <li>
+                            <a href="javascript:void(0);" data-url="/settings/refunds/reasons"
+                                id="settings-menu-refunds-reasons"
+                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Reasons</a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-url="/settings/refunds/couriers"
+                                id="settings-menu-refunds-couriers"
+                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Couriers</a>
+                        </li>
                     </ul>
                 </li>
 

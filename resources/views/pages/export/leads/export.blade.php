@@ -1,4 +1,4 @@
-<!-- right-sidebar -->
+ <!-- right-sidebar -->
 <div class="right-sidebar right-sidebar-export sidebar-lg" id="sidepanel-export-leads">
     <form>
         <div class="slimscrollright">
@@ -325,4 +325,34 @@
     </form>
 </div>
 <!--sidebar-->
+<script>
+    $(document).ready(function() {
+        $('#export-leads-button').on('mousedown', function() {
+            //store the original url
+            if (!$(this).attr("data-original-url")) {
+                $(this).attr("data-original-url", $(this).attr("data-url"));
+            }
+            var url = $(this).attr("data-original-url");
+            
+            //get params from the filter panel if it exists
+            var params = "";
+            if($("#sidepanel-filter-leads form").length){
+                params = $("#sidepanel-filter-leads form").serialize();
+            } else {
+                params = window.location.search.substring(1);
+            }
+
+            if (params) {
+                if (url.indexOf('?') > -1) {
+                    $(this).attr("data-url", url + "&" + params);
+                } else {
+                    $(this).attr("data-url", url + "?" + params);
+                }
+            } else {
+                //if no params, reset to original
+               $(this).attr("data-url", url);
+            }
+        });
+    });
+</script>
 

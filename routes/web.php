@@ -362,6 +362,7 @@ Route::resource('tasks', 'Tasks');
 
 // LEADS & LEAD
 Route::group(['prefix' => 'leads'], function () {
+    Route::get('/check-duplicate', 'Leads@checkDuplicate');
     Route::any('/search', 'Leads@index')->name('leads.search');
     Route::any('/{lead}/details', 'Leads@details')->where('lead', '[0-9]+');
     Route::post('/delete', 'Leads@destroy')->middleware(['demoModeCheck']);

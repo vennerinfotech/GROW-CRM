@@ -720,10 +720,15 @@ $(document).ready(function () {
         "data-action-ajax-loading-target",
         "card-checklists-container"
       );
-      $("#itemsModalSelectButton").addClass("js-ajax-ux-request");
+      // Remove default ajax class and add our custom one
+      $("#itemsModalSelectButton").removeClass("js-ajax-ux-request");
+      $("#itemsModalSelectButton").addClass("js-lead-checklist-confirm-selection");
+      
       $("#itemsModalSelectButton").addClass("reset-target-modal-form");
       $("#itemsModalSelectButton").attr("data-form-id", "itemsModalBody");
-      $("#itemsModalSelectButton").attr("data-ajax-type", "post");
+      
+      // Add postrun function to restore selection
+      $(this).attr('data-postrun-functions', 'NXrestoreChecklistProductSelection');
 
       //open the modal
       $("#itemsModal").modal("show");
@@ -737,6 +742,224 @@ $(document).ready(function () {
       //load items
       nxAjaxUxRequest($(this));
     });
+
+  /** --------------------------------------------------------------------------------------------------
+   *  [lead - restore checklist product selection]
+   * -------------------------------------------------------------------------------------------------*/
+  window.NXrestoreChecklistProductSelection = function() {
+      console.log('NXrestoreChecklistProductSelection data-postrun-functions called');
+      // Store current checklist items globally to compare later
+      window.NXCurrentChecklistItems = {};
+
+      // Iterate through existing checklist items in the DOM
+      $('#card-checklists-container .checklist-item').each(function() {
+          var $item = $(this);
+          var id = $item.attr('data-id'); // checklist id
+          var text = $item.find('.checklist-text').text().trim(); // e.g., "Product A (Qty: 2)"
+          
+          // Regex to extract Name and Qty
+          // Matches "Product Name (Qty: 2)"
+          var match = text.match(/^(.*?) \(Qty: (\d+)\)$/);
+          
+          if (match) {
+              var productName = match[1];
+              var quantity = parseInt(match[2]);
+              
+              console.log('Found existing item:', productName, quantity);
+
+              // Store for comparison
+              // Using product name as key since that's what we have in the modal
+              window.NXCurrentChecklistItems[productName] = {
+                  id: id,
+                  quantity: quantity,
+                  name: productName
+              };
+
+              // Find and check the box in the modal
+              // We need to find by name, as we don't have item_id in the checklist DOM directly easily
+              // But the modal has data-description
+              var error = false;
+              
+              $('#items-list-table input[type="checkbox"]').each(function() {
+                 if($(this).attr('data-description') === productName) {
+                     $(this).prop('checked', true);
+                     var row = $(this).closest('tr');
+                     var qtyInput = row.find('input[type="number"]');
+                     if(qtyInput.length > 0) {
+                         qtyInput.val(quantity);
+                     }
+                 }
+              });
+          }
+      });
+  };
+
+  /** --------------------------------------------------------------------------------------------------
+   *  [lead - confirm checklist product selection]
+   *  Handles additions, updates, and removals of checklist products
+   * -------------------------------------------------------------------------------------------------*/
+  $(document).on("click", ".js-lead-checklist-confirm-selection", function(e) {
+      e.preventDefault();
+      var $btn = $(this);
+      
+      console.log('Confirm selection clicked');
+
+      // Data needed for requests
+      var leadId = $('#lead_id').val(); // Assuming lead_id is available on page, or we can get it from URL
+      // Better: get it from the save url
+      var saveUrl = $btn.attr('data-url'); // leads/{id}/add-checklist-items
+      var parentContainer = $btn.attr('data-action-ajax-loading-target'); // card-checklists-container
+      
+      console.log('Save URL:', saveUrl);
+
+      // 1. Identify items to DELETE (Removed or Qty Changed)
+      var itemsToDelete = [];
+      var productsProcessed = {}; // Track which products we've handled from the modal
+
+      if (window.NXCurrentChecklistItems) {
+          $.each(window.NXCurrentChecklistItems, function(productName, data) {
+              var $checkbox = $('#items-list-table input[type="checkbox"][data-description="' + productName + '"]');
+              var isChecked = $checkbox.is(':checked');
+              
+              var newQty = 1;
+              if (isChecked) {
+                  var row = $checkbox.closest('tr');
+                  newQty = parseInt(row.find('input[type="number"]').val()) || 1;
+              }
+
+              // If unselected OR quantity changed, we must delete the old one
+              if (!isChecked || newQty !== data.quantity) {
+                  itemsToDelete.push(data.id);
+                  console.log('Marking for delete:', productName, data.id);
+              }
+          });
+      }
+
+      // 2. Identify items to ADD (New or Qty Changed)
+      var itemsToAdd = [];
+      var quantitiesToAdd = [];
+      
+      $('#items-list-table input[type="checkbox"]:checked').each(function() {
+          var $checkbox = $(this);
+          var productName = $checkbox.attr('data-description');
+          var itemId = $checkbox.attr('data-item-id');
+          var row = $checkbox.closest('tr');
+          var qty = parseInt(row.find('input[type="number"]').val()) || 1;
+          
+          var isNew = true;
+          if (window.NXCurrentChecklistItems && window.NXCurrentChecklistItems[productName]) {
+              // If it existed and quantity is same, it's not new (and wasn't deleted above)
+              if (window.NXCurrentChecklistItems[productName].quantity === qty) {
+                  isNew = false;
+              }
+              // If quantity changed, it was marked for delete above, so it counts as "New" addition now
+          }
+          
+          if (isNew) {
+              itemsToAdd.push(itemId);
+              quantitiesToAdd.push(qty);
+              console.log('Marking for add:', productName, itemId, qty);
+          }
+      });
+
+      // 3. Execution Phase
+      $btn.addClass('button-loading');
+      
+      // Helper to process additions after deletions
+      var processAdditions = function() {
+          if (itemsToAdd.length > 0) {
+              var data = {
+                  ids: {},
+                  quantity: {},
+                  _token: $('meta[name="csrf-token"]').attr('content')
+              };
+              
+              // format for the specific backend controller expectation
+              for (var i = 0; i < itemsToAdd.length; i++) {
+                  data.ids[itemsToAdd[i]] = 'on';
+                  data.quantity[itemsToAdd[i]] = quantitiesToAdd[i];
+              }
+
+              $.ajax({
+                  type: 'POST',
+                  url: saveUrl,
+                  data: data,
+                  dataType: 'json',
+                  success: function(response) {
+                      console.log('Additions success', response);
+                      // Final success
+                       $("#itemsModal").modal("hide");
+                       
+                      // Final success
+                       $("#itemsModal").modal("hide");
+                       if (response.dom_html && response.dom_html.length > 0) {
+                           $.each(response.dom_html, function(index, item) {
+                               if (item.action === 'replace' && $(item.selector).length > 0) {
+                                   $(item.selector).html(item.value);
+                               }
+                               if (item.action === 'replace-with' && $(item.selector).length > 0) {
+                                   $(item.selector).replaceWith(item.value);
+                               }
+                           });
+                           
+                           // Re-init any necessary JS (drag and drop etc)
+                           if(typeof NXChecklistDragDrop === 'function') NXChecklistDragDrop();
+                           if(typeof NXBooCards === 'function') NXBooCards(); // Correct typo if exists
+                       }
+                       
+                       $btn.removeClass('button-loading');
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                      console.error('Additions failed', textStatus, errorThrown);
+                      $btn.removeClass('button-loading');
+                      NX.notification({type: 'error', message: 'Error saving changes'});
+                  }
+              });
+          } else {
+              // No additions, just close if deletions done
+              console.log('No additions to process');
+              $("#itemsModal").modal("hide");
+              $btn.removeClass('button-loading');
+              
+              // No additions means we rely on the delete callbacks to have updated the UI
+              // The delete callbacks below now remove the element.
+          }
+      };
+
+      // Run deletions first
+      if (itemsToDelete.length > 0) {
+          console.log('Starting deletions for ' + itemsToDelete.length + ' items');
+          var deletionsCompleted = 0;
+          
+          $.each(itemsToDelete, function(index, id) {
+             $.ajax({
+                 type: 'DELETE',
+                 url: '/leads/delete-checklist/' + id,
+                 data: { _token: $('meta[name="csrf-token"]').attr('content') },
+                 success: function() {
+                     console.log('Deleted checklist item: ' + id);
+                     // Manually remove from DOM for instant feedback
+                     var $item = $('#card-checklists-container .checklist-item[data-id="'+id+'"]');
+                     $item.slideUp(function() { $(this).remove(); });
+                     
+                     deletionsCompleted++;
+                     if (deletionsCompleted === itemsToDelete.length) {
+                         processAdditions();
+                     }
+                 },
+                 error: function(jqXHR, textStatus, errorThrown) {
+                     console.error('Delete failed for item: ' + id, textStatus, errorThrown);
+                     deletionsCompleted++; // continue anyway
+                     if (deletionsCompleted === itemsToDelete.length) {
+                         processAdditions();
+                     }
+                 }
+             });
+          });
+      } else {
+          processAdditions();
+      }
+  });
 
   /** --------------------------------------------------------------------------------------------------
    *  [items table] - calculate total on quantity change
@@ -800,9 +1023,59 @@ $(document).ready(function () {
       $(".modal-backdrop").last().css("z-index", "1090");
     });
 
+ 
+
+    //add the postrun function
+    $(this).attr('data-postrun-functions', 'NXrestoreLeadProductSelection');
+
     //load items
     nxAjaxUxRequest($(this));
   });
+
+  /** --------------------------------------------------------------------------------------------------
+   *  [lead - restore selected products]
+   *  Restore the selected products and their quantities in the modal
+   * -------------------------------------------------------------------------------------------------*/
+  window.NXrestoreLeadProductSelection = function() {
+      // Get all hidden inputs that store the selected products
+      var hiddenInputs = $('.js-hidden-product-input[name$="[item_id]"]');
+      
+      if (hiddenInputs.length > 0) {
+          hiddenInputs.each(function() {
+              var itemId = $(this).val();
+              
+              // Find the quantity for this item
+              // The name format is assigned_products[index][item_id], we need assigned_products[index][quantity]
+              var inputName = $(this).attr('name');
+              var indexMatch = inputName.match(/assigned_products\[(\d+)\]/);
+              
+              if (indexMatch && indexMatch[1]) {
+                  var index = indexMatch[1];
+                  var quantityInputName = 'assigned_products[' + index + '][quantity]';
+                  var quantity = $('input[name="' + quantityInputName + '"]').val();
+                  
+                  // Find the checkbox in the modal
+                  var checkbox = $('#items-list-table input[type="checkbox"][data-item-id="' + itemId + '"]');
+                  
+                  if (checkbox.length > 0) {
+                      // Check the checkbox
+                      checkbox.prop('checked', true);
+                      
+                      // Find the row and update quantity
+                      var row = checkbox.closest('tr');
+                      var quantityInput = row.find('input.form-control-number'); // Assuming class from existing code
+                      
+                      if (quantityInput.length > 0 && quantity) {
+                          quantityInput.val(quantity);
+                          // Trigger change to update totals
+                          quantityInput.trigger('change'); 
+                          quantityInput.trigger('keyup'); // Trigger keyup just in case
+                      }
+                  }
+              }
+          });
+      }
+  };
 
   /** --------------------------------------------------------------------------------------------------
    *  [lead - product selected] - update lead form
@@ -831,14 +1104,23 @@ $(document).ready(function () {
         var name = $(this).attr("data-description");
         var id = $(this).attr("data-item-id");
         
+        console.log('Processing item:', name, 'Price:', price);
+
         // Get quantity from the corresponding input in the same row
         var row = $(this).closest('tr');
+        // Try multiple selectors for robustness
         var quantityInput = row.find('input[type="number"]');
+        if (quantityInput.length === 0) {
+            quantityInput = row.find('input.form-control-number');
+        }
+
         var quantity = 1;
         if(quantityInput.length > 0){
              quantity = parseFloat(quantityInput.val());
              if(isNaN(quantity) || quantity <= 0) quantity = 1;
         }
+        
+        console.log('Quantity:', quantity);
 
         if (!isNaN(price)) {
           total_price += (price * quantity);
@@ -866,9 +1148,13 @@ $(document).ready(function () {
         }
       });
 
+      console.log('Total Price:', total_price);
+
       $("#lead_product_id").val(first_id);
       $("#lead_product_name").val(product_names.join(', ')); // Join names if multiple are selected
       $("#lead_value").val(total_price.toFixed(2)); // Format total price
+      
+      console.log('Updated #lead_value to:', $("#lead_value").val());
 
       //close modal
       $("#itemsModal").modal("hide");

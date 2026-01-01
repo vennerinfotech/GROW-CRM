@@ -12,22 +12,22 @@
         <!--title-->
         <div class="form-group row">
             <label
-                class="col-sm-12 col-lg-3 text-left control-label col-form-label required">{{ cleanLang(__('lang.lead_title')) }}*</label>
+                class="col-sm-12 col-lg-3 text-left control-label col-form-label required">occasion*</label>
             <div class="col-sm-12 col-lg-9">
                 <input type="text" class="form-control form-control-sm" id="lead_title" name="lead_title" placeholder=""
                     value="{{ $lead->lead_title ?? '' }}">
             </div>
         </div>
-        <!--first name-->
+        <!--Full name-->
         <div class="form-group row">
             <label
-                class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.first_name')) }}</label>
+                class="col-sm-12 col-lg-3 text-left control-label col-form-label">Full Name</label>
             <div class="col-sm-12 col-lg-9">
                 <input type="text" class="form-control form-control-sm" id="lead_firstname" name="lead_firstname"
                     placeholder="" value="{{ $lead->lead_firstname ?? '' }}">
             </div>
         </div>
-        <!--last name-->
+        <!--last name
         <div class="form-group row">
             <label
                 class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.last_name')) }}</label>
@@ -35,7 +35,7 @@
                 <input type="text" class="form-control form-control-sm" id="lead_lastname" name="lead_lastname"
                     placeholder="" value="{{ $lead->lead_lastname ?? '' }}">
             </div>
-        </div>
+        </div> -->
         <!--telephone-->
         <div class="form-group row">
             <label
@@ -43,9 +43,14 @@
             <div class="col-sm-12 col-lg-9">
                 <input type="text" class="form-control form-control-sm" id="lead_phone" name="lead_phone" placeholder=""
                     value="{{ $lead->lead_phone ?? '' }}">
+                <div class="alert alert-info m-t-10 hidden" id="duplicate_lead_warning">
+                    <i class="sl-icon-info"></i> 
+                    Lead with this mobile number already exists. 
+                    <a href="#" id="duplicate_lead_link" target="_blank" class="font-weight-bold">View Lead</a>
+                </div>
             </div>
         </div>
-        <!--email-->
+        <!--email
         <div class="form-group row">
             <label
                 class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.email_address')) }}</label>
@@ -53,7 +58,7 @@
                 <input type="text" class="form-control form-control-sm" id="lead_email" name="lead_email" placeholder=""
                     value="{{ $lead->lead_email ?? '' }}">
             </div>
-        </div>
+        </div> -->
 
 
         <!--product selection-->
@@ -61,8 +66,8 @@
             <label class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.product')) }}</label>
             <div class="col-sm-12 col-lg-9">
                 <div class="input-group">
-                    <input type="text" class="form-control form-control-sm" id="lead_product_name" name="lead_product_name" readonly placeholder="{{ cleanLang(__('lang.select_product')) }}">
-                    <input type="hidden" id="lead_product_id" name="lead_product_id">
+                    <input type="text" class="form-control form-control-sm" id="lead_product_name" name="lead_product_name" readonly placeholder="{{ cleanLang(__('lang.select_product')) }}" value="{{ $lead->lead_product_name ?? '' }}">
+                    <input type="hidden" id="lead_product_id" name="lead_product_id" value="{{ $lead->lead_product_id ?? '' }}">
                     <div class="input-group-append">
                         <button class="btn btn-secondary btn-sm js-lead-add-product" type="button" 
                                 data-url="{{ url('items/search?action=search&ref=list&itemresource_type=lead') }}"
@@ -428,4 +433,27 @@
         </div>
     </div>
 </div>
+
+<!--check duplicate phone-->
+<script>
+    $(document).ready(function() {
+        $(document).off('blur', '#lead_phone').on('blur', '#lead_phone', function() {
+            var phone = $(this).val();
+            var lead_id = "{{ $lead->lead_id ?? '' }}"; 
+            if(phone) {
+                $.get("{{ url('leads/check-duplicate') }}", { lead_phone: phone, lead_id: lead_id }, function(response) {
+                    if(response.exists) {
+                        $('#duplicate_lead_warning').removeClass('hidden');
+                        $('#duplicate_lead_link').attr('href', response.lead_url);
+                        $('#duplicate_lead_link').text('View Lead (' + response.lead_name + ')');
+                    } else {
+                        $('#duplicate_lead_warning').addClass('hidden');
+                    }
+                });
+            } else {
+                 $('#duplicate_lead_warning').addClass('hidden');
+            }
+        });
+    });
+</script>
 

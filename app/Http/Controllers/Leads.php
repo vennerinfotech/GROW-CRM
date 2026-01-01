@@ -4920,4 +4920,38 @@ class Leads extends Controller
         // return
         return $stats;
     }
+
+    /**
+     * Check if a lead with the same phone number already exists
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkDuplicate()
+    {
+        $phone = request('lead_phone');
+
+        if (!$phone) {
+            return response()->json(['exists' => false]);
+        }
+
+        // query
+        $lead = \App\Models\Lead::where('lead_phone', $phone);
+
+        // if editing, exclude current lead
+        if (request('lead_id')) {
+            $lead->where('lead_id', '!=', request('lead_id'));
+        }
+
+        $lead = $lead->first();
+
+        if ($lead) {
+            $url = url('leads/v/' . $lead->lead_id . '/' . \Illuminate\Support\Str::slug($lead->lead_title));
+            return response()->json([
+                'exists' => true,
+                'lead_name' => $lead->lead_firstname . ' ' . $lead->lead_lastname,
+                'lead_url' => $url
+            ]);
+        }
+
+        return response()->json(['exists' => false]);
+    }
 }

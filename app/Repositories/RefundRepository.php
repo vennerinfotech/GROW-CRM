@@ -82,7 +82,11 @@ class RefundRepository
         }
 
         // return query
-        return $refunds->paginate(config('system.settings_system_pagination_limits'));
+        if ($id == 'all') {
+            return $refunds->get();
+        } else {
+            return $refunds->paginate(config('system.settings_system_pagination_limits'));
+        }
     }
 
     /**
@@ -137,5 +141,58 @@ class RefundRepository
         } else {
             return false;
         }
+    }
+
+    /**
+     * Get refund statistics
+     * @param string $period [today|month|all]
+     * @return array
+     */
+    public function getStatistics($period = 'all')
+    {
+        $query = $this->refunds->newQuery();
+
+        if ($period == 'today') {
+            $query->whereDate('refund_created', \Carbon\Carbon::now()->format('Y-m-d'));
+        } elseif ($period == 'month') {
+            $query
+                ->whereDate('refund_created', '>=', \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'))
+                ->whereDate('refund_created', '<=', \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d'));
+        }
+
+        return [
+            'count' => $query->count(),
+            'sum' => $query->sum('refund_amount'),
+        ];
+    }
+
+    /**
+     * Group refunds by status
+     * @return collection
+     */
+    public function groupByStatus()
+    {
+        return $this
+            ->refunds
+            ->newQuery()
+            ->join('refund_statuses', 'refund_statuses.refundstatus_id', '=', 'refunds.refund_statusid')
+            ->selectRaw('count(*) as count, sum(refund_amount) as sum, refund_statuses.refundstatus_title as title, refund_statuses.refundstatus_color as color')
+            ->groupBy('refund_statusid')
+            ->get();
+    }
+
+    /**
+     * Group refunds by payment mode
+     * @return collection
+     */
+    public function groupByPaymentMode()
+    {
+        return $this
+            ->refunds
+            ->newQuery()
+            ->join('refund_payment_modes', 'refund_payment_modes.refundpaymentmode_id', '=', 'refunds.refund_payment_modeid')
+            ->selectRaw('count(*) as count, sum(refund_amount) as sum, refund_payment_modes.refundpaymentmode_title as title')
+            ->groupBy('refund_payment_modeid')
+            ->get();
     }
 }

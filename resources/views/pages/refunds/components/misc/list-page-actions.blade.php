@@ -10,6 +10,18 @@
             <i class="mdi mdi-filter-outline"></i>
         </button>
 
+        <!--BACK TO DASHBOARD-->
+        <a href="{{ url('refunds/dashboard') }}" class="list-actions-button btn btn-page-actions waves-effect waves-dark"
+            data-toggle="tooltip" title="Back to Dashboard">
+            <i class="ti-arrow-left"></i>
+        </a>
+
+        <!--EXPORT-->
+        <a href="{{ url('refunds/export') }}" class="list-actions-button btn btn-page-actions waves-effect waves-dark"
+            data-toggle="tooltip" title="Export to CSV">
+            <i class="ti-export"></i>
+        </a>
+
         <!--ADD NEW ITEM-->
         @if(config('visibility.list_page_actions_add_button'))
         <button type="button"

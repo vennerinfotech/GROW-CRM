@@ -157,6 +157,16 @@ class LeadRepository
                 $leads->whereDate('lead_last_contacted', '<=', request('filter_lead_last_contacted_end'));
             }
 
+            // filter: reminder date (start)
+            if (request()->filled('filter_lead_reminder_date_start')) {
+                $leads->whereDate('reminders.reminder_datetime', '>=', request('filter_lead_reminder_date_start'));
+            }
+
+            // filter: reminder date (end)
+            if (request()->filled('filter_lead_reminder_date_end')) {
+                $leads->whereDate('reminders.reminder_datetime', '<=', request('filter_lead_reminder_date_end'));
+            }
+
             // filter: value (min)
             if (request()->filled('filter_lead_value_min')) {
                 $leads->where('lead_value', '>=', request('filter_lead_value_min'));

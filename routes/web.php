@@ -1410,6 +1410,11 @@ Route::resource('cs/affiliates/earnings', 'CS_Affiliates\Earnings');
 Route::get('/cs/affiliate/my/earnings', 'CS_Affiliates\Profit@index');
 
 // REFUNDS
+// REFUNDS
+Route::group(['prefix' => 'refunds'], function () {
+    Route::get('/dashboard', 'Refunds@dashboard')->name('refunds.dashboard');
+    Route::get('/export', 'Refunds@export')->name('refunds.export');
+});
 Route::resource('refunds', 'Refunds');
 
 // SETTINGS - REFUNDS

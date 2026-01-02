@@ -210,7 +210,7 @@
                 <!--billing-->
 
                 <!--refunds-->
-                <li data-modular-id="main_menu_refunds"
+                {{-- <li data-modular-id="main_menu_refunds"
                     class="sidenav-menu-item {{ $page['mainmenu_refunds'] ?? '' }} menu-tooltip menu-with-tooltip"
                     title="Refunds">
                     <a class="waves-effect waves-dark p-r-20" href="refunds" aria-expanded="false"
@@ -219,7 +219,7 @@
                         <span class="hide-menu">Refunds
                         </span>
                     </a>
-                </li>
+                </li> --}}
 
 
                 <!--[MODULES] - dynamic menu-->

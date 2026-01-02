@@ -54,6 +54,91 @@ class Refunds extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    /**
+     * Display the dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function dashboard()
+    {
+        $page = $this->pageSettings('dashboard');
+
+        $stats = [
+            'today' => $this->refundrepo->getStatistics('today'),
+            'month' => $this->refundrepo->getStatistics('month'),
+            'all' => $this->refundrepo->getStatistics('all'),
+        ];
+
+        $by_status = $this->refundrepo->groupByStatus();
+        $by_mode = $this->refundrepo->groupByPaymentMode();
+
+        return view('pages/refunds/dashboard/wrapper', compact('page', 'stats', 'by_status', 'by_mode'));
+    }
+
+    /**
+     * Export refunds to CSV
+     * @return \Illuminate\Http\Response
+     */
+    public function export()
+    {
+        // get all records (no pagination)
+        $refunds = $this->refundrepo->search('all');
+
+        $headers = [
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=refunds_' . date('Y-m-d') . '.csv',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0'
+        ];
+
+        $columns = [
+            'ID',
+            'Bill No',
+            'Amount',
+            'Status',
+            'Payment Mode',
+            'Reason',
+            'Courier',
+            'Docket No',
+            'Error Source',
+            'Sales Source',
+            'Created By',
+            'Date Created'
+        ];
+
+        $callback = function () use ($refunds, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($refunds as $refund) {
+                fputcsv($file, [
+                    $refund->refund_id,
+                    $refund->refund_bill_no,
+                    $refund->refund_amount,
+                    $refund->refundstatus_title ?? '',
+                    $refund->refundpaymentmode_title ?? '',
+                    $refund->refund_reasonid,  // You might want to join reasons table
+                    $refund->refund_courierid,  // You might want to join couriers table
+                    $refund->refund_docket_no,
+                    $refund->refunderrorsource_title ?? '',
+                    $refund->refundsalessource_title ?? '',
+                    ($refund->creator_first_name ?? '') . ' ' . ($refund->creator_last_name ?? ''),
+                    $refund->refund_created
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $page = $this->pageSettings('index');
@@ -257,6 +342,11 @@ class Refunds extends Controller
 
         if ($section == 'index') {
             $page['heading'] = 'Refund Report';
+        }
+
+        if ($section == 'dashboard') {
+            $page['heading'] = 'Refunds Dashboard';
+            $page['mainmenu_refunds'] = 'active';
         }
 
         if ($section == 'create') {

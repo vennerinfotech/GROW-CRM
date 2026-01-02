@@ -130,6 +130,36 @@
                 </div>
                 <!--last contacted-->
 
+                <!--reminder date-->
+                <div class="filter-block">
+                    <div class="title">
+                        {{-- {{ cleanLang(__('lang.reminder_date')) }} --}}
+                       Reminder Date
+                    </div>
+                    <div class="fields">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" name="filter_lead_reminder_date_start"
+                                    class="form-control form-control-sm pickadate" autocomplete="off"
+                                    placeholder="Start"
+                                    value="{{ runtimeDatepickerDate(config('filter.saved_data.filter_lead_reminder_date_start') ?? '') }}">
+                                <input class="mysql-date" type="hidden" id="filter_lead_reminder_date_start"
+                                    name="filter_lead_reminder_date_start"
+                                    value="{{ config('filter.saved_data.filter_lead_reminder_date_start') ?? '' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" name="filter_lead_reminder_date_end"
+                                    class="form-control form-control-sm pickadate" autocomplete="off" placeholder="End"
+                                    value="{{ runtimeDatepickerDate(config('filter.saved_data.filter_lead_reminder_date_end') ?? '') }}">
+                                <input class="mysql-date" type="hidden" id="filter_lead_reminder_date_end"
+                                    name="filter_lead_reminder_date_end"
+                                    value="{{ config('filter.saved_data.filter_lead_reminder_date_end') ?? '' }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--reminder date-->
+
                 <!--value-->
                 <div class="filter-block">
                     <div class="title">

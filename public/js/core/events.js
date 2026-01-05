@@ -918,6 +918,47 @@ $(document).ready(function () {
           } else {
               // No additions, just close if deletions done
               console.log('No additions to process');
+              
+              // CALCULATE NEW LEAD VALUE (Frontend Update)
+              var newTotal = 0;
+              $('#items-list-table input[type="checkbox"]:checked').each(function() {
+                  var price = parseFloat($(this).attr("data-rate"));
+                  var row = $(this).closest('tr');
+                  var quantityInput = row.find('input[type="number"]');
+                  if (quantityInput.length === 0) {
+                      quantityInput = row.find('input.form-control-number');
+                  }
+                  var quantity = parseFloat(quantityInput.val()) || 1;
+                  if (!isNaN(price)) {
+                      newTotal += (price * quantity);
+                  }
+              });
+
+              console.log('Frontend calculated new total:', newTotal);
+
+              var $leadValue = $("#card-lead-value");
+              if ($leadValue.length > 0) {
+                  // Update data-value for consistency
+                  $leadValue.attr('data-value', newTotal.toFixed(2));
+                  
+                  var currentText = $leadValue.text();
+                  
+                  // Regex to find the first occurrence of a number pattern (with dots/commas)
+                  // We replace it with the new total formatted to 2 decimal places
+                  // This preserves the currency symbol and position
+                  var match = currentText.match(/[0-9]+[.,]?[0-9]*[.,]?[0-9]*/);
+                  
+                  if (match) {
+                      var newText = currentText.replace(match[0], newTotal.toFixed(2));
+                      $leadValue.text(newText);
+                  } else {
+                       // Fallback if no number found (unlikely), just append/set
+                       if (newTotal > 0) {
+                           $leadValue.text(newTotal.toFixed(2));
+                       }
+                  }
+              }
+
               $("#itemsModal").modal("hide");
               $btn.removeClass('button-loading');
               

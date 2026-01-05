@@ -5424,3 +5424,30 @@ NX.switchToggleHiddenContent = function ($obj) {
         $("#" + target).addClass('hidden');
     }
 };
+/**--------------------------------------------------------------------------------------
+ * [SETTINGS - OCCASIONS]
+ * @description: List page actions
+ * -------------------------------------------------------------------------------------*/
+function NXSettingsOccasions() {
+    var $actions = $("#list-page-actions");
+    //replace action buttons
+    $(".parent-page-actions").html('');
+    $actions.prependTo(".parent-page-actions");
+}
+
+/**--------------------------------------------------------------------------------------
+ * [SETTINGS - OCCASIONS]
+ * @description: Add edit occasions
+ * -------------------------------------------------------------------------------------*/
+function NXSettingsOccasionsCreate() {
+    $("#commonModalForm").validate().destroy();
+    $("#commonModalForm").validate({
+        rules: {
+            leadoccasions_title: "required"
+        },
+        submitHandler: function (form) {
+            nxAjaxUxRequest($("#commonModalSubmitButton"));
+        }
+    });
+}
+

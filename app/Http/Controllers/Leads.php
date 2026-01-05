@@ -517,6 +517,9 @@ class Leads extends Controller
         ]);
         $fields = $this->getCustomFields();
 
+        // all available lead occasions
+        $occasions = \App\Models\LeadOccasion::all();
+
         // reponse payload
         $payload = [
             'page' => $this->pageSettings('create'),
@@ -524,8 +527,10 @@ class Leads extends Controller
             'tags' => $tags,
             'statuses' => $statuses,
             'sources' => $sources,
+            'occasions' => $occasions,
             'stats' => $this->statsWidget(),
             'fields' => $fields,
+            'lead' => null,
         ];
 
         // show the form
@@ -4941,14 +4946,31 @@ class Leads extends Controller
             $lead->where('lead_id', '!=', request('lead_id'));
         }
 
-        $lead = $lead->first();
+        // get all matching leads
+        $leads = $lead->get();
 
-        if ($lead) {
-            $url = url('leads/v/' . $lead->lead_id . '/' . \Illuminate\Support\Str::slug($lead->lead_title));
+        if ($leads->isNotEmpty()) {
+            $duplicates = $leads->map(function ($l) {
+                // Occasion Name
+                $occasion_name = '';
+                if ($l->lead_occasionid) {
+                    $occasion = \App\Models\LeadOccasion::find($l->lead_occasionid);
+                    if ($occasion) {
+                        $occasion_name = $occasion->leadoccasions_title;
+                    }
+                }
+
+                return [
+                    'lead_id' => $l->lead_id,
+                    'lead_name' => $l->lead_firstname . ' ' . $l->lead_lastname,
+                    'lead_url' => url('leads/v/' . $l->lead_id . '/' . \Illuminate\Support\Str::slug($l->lead_title)),
+                    'occasion' => $occasion_name,
+                ];
+            });
+
             return response()->json([
                 'exists' => true,
-                'lead_name' => $lead->lead_firstname . ' ' . $lead->lead_lastname,
-                'lead_url' => $url
+                'duplicates' => $duplicates,
             ]);
         }
 

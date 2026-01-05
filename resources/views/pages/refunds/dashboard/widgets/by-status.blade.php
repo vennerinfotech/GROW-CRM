@@ -15,7 +15,7 @@
                         @foreach($by_status as $status)
                         <tr>
                             <td>
-                                <span class="badge badge-pill" style="background-color: {{ $status->color ?? '#ccc' }}; color: #fff;">
+                                <span class="badge badge-pill badge-{{ $status->color ?? 'default' }}">
                                     {{ $status->title }}
                                 </span>
                             </td>

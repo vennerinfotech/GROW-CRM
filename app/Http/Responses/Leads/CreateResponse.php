@@ -1,21 +1,24 @@
 <?php
 
-/** --------------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------------
  * This classes renders the response for the [create] process for the leads
  * controller
  * @package    Grow CRM
  * @author     NextLoop
- *----------------------------------------------------------------------------------*/
+ * ----------------------------------------------------------------------------------
+ */
 
 namespace App\Http\Responses\Leads;
 
 use Illuminate\Contracts\Support\Responsable;
 
-class CreateResponse implements Responsable {
-
+class CreateResponse implements Responsable
+{
     private $payload;
 
-    public function __construct($payload = array()) {
+    public function __construct($payload = array())
+    {
         $this->payload = $payload;
     }
 
@@ -25,17 +28,17 @@ class CreateResponse implements Responsable {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function toResponse($request) {
-
-        //set all data to arrays
+    public function toResponse($request)
+    {
+        // set all data to arrays
         foreach ($this->payload as $key => $value) {
             $$key = $value;
         }
 
-        //fire event to allow modules to extend view data
+        // fire event to allow modules to extend view data
         event(new \App\Events\Leads\Responses\LeadCreate($request, $this->payload));
 
-        //[events] process module injections - push content to blade stacks
+        // [events] process module injections - push content to blade stacks
         if (isset($this->payload['module_injections'])) {
             foreach ($this->payload['module_injections'] as $injection) {
                 try {
@@ -43,20 +46,20 @@ class CreateResponse implements Responsable {
                     echo $injection['content'];
                     view()->stopPush();
                 } catch (Exception $e) {
-                    //nothing
+                    // nothing
                 }
             }
         }
 
-        //render the form
-        $html = view('pages/leads/components/modals/add-edit-inc', compact('page', 'categories', 'tags', 'statuses', 'sources', 'fields'))->render();
+        // render the form
+        $html = view('pages/leads/components/modals/add-edit-inc', compact('page', 'categories', 'tags', 'statuses', 'sources', 'fields', 'occasions'))->render();
         $jsondata['dom_html'][] = array(
             'selector' => '#commonModalBody',
             'action' => 'replace',
             'value' => $html,
         );
 
-        //show modal footer
+        // show modal footer
         $jsondata['dom_visibility'][] = array('selector' => '#commonModalFooter', 'action' => 'show');
 
         // POSTRUN FUNCTIONS------
@@ -64,7 +67,7 @@ class CreateResponse implements Responsable {
             'value' => 'NXLeadCreate',
         ];
 
-        //ajax response
+        // ajax response
         return response()->json($jsondata);
     }
 }

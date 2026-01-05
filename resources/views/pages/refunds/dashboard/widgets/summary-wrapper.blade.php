@@ -10,12 +10,14 @@
                     </span>
                     <div class="align-self-center display-6 ml-auto"><i class="text-success icon-Credit-Card2"></i></div>
                 </div>
+                <!-- Link -->
+                <a href="{{ url('refunds?filter_refund_created_start=' . \Carbon\Carbon::now()->format('Y-m-d') . '&filter_refund_created_end=' . \Carbon\Carbon::now()->format('Y-m-d')) }}"
+                    class="card-link-overlay"></a>
             </div>
             <div class="progress">
-                <div class="progress-bar bg-success w-100 h-px-3" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-success w-100 h-px-3" role="progressbar" aria-valuenow="100"
+                    aria-valuemin="0" aria-valuemax="100"></div>
             </div>
-            <!-- Link -->
-            <a href="{{ url('refunds/list?filter_refund_created_start=' . \Carbon\Carbon::now()->format('Y-m-d') . '&filter_refund_created_end=' . \Carbon\Carbon::now()->format('Y-m-d')) }}" class="card-link-overlay"></a>
         </div>
     </div>
 
@@ -32,10 +34,12 @@
                 </div>
             </div>
             <div class="progress">
-                <div class="progress-bar bg-info w-100 h-px-3" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-info w-100 h-px-3" role="progressbar" aria-valuenow="100" aria-valuemin="0"
+                    aria-valuemax="100"></div>
             </div>
             <!-- Link -->
-            <a href="{{ url('refunds/list?filter_refund_created_start=' . \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d') . '&filter_refund_created_end=' . \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')) }}" class="card-link-overlay"></a>
+            <a href="{{ url('refunds?filter_refund_created_start=' . \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d') . '&filter_refund_created_end=' . \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')) }}"
+                class="card-link-overlay"></a>
         </div>
     </div>
 
@@ -48,14 +52,16 @@
                         <h2 class="m-b-0">{{ runtimeMoneyFormat($stats['all']['sum']) }}</h2>
                         <h6 class="text-muted m-b-0">Total Refunded ({{ $stats['all']['count'] }})</h6>
                     </span>
-                    <div class="align-self-center display-6 ml-auto"><i class="text-warning icon-Credit-Card2"></i></div>
+                    <div class="align-self-center display-6 ml-auto"><i class="text-warning icon-Credit-Card2"></i>
+                    </div>
                 </div>
             </div>
             <div class="progress">
-                <div class="progress-bar bg-warning w-100 h-px-3" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-warning w-100 h-px-3" role="progressbar" aria-valuenow="100"
+                    aria-valuemin="0" aria-valuemax="100"></div>
             </div>
             <!-- Link -->
-            <a href="{{ url('refunds/list') }}" class="card-link-overlay"></a>
+            <a href="{{ url('refunds') }}" class="card-link-overlay"></a>
         </div>
     </div>
 </div>

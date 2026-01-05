@@ -797,6 +797,16 @@ Route::group(['prefix' => 'settings/refunds'], function () {
     Route::get('reasons/{id}/edit', 'Settings\Refunds@editReason');
     Route::put('reasons/{id}', 'Settings\Refunds@updateReason');
     Route::delete('reasons/{id}', 'Settings\Refunds@destroyReason');
+});
+
+// SETTINGS - LEADS - OCCASIONS
+Route::group(['prefix' => 'settings/occasions'], function () {
+    Route::get('/', 'Settings\Occasions@index');
+    Route::get('/create', 'Settings\Occasions@create');
+    Route::post('/', 'Settings\Occasions@store');
+    Route::get('/{occasion}/edit', 'Settings\Occasions@edit')->where('occasion', '[0-9]+');
+    Route::put('/{occasion}', 'Settings\Occasions@update')->where('occasion', '[0-9]+');
+    Route::delete('/{occasion}', 'Settings\Occasions@destroy')->where('occasion', '[0-9]+');
 
     // couriers
     Route::get('couriers', 'Settings\Refunds@couriers');
@@ -1414,6 +1424,7 @@ Route::get('/cs/affiliate/my/earnings', 'CS_Affiliates\Profit@index');
 Route::group(['prefix' => 'refunds'], function () {
     Route::get('/dashboard', 'Refunds@dashboard')->name('refunds.dashboard');
     Route::get('/export', 'Refunds@export')->name('refunds.export');
+    Route::post('/upload-image', 'Refunds@uploadImage')->name('refunds.upload-image');
 });
 Route::resource('refunds', 'Refunds');
 

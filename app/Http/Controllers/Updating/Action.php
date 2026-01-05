@@ -1,38 +1,40 @@
 <?php
 
-/** --------------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------------
  * This controller manages all the business logic for template
  *
  * @package    Grow CRM
  * @author     NextLoop
- *----------------------------------------------------------------------------------*/
+ * ----------------------------------------------------------------------------------
+ */
 
 namespace App\Http\Controllers\updating;
 
 use App\Http\Controllers\Controller;
 use App\Http\Responses\Foos\IndexResponse;
-use App\Repositories\FooRepository;
+// use App\Repositories\FooRepository;
 use Illuminate\Http\Request;
 
 // use Illuminate\Validation\Rule;
 // use Validator;
 
-class Runonce extends Controller {
-
+class Action extends Controller
+{
     /**
      * The foo repository instance.
      */
     protected $foorepo;
 
-    public function __construct(FooRepository $foorepo) {
-
-        //parent
+    public function __construct(/* FooRepository $foorepo */)
+    {
+        // parent
         parent::__construct();
 
-        //authenticated
+        // authenticated
         $this->middleware('auth');
 
-        $this->foorepo = $foorepo;
+        // $this->foorepo = $foorepo;
     }
 
     /**
@@ -44,18 +46,18 @@ class Runonce extends Controller {
      *    - [action] load | null (load: when making additional ajax calls)
      * @return blade view | ajax view
      */
-    public function index() {
-
-        //get team members
+    public function index()
+    {
+        // get team members
         $foos = $this->foorepo->search();
 
-        //reponse payload
+        // reponse payload
         $payload = [
             'page' => $this->pageSettings('foos'),
             'foos' => $foos,
         ];
 
-        //show the view
+        // show the view
         return new IndexResponse($payload);
     }
 }

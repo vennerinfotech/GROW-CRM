@@ -106,7 +106,18 @@ class RefundRepository
         $refund->refund_statusid = request('refund_statusid');
         $refund->refund_error_sourceid = request('refund_error_sourceid');
         $refund->refund_sales_sourceid = request('refund_sales_sourceid');
+        $refund->refund_authorized_date = request('refund_authorized_date');
+        $refund->refund_authorized_description = request('refund_authorized_description');
+        $refund->refund_rejected_reason = request('refund_rejected_reason');
         $refund->refund_creatorid = auth()->id();
+
+        // Image Upload
+        if (request()->hasFile('refund_image')) {
+            $path = request()->file('refund_image')->store('files', 'public');
+            $refund->refund_image = basename($path);
+        } elseif (request()->filled('refund_image')) {
+            $refund->refund_image = request('refund_image');
+        }
 
         if ($refund->save()) {
             return $refund->refund_id;
@@ -135,6 +146,17 @@ class RefundRepository
         $refund->refund_statusid = request('refund_statusid');
         $refund->refund_error_sourceid = request('refund_error_sourceid');
         $refund->refund_sales_sourceid = request('refund_sales_sourceid');
+        $refund->refund_authorized_date = request('refund_authorized_date');
+        $refund->refund_authorized_description = request('refund_authorized_description');
+        $refund->refund_rejected_reason = request('refund_rejected_reason');
+
+        // Image Upload
+        if (request()->hasFile('refund_image')) {
+            $path = request()->file('refund_image')->store('files', 'public');
+            $refund->refund_image = basename($path);
+        } elseif (request()->filled('refund_image')) {
+            $refund->refund_image = request('refund_image');
+        }
 
         if ($refund->save()) {
             return $refund->refund_id;

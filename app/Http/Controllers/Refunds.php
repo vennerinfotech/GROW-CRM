@@ -152,7 +152,7 @@ class Refunds extends Controller
         if (request()->ajax()) {
             $html = view('pages/refunds/components/table/table', compact('refunds'))->render();
             $jsondata['dom_html'][] = [
-                'selector' => '#refunds-table-body',
+                'selector' => '#refunds-view-wrapper',
                 'action' => 'replace',
                 'value' => $html
             ];
@@ -224,7 +224,7 @@ class Refunds extends Controller
         $html = view('pages/refunds/components/table/table', compact('refunds'))->render();
 
         $jsondata['dom_html'][] = [
-            'selector' => '#refunds-table-body',
+            'selector' => '#refunds-view-wrapper',
             'action' => 'replace',
             'value' => $html
         ];
@@ -277,15 +277,76 @@ class Refunds extends Controller
      */
     public function update($id)
     {
-        $validator = Validator::make(request()->all(), [
+        // Get current refund to check status transitions
+        $refund = \App\Models\Refund::find($id);
+        if (!$refund) {
+            abort(409, __('lang.item_not_found'));
+        }
+
+        $current_status = $refund->refund_statusid;
+        $new_status = request('refund_statusid');
+
+        // Constraint: Authorized (2) -> Initial (1)
+        if ($current_status == 2 && $new_status == 1) {
+            abort(409, 'Cannot revert status from Authorized to Initial');
+        }
+
+        // Constraint: Complete (3) -> Authorized (2)
+        if ($current_status == 3 && $new_status == 2) {
+            abort(409, 'Cannot revert status from Complete to Authorized');
+        }
+
+        // Constraint: Rejected (5) -> Authorized (2) or Completed (3)
+        if ($current_status == 5 && ($new_status == 2 || $new_status == 3)) {
+            abort(409, 'Cannot change status from Rejected to Authorized or Completed');
+        }
+
+        $rules = [
             'refund_bill_no' => 'required',
             'refund_amount' => 'required|numeric',
             'refund_statusid' => 'required',
-            'refund_payment_modeid' => 'required',
-        ]);
+        ];
+
+        // Conditional Validation: Initial (1) or Completed (3) - Payment Mode required
+        // Authorized (2) does NOT show payment mode, so don't require it?
+        // But if it's new, it will be null. Is that okay?
+        // We will require it for 1 and 3.
+        if ($new_status == 1 || $new_status == 3) {
+            $rules['refund_payment_modeid'] = 'required';
+        }
+
+        // Conditional Validation: Authorized
+        if ($new_status == 2) {
+            $rules['refund_authorized_date'] = 'required';
+            // Description/Image no longer required for Authorized
+        }
+
+        // Conditional Validation: Completed
+        if ($new_status == 3) {
+            $rules['refund_authorized_date'] = 'required';  // Usually assumes authorized date exists
+            $rules['refund_payment_date'] = 'required';  // Payment date check
+            $rules['refund_authorized_description'] = 'required';  // Note
+
+            // Valid image required if not already present
+            if (empty($refund->refund_image)) {
+                $rules['refund_image'] = 'required';
+            }
+        }
+
+        // Conditional Validation: Rejected
+        if ($new_status == 5) {
+            $rules['refund_rejected_reason'] = 'required';
+        }
+
+        $validator = Validator::make(request()->all(), $rules);
 
         if ($validator->fails()) {
-            abort(409, __('lang.fill_in_all_required_fields'));
+            $errors = $validator->errors();
+            $messages = '';
+            foreach ($errors->all() as $message) {
+                $messages .= $message . '<br>';
+            }
+            abort(409, $messages);
         }
 
         if (!$this->refundrepo->update($id)) {
@@ -296,7 +357,7 @@ class Refunds extends Controller
         $html = view('pages/refunds/components/table/table', compact('refunds'))->render();
 
         $jsondata['dom_html'][] = [
-            'selector' => '#refunds-table-body',
+            'selector' => '#refunds-view-wrapper',
             'action' => 'replace',
             'value' => $html
         ];
@@ -342,11 +403,23 @@ class Refunds extends Controller
 
         if ($section == 'index') {
             $page['heading'] = 'Refund Report';
+            $filters = request('filter_refund_statusid');
+            if (is_array($filters)) {
+                if (in_array(1, $filters))
+                    $page['submenu_refunds_initial'] = 'active';
+                if (in_array(2, $filters))
+                    $page['submenu_refunds_authorized'] = 'active';
+                if (in_array(3, $filters))
+                    $page['submenu_refunds_completed'] = 'active';
+                if (in_array(5, $filters))
+                    $page['submenu_refunds_rejected'] = 'active';
+            }
         }
 
         if ($section == 'dashboard') {
             $page['heading'] = 'Refunds Dashboard';
             $page['mainmenu_refunds'] = 'active';
+            $page['submenu_refunds_dashboard'] = 'active';
         }
 
         if ($section == 'create') {
@@ -362,5 +435,18 @@ class Refunds extends Controller
         }
 
         return $page;
+    }
+
+    public function uploadImage()
+    {
+        if (request()->hasFile('file')) {
+            $path = request()->file('file')->store('files', 'public');
+            return response()->json([
+                'status' => 'success',
+                'filename' => basename($path),
+                'url' => url('storage/files/' . basename($path))
+            ]);
+        }
+        return response()->json(['status' => 'error', 'message' => 'No file uploaded'], 400);
     }
 }

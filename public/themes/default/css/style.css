@@ -20723,3 +20723,13 @@ input[type=checkbox]:checked + label.checbox-sm::before {
   font-weight: 500;
 }
 /*# sourceMappingURL=style.css.map */
+
+/* refunds/dashboard/summary row(3 card link overlay)*/ 
+.card-link-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999; /* Adjust this value as needed */
+}

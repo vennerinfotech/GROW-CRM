@@ -1085,6 +1085,9 @@ $(document).ready(function () {
 
     var $btn = $(this);
 
+    // Remove any existing hidden product inputs - ALWAYS DO THIS FIRST
+    $(".js-hidden-product-input").remove();
+
     //get selected item
     var $selected = $(
       "#items-list-table input[type='checkbox']:checked"
@@ -1094,10 +1097,6 @@ $(document).ready(function () {
       var total_price = 0;
       var product_names = [];
       var first_id = null;
-
-      
-      // Remove any existing hidden product inputs
-      $(".js-hidden-product-input").remove();
 
       $selected.each(function (index) {
         var price = parseFloat($(this).attr("data-rate"));
@@ -1156,13 +1155,19 @@ $(document).ready(function () {
       
       console.log('Updated #lead_value to:', $("#lead_value").val());
 
-      //close modal
-      $("#itemsModal").modal("hide");
-
-      //reset button state
-      $btn.removeClass("js-lead-confirm-product-selection");
-      $btn.addClass("hidden");
+    } else {
+        // Handle empty selection
+        $("#lead_product_id").val("");
+        $("#lead_product_name").val("");
+        $("#lead_value").val("");
     }
+
+    //close modal (Always close modal)
+    $("#itemsModal").modal("hide");
+
+    //reset button state
+    $btn.removeClass("js-lead-confirm-product-selection");
+    $btn.addClass("hidden");
   });
 
   /** --------------------------------------------------------------------------------------------------

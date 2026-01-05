@@ -78,6 +78,10 @@ class LeadStoreUpdate extends FormRequest
                 'nullable',
                 Rule::exists('items', 'item_id'),
             ],
+            'lead_occasionid' => [
+                'nullable',
+                Rule::exists('leads_occasions', 'leadoccasions_id'),
+            ],
             'assigned' => [
                 'sometimes',
                 function ($attribute, $value, $fail) {

@@ -309,6 +309,11 @@
                                 id="settings-menu-leads-sources"
                                 class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.lead_sources')) }}</a>
                         </li>
+                        <li>
+                            <a href="javascript:void(0);" data-url="/settings/occasions"
+                                id="settings-menu-leads-occasions"
+                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.occasions')) }}</a>
+                        </li>
                         <li><a href="javascript:void(0);" data-url="/settings/customfields/leads"
                                 id="settings-menu-leads-forms"
                                 class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.custom_form_fields')) }}</a>

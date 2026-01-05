@@ -1,27 +1,42 @@
 <div class="row">
     <div class="col-lg-12">
         <!--meta data - creatd by-->
-        @if(isset($page['section']) && $page['section'] == 'edit')
-        <div class="modal-meta-data">
-            <small><strong>{{ cleanLang(__('lang.created_by')) }}:</strong>
-                {{ $lead->first_name ?? runtimeUnkownUser() }} |
-                {{ runtimeDate($lead->lead_created) }}</small>
-        </div>
+        @if (isset($page['section']) && $page['section'] == 'edit')
+            <div class="modal-meta-data">
+                <small><strong>{{ cleanLang(__('lang.created_by')) }}:</strong>
+                    {{ $lead->first_name ?? runtimeUnkownUser() }} |
+                    {{ runtimeDate($lead->lead_created) }}</small>
+            </div>
         @endif
+
+        <!--lead occasions-->
+        <div class="form-group row">
+            <label class="col-sm-12 col-lg-3 text-left control-label col-form-label required">Occasion*</label>
+            <div class="col-sm-12 col-lg-9">
+                <select class="select2-basic form-control form-control-sm" id="lead_occasionid" name="lead_occasionid">
+                    <option value=""></option>
+                    @foreach ($occasions as $occasion)
+                        <option value="{{ $occasion->leadoccasions_id }}"
+                            {{ runtimePreselected($lead->lead_occasionid ?? '', $occasion->leadoccasions_id) }}>
+                            {{ runtimeLang($occasion->leadoccasions_title) }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
 
         <!--title-->
         <div class="form-group row">
-            <label
-                class="col-sm-12 col-lg-3 text-left control-label col-form-label required">occasion*</label>
+            {{-- <label
+                class="col-sm-12 col-lg-3 text-left control-label col-form-label required">{{ cleanLang(__('lang.lead_title')) }}*</label>
             <div class="col-sm-12 col-lg-9">
-                <input type="text" class="form-control form-control-sm" id="lead_title" name="lead_title" placeholder=""
-                    value="{{ $lead->lead_title ?? '' }}">
-            </div>
+                <input type="text" class="form-control form-control-sm" id="lead_title" name="lead_title"
+                    placeholder="" value="{{ $lead->lead_title ?? '' }}">
+            </div> --}}
+            <input type="hidden" name="lead_title" value="New Lead">
         </div>
         <!--Full name-->
         <div class="form-group row">
-            <label
-                class="col-sm-12 col-lg-3 text-left control-label col-form-label">Full Name</label>
+            <label class="col-sm-12 col-lg-3 text-left control-label col-form-label">Full Name</label>
             <div class="col-sm-12 col-lg-9">
                 <input type="text" class="form-control form-control-sm" id="lead_firstname" name="lead_firstname"
                     placeholder="" value="{{ $lead->lead_firstname ?? '' }}">
@@ -41,12 +56,11 @@
             <label
                 class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.telephone')) }}</label>
             <div class="col-sm-12 col-lg-9">
-                <input type="text" class="form-control form-control-sm" id="lead_phone" name="lead_phone" placeholder=""
-                    value="{{ $lead->lead_phone ?? '' }}">
+                <input type="text" class="form-control form-control-sm" id="lead_phone" name="lead_phone"
+                    placeholder="" value="{{ $lead->lead_phone ?? '' }}">
                 <div class="alert alert-info m-t-10 hidden" id="duplicate_lead_warning">
-                    <i class="sl-icon-info"></i> 
-                    Lead with this mobile number already exists. 
-                    <a href="#" id="duplicate_lead_link" target="_blank" class="font-weight-bold">View Lead</a>
+                    <i class="sl-icon-info"></i>
+                    Lead with this mobile number already exists. <span id="duplicate_lead_link_container"></span>
                 </div>
             </div>
         </div>
@@ -63,16 +77,19 @@
 
         <!--product selection-->
         <div class="form-group row">
-            <label class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.product')) }}</label>
+            <label
+                class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.product')) }}</label>
             <div class="col-sm-12 col-lg-9">
                 <div class="input-group">
-                    <input type="text" class="form-control form-control-sm" id="lead_product_name" name="lead_product_name" readonly placeholder="{{ cleanLang(__('lang.select_product')) }}" value="{{ $lead->lead_product_name ?? '' }}">
-                    <input type="hidden" id="lead_product_id" name="lead_product_id" value="{{ $lead->lead_product_id ?? '' }}">
+                    <input type="text" class="form-control form-control-sm" id="lead_product_name"
+                        name="lead_product_name" readonly placeholder="{{ cleanLang(__('lang.select_product')) }}"
+                        value="{{ $lead->lead_product_name ?? '' }}">
+                    <input type="hidden" id="lead_product_id" name="lead_product_id"
+                        value="{{ $lead->lead_product_id ?? '' }}">
                     <div class="input-group-append">
-                        <button class="btn btn-secondary btn-sm js-lead-add-product" type="button" 
-                                data-url="{{ url('items/search?action=search&ref=list&itemresource_type=lead') }}"
-                                data-loading-target="items-table-wrapper"
-                                data-toggle="modal" data-target="#itemsModal">
+                        <button class="btn btn-secondary btn-sm js-lead-add-product" type="button"
+                            data-url="{{ url('items/search?action=search&ref=list&itemresource_type=lead') }}"
+                            data-loading-target="items-table-wrapper" data-toggle="modal" data-target="#itemsModal">
                             {{ cleanLang(__('lang.select')) }}
                         </button>
                     </div>
@@ -83,8 +100,8 @@
         <!--value-->
         <div class="form-group row">
             <label
-                class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.lead_value')) }} ({{
-                            config('system.settings_system_currency_symbol') }})</label>
+                class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.lead_value')) }}
+                ({{ config('system.settings_system_currency_symbol') }})</label>
             <div class="col-sm-12 col-lg-9">
                 <input type="number" class="form-control form-control-sm" id="lead_value" name="lead_value"
                     placeholder="" value="{{ $lead->lead_value ?? '' }}">
@@ -94,58 +111,59 @@
 
 
         <!--assigned [roles]-->
-        @if(config('visibility.lead_modal_assign_fields'))
-        <div class="form-group row">
-            <label
-                class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.assigned')) }}</label>
-            <div class="col-sm-12 col-lg-9">
-                <select name="assigned" id="assigned"
-                    class="form-control form-control-sm select2-basic select2-multiple select2-tags select2-hidden-accessible"
-                    multiple="multiple" tabindex="-1" aria-hidden="true">
+        @if (config('visibility.lead_modal_assign_fields'))
+            <div class="form-group row">
+                <label
+                    class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.assigned')) }}</label>
+                <div class="col-sm-12 col-lg-9">
+                    <select name="assigned" id="assigned"
+                        class="form-control form-control-sm select2-basic select2-multiple select2-tags select2-hidden-accessible"
+                        multiple="multiple" tabindex="-1" aria-hidden="true">
 
-                    <!--array of assigned-->
-                    @if(isset($page['section']) && $page['section'] == 'edit' && isset($lead->assigned))
-                    @foreach($lead->assigned as $user)
-                    @php $assigned[] = $user->id; @endphp
-                    @endforeach
-                    @endif
-                    <!--/#array of assigned-->
-                    <!--users list-->
-                    @foreach(config('system.team_members') as $user)
-                    <option value="{{ $user->id }}" {{ runtimePreselectedInArray($user->id ?? '', $assigned ?? []) }}>{{
-                                        $user->full_name }}</option>
-                    @endforeach
-                    <!--/#users list-->
-                </select>
+                        <!--array of assigned-->
+                        @if (isset($page['section']) && $page['section'] == 'edit' && isset($lead->assigned))
+                            @foreach ($lead->assigned as $user)
+                                @php $assigned[] = $user->id; @endphp
+                            @endforeach
+                        @endif
+                        <!--/#array of assigned-->
+                        <!--users list-->
+                        @foreach (config('system.team_members') as $user)
+                            <option value="{{ $user->id }}"
+                                {{ runtimePreselectedInArray($user->id ?? '', $assigned ?? []) }}>
+                                {{ $user->full_name }}</option>
+                        @endforeach
+                        <!--/#users list-->
+                    </select>
+                </div>
             </div>
-        </div>
         @endif
 
 
 
 
         <!--status-->
-        @if(request('status') != '' && array_key_exists(request('status'), config('system.lead_statuses')))
-        <input type="hidden" name="lead_status" value="{{ request('status') }}">
+        @if (request('status') != '' && array_key_exists(request('status'), config('system.lead_statuses')))
+            <input type="hidden" name="lead_status" value="{{ request('status') }}">
         @else
-        <div class="form-group row">
-            <label
-                class="col-sm-12 col-lg-3 text-left control-label col-form-label required">{{ cleanLang(__('lang.status')) }}*</label>
-            <div class="col-sm-12 col-lg-9">
-                <select class="select2-basic form-control form-control-sm" id="lead_status" name="lead_status">
-                    @foreach($statuses as $status)
-                    <option value="{{ $status->leadstatus_id }}"
-                        {{ runtimePreselected($lead->lead_status ?? '', $status->leadstatus_id) }}>{{
-                                                    runtimeLang($status->leadstatus_title) }}</option>
-                    @endforeach
-                </select>
+            <div class="form-group row">
+                <label
+                    class="col-sm-12 col-lg-3 text-left control-label col-form-label required">{{ cleanLang(__('lang.status')) }}*</label>
+                <div class="col-sm-12 col-lg-9">
+                    <select class="select2-basic form-control form-control-sm" id="lead_status" name="lead_status">
+                        @foreach ($statuses as $status)
+                            <option value="{{ $status->leadstatus_id }}"
+                                {{ runtimePreselected($lead->lead_status ?? '', $status->leadstatus_id) }}>
+                                {{ runtimeLang($status->leadstatus_title) }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-        </div>
         @endif
 
         <!--CUSTOMER FIELDS [expanded]-->
-        @if(config('system.settings_customfields_display_leads') == 'expanded')
-        @include('misc.customfields')
+        @if (config('system.settings_customfields_display_leads') == 'expanded')
+            @include('misc.customfields')
         @endif
         <!--/#CUSTOMER FIELDS [expanded]-->
 
@@ -183,40 +201,41 @@
             <div class="form-group row">
                 <label
                     class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.source')) }}</label>
-                @if(config('system.settings_leads_allow_new_sources') == 'yes')
-                <!--existing-->
-                <div class="col-sm-12 col-lg-9">
-                    <select class="select2-basic form-control form-control-sm  select2-new-options" id="lead_source"
-                        name="lead_source">
-                        <option value=""></option>
-                        @foreach($sources as $source)
-                        @php $sourcelist[] = $source->leadsources_title;@endphp
-                        <option value="{{ $source->leadsources_title }}"
-                            {{ runtimePreselected($lead->lead_source ?? '', $source->leadsources_title) }}>{{
-                        $source->leadsources_title }}</option>
-                        @endforeach
-                        @if(isset($page['section']) && $page['section'] == 'edit')
-                        {!! clean(runtimeLeadSourceCustom($sourcelist, $lead->lead_source  ?? '')) !!}
-                        @endif
-                    </select>
-                </div>
-                <!--/#existing-->
+                @if (config('system.settings_leads_allow_new_sources') == 'yes')
+                    <!--existing-->
+                    <div class="col-sm-12 col-lg-9">
+                        <select class="select2-basic form-control form-control-sm  select2-new-options"
+                            id="lead_source" name="lead_source">
+                            <option value=""></option>
+                            @foreach ($sources as $source)
+                                @php $sourcelist[] = $source->leadsources_title;@endphp
+                                <option value="{{ $source->leadsources_title }}"
+                                    {{ runtimePreselected($lead->lead_source ?? '', $source->leadsources_title) }}>
+                                    {{ $source->leadsources_title }}</option>
+                            @endforeach
+                            @if (isset($page['section']) && $page['section'] == 'edit')
+                                {!! clean(runtimeLeadSourceCustom($sourcelist, $lead->lead_source ?? '')) !!}
+                            @endif
+                        </select>
+                    </div>
+                    <!--/#existing-->
                 @else
-                <!--existing-->
-                <div class="col-sm-12 col-lg-9">
-                    <select class="select2-basic form-control form-control-sm" id="lead_source" name="lead_source">
-                        @foreach($sources as $source)
-                        @php $sourcelist[] = $source->leadsources_title;@endphp
-                        <option value="{{ $source->leadsources_title }}"
-                            {{ runtimePreselected($lead->lead_source ?? '', $source->leadsources_title) }}>{{
-                        $source->leadsources_title }}</option>
-                        @endforeach
-                        @if(isset($page['section']) && $page['section'] == 'edit')
-                        {{!! clean(runtimeLeadSourceCustom($sourcelist, $lead->lead_source ?? '')) !!}}
-                        @endif
-                    </select>
-                </div>
-                <!--/#existing-->
+                    <!--existing-->
+                    <div class="col-sm-12 col-lg-9">
+                        <select class="select2-basic form-control form-control-sm" id="lead_source"
+                            name="lead_source">
+                            @foreach ($sources as $source)
+                                @php $sourcelist[] = $source->leadsources_title;@endphp
+                                <option value="{{ $source->leadsources_title }}"
+                                    {{ runtimePreselected($lead->lead_source ?? '', $source->leadsources_title) }}>
+                                    {{ $source->leadsources_title }}</option>
+                            @endforeach
+                            @if (isset($page['section']) && $page['section'] == 'edit')
+                                {!! clean(runtimeLeadSourceCustom($sourcelist, $lead->lead_source ?? '')) !!}
+                            @endif
+                        </select>
+                    </div>
+                    <!--/#existing-->
                 @endif
             </div>
 
@@ -227,10 +246,10 @@
                 <div class="col-sm-12 col-lg-9">
                     <select class="select2-basic form-control form-control-sm" id="lead_categoryid"
                         name="lead_categoryid">
-                        @foreach($categories as $category)
-                        <option value="{{ $category->category_id }}"
-                            {{ runtimePreselected($lead->lead_categoryid ?? '', $category->category_id) }}>{{
-                                        runtimeLang($category->category_name) }}</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->category_id }}"
+                                {{ runtimePreselected($lead->lead_categoryid ?? '', $category->category_id) }}>
+                                {{ runtimeLang($category->category_name) }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -246,17 +265,17 @@
                         class="form-control form-control-sm select2-multiple {{ runtimeAllowUserTags() }} select2-hidden-accessible"
                         multiple="multiple" tabindex="-1" aria-hidden="true">
                         <!--array of selected tags-->
-                        @if(isset($page['section']) && $page['section'] == 'edit')
-                        @foreach($lead->tags as $tag)
-                        @php $selected_tags[] = $tag->tag_title ; @endphp
-                        @endforeach
+                        @if (isset($page['section']) && $page['section'] == 'edit')
+                            @foreach ($lead->tags as $tag)
+                                @php $selected_tags[] = $tag->tag_title ; @endphp
+                            @endforeach
                         @endif
                         <!--/#array of selected tags-->
-                        @foreach($tags as $tag)
-                        <option value="{{ $tag->tag_title }}"
-                            {{ runtimePreselectedInArray($tag->tag_title ?? '', $selected_tags  ?? []) }}>
-                            {{ $tag->tag_title }}
-                        </option>
+                        @foreach ($tags as $tag)
+                            <option value="{{ $tag->tag_title }}"
+                                {{ runtimePreselectedInArray($tag->tag_title ?? '', $selected_tags ?? []) }}>
+                                {{ $tag->tag_title }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -285,32 +304,33 @@
 
 
         <!--CUSTOMER FIELDS [collapsed]-->
-        @if(config('system.settings_customfields_display_leads') == 'toggled')
-        <div class="spacer row">
-            <div class="col-sm-12 col-lg-8">
-                <span class="title">{{ cleanLang(__('lang.more_information')) }}</span class="title">
-            </div>
-            <div class="col-sm-12 col-lg-4">
-                <div class="switch  text-right">
-                    <label>
-                        <input type="checkbox" name="add_client_option_other" id="add_client_option_other"
-                            class="js-switch-toggle-hidden-content" data-target="leads_custom_fields_collaped">
-                        <span class="lever switch-col-light-blue"></span>
-                    </label>
+        @if (config('system.settings_customfields_display_leads') == 'toggled')
+            <div class="spacer row">
+                <div class="col-sm-12 col-lg-8">
+                    <span class="title">{{ cleanLang(__('lang.more_information')) }}</span class="title">
+                </div>
+                <div class="col-sm-12 col-lg-4">
+                    <div class="switch  text-right">
+                        <label>
+                            <input type="checkbox" name="add_client_option_other" id="add_client_option_other"
+                                class="js-switch-toggle-hidden-content" data-target="leads_custom_fields_collaped">
+                            <span class="lever switch-col-light-blue"></span>
+                        </label>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div id="leads_custom_fields_collaped" class="hidden">
-            @if(config('app.application_demo_mode'))
-            <!--DEMO INFO-->
-            <div class="alert alert-info">
-                <h5 class="text-info"><i class="sl-icon-info"></i> Demo Info</h5> 
-                These are custom fields. You can change them or <a href="{{ url('app/settings/customfields/projects') }}">create your own.</a>
+            <div id="leads_custom_fields_collaped" class="hidden">
+                @if (config('app.application_demo_mode'))
+                    <!--DEMO INFO-->
+                    <div class="alert alert-info">
+                        <h5 class="text-info"><i class="sl-icon-info"></i> Demo Info</h5>
+                        These are custom fields. You can change them or <a
+                            href="{{ url('app/settings/customfields/projects') }}">create your own.</a>
+                    </div>
+                @endif
+
+                @include('misc.customfields')
             </div>
-            @endif
-            
-            @include('misc.customfields')
-        </div>
         @endif
         <!--/#CUSTOMER FIELDS [collapsed]-->
 
@@ -319,7 +339,8 @@
         <!--address and organisation - toggle-->
         <div class="spacer row">
             <div class="col-sm-12 col-lg-8">
-                <span class="title">{{ cleanLang(__('lang.address_and_organisation_details')) }}</span class="title">
+                <span class="title">{{ cleanLang(__('lang.address_and_organisation_details')) }}</span
+                    class="title">
             </div>
             <div class="col-sm-12 col-lg-4">
                 <div class="switch  text-right">
@@ -378,8 +399,8 @@
                 <label
                     class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.zipcode')) }}</label>
                 <div class="col-sm-12 col-lg-9">
-                    <input type="text" class="form-control form-control-sm" id="lead_zip" name="lead_zip" placeholder=""
-                        value="{{ $lead->lead_zip ?? '' }}">
+                    <input type="text" class="form-control form-control-sm" id="lead_zip" name="lead_zip"
+                        placeholder="" value="{{ $lead->lead_zip ?? '' }}">
                 </div>
             </div>
             <!--country-->
@@ -414,15 +435,15 @@
         <input type="hidden" name="source" value="{{ request('source') }}">
 
         <!--redirect to project-->
-        @if(config('visibility.lead_show_lead_option'))
-        <div class="line"></div>
-        <div class="form-group form-group-checkbox row">
-            <div class="col-12 text-left p-t-5">
-                <input type="checkbox" id="show_after_adding" name="show_after_adding"
-                    class="filled-in chk-col-light-blue" checked="checked">
-                <label for="show_after_adding">{{ cleanLang(__('lang.show_lead_after_adding')) }}</label>
+        @if (config('visibility.lead_show_lead_option'))
+            <div class="line"></div>
+            <div class="form-group form-group-checkbox row">
+                <div class="col-12 text-left p-t-5">
+                    <input type="checkbox" id="show_after_adding" name="show_after_adding"
+                        class="filled-in chk-col-light-blue" checked="checked">
+                    <label for="show_after_adding">{{ cleanLang(__('lang.show_lead_after_adding')) }}</label>
+                </div>
             </div>
-        </div>
         @endif
 
         <!--notes-->
@@ -435,25 +456,47 @@
 </div>
 
 <!--check duplicate phone-->
+
+
+<!--check duplicate phone-->
 <script>
     $(document).ready(function() {
         $(document).off('blur', '#lead_phone').on('blur', '#lead_phone', function() {
             var phone = $(this).val();
-            var lead_id = "{{ $lead->lead_id ?? '' }}"; 
-            if(phone) {
-                $.get("{{ url('leads/check-duplicate') }}", { lead_phone: phone, lead_id: lead_id }, function(response) {
-                    if(response.exists) {
+            var lead_id = "{{ $lead->lead_id ?? '' }}";
+            if (phone) {
+                $.get("{{ url('leads/check-duplicate') }}", {
+                    lead_phone: phone,
+                    lead_id: lead_id
+                }, function(response) {
+                    if (response.exists) {
                         $('#duplicate_lead_warning').removeClass('hidden');
-                        $('#duplicate_lead_link').attr('href', response.lead_url);
-                        $('#duplicate_lead_link').text('View Lead (' + response.lead_name + ')');
+                        var html = 'Duplicate Lead(s) found: ';
+
+                        if (response.duplicates && response.duplicates.length > 0) {
+                            var links = [];
+                            $.each(response.duplicates, function(index, dup) {
+                                var text = dup.occasion ? dup.occasion : dup.lead_name;
+                                links.push('<a href="' + dup.lead_url + '" target="_blank" class="font-weight-bold">' + text + '</a>');
+                            });
+                            html += links.join(', ');
+                        } else {
+                            var text = response.occasion ? response.occasion : response.lead_name;
+                            html += '<a href="' + response.lead_url + '" target="_blank" class="font-weight-bold">' +
+                                text + '</a>';
+                        }
+
+                        $('#duplicate_lead_link_container').html(html);
+
                     } else {
                         $('#duplicate_lead_warning').addClass('hidden');
+                        $('#duplicate_lead_link_container').html('');
                     }
                 });
             } else {
-                 $('#duplicate_lead_warning').addClass('hidden');
+                $('#duplicate_lead_warning').addClass('hidden');
+                $('#duplicate_lead_link_container').html('');
             }
         });
     });
 </script>
-

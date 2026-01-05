@@ -369,7 +369,8 @@ class LeadRepository
         $lead->lead_status = request('lead_status');
         $lead->lead_position = $position;
         $lead->lead_categoryid = request('lead_categoryid');
-        $lead->lead_product_id = request('lead_product_id');
+        $lead->lead_occasionid = request('lead_occasionid') ?: null;
+        $lead->lead_product_id = request('lead_product_id') ?: null;
 
         // save and return id
         if ($lead->save()) {
@@ -416,7 +417,8 @@ class LeadRepository
         $lead->lead_value = request('lead_value');
         $lead->lead_last_contacted = request('lead_last_contacted');
         $lead->lead_status = request('lead_status');
-        $lead->lead_product_id = request('lead_product_id');
+        $lead->lead_occasionid = request('lead_occasionid') ?: null;
+        $lead->lead_product_id = request('lead_product_id') ?: null;
 
         // save
         if ($lead->save()) {

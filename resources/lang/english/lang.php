@@ -2767,4 +2767,9 @@ return [
     'filter_refunds' => 'Filter Refunds',
     'refund_request' => 'Refund Request',
     'add_new_refund' => 'Add New Refund',
+    'add_lead_occasion' => 'Add Lead Occasion',
+    'occasion_name' => 'Occasion Name',
+    'occasion_already_exists' => 'Occasion already exists',
+    'lead_occasions' => 'Lead Occasions',
+    'occasions' => 'Occasions',
 ];

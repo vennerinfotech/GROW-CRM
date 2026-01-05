@@ -22,7 +22,7 @@
         {{ $refund->refundpaymentmode_title ?? '---' }}
     </td>
     <td>
-        <span title="{{ $refund->refund_reason }}">{{ str_limit($refund->refund_reason, 20) }}</span>
+        <span title="{{ $refund->refund_reason ?? '' }}">{{ \Illuminate\Support\Str::limit($refund->refund_reason ?? '', 20) }}</span>
     </td>
     <td>
         {{ $refund->refund_courier }} / {{ $refund->refund_docket_no }}

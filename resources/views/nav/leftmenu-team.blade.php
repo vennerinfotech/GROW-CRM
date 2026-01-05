@@ -213,31 +213,42 @@
                 <li data-modular-id="main_menu_refunds"
                     class="sidenav-menu-item {{ $page['mainmenu_refunds'] ?? '' }} menu-tooltip menu-with-tooltip"
                     title="Refunds">
-                    <a class="has-arrow waves-effect waves-dark p-r-20" href="javascript:void(0);" aria-expanded="false" target="_self">
+                    <a class="has-arrow waves-effect waves-dark p-r-20" href="javascript:void(0);"
+                        aria-expanded="false" target="_self">
                         <i class="sl-icon-reload"></i>
                         <span class="hide-menu">Refunds
                         </span>
                     </a>
                     <ul aria-expanded="false" class="collapse">
                         <!-- Dashboard -->
-                        <li class="sidenav-submenu {{ $page['submenu_refunds_dashboard'] ?? '' }}" id="submenu_refunds_dashboard">
-                            <a href="{{ url('refunds/dashboard') }}" class="{{ $page['submenu_refunds_dashboard'] ?? '' }}">Dashboard</a>
+                        <li class="sidenav-submenu {{ $page['submenu_refunds_dashboard'] ?? '' }}"
+                            id="submenu_refunds_dashboard">
+                            <a href="{{ url('refunds/dashboard') }}"
+                                class="{{ $page['submenu_refunds_dashboard'] ?? '' }}">Dashboard</a>
                         </li>
                         <!-- Initial (ID 1) -->
-                        <li class="sidenav-submenu {{ $page['submenu_refunds_initial'] ?? '' }}" id="submenu_refunds_initial">
-                            <a href="{{ url('refunds?filter_refund_statusid%5B%5D=1') }}" class="{{ $page['submenu_refunds_initial'] ?? '' }}">Initial</a>
+                        <li class="sidenav-submenu {{ $page['submenu_refunds_initial'] ?? '' }}"
+                            id="submenu_refunds_initial">
+                            <a href="{{ url('refunds?filter_refund_statusid%5B%5D=1') }}"
+                                class="{{ $page['submenu_refunds_initial'] ?? '' }}">Initial</a>
                         </li>
                         <!-- Authorized (ID 2) -->
-                        <li class="sidenav-submenu {{ $page['submenu_refunds_authorized'] ?? '' }}" id="submenu_refunds_authorized">
-                            <a href="{{ url('refunds?filter_refund_statusid%5B%5D=2') }}" class="{{ $page['submenu_refunds_authorized'] ?? '' }}">Authorized</a>
+                        <li class="sidenav-submenu {{ $page['submenu_refunds_authorized'] ?? '' }}"
+                            id="submenu_refunds_authorized">
+                            <a href="{{ url('refunds?filter_refund_statusid%5B%5D=2') }}"
+                                class="{{ $page['submenu_refunds_authorized'] ?? '' }}">Authorized</a>
                         </li>
                         <!-- Completed (ID 3) -->
-                        <li class="sidenav-submenu {{ $page['submenu_refunds_completed'] ?? '' }}" id="submenu_refunds_completed">
-                            <a href="{{ url('refunds?filter_refund_statusid%5B%5D=3') }}" class="{{ $page['submenu_refunds_completed'] ?? '' }}">Completed</a>
+                        <li class="sidenav-submenu {{ $page['submenu_refunds_completed'] ?? '' }}"
+                            id="submenu_refunds_completed">
+                            <a href="{{ url('refunds?filter_refund_statusid%5B%5D=3') }}"
+                                class="{{ $page['submenu_refunds_completed'] ?? '' }}">Completed</a>
                         </li>
                         <!-- Rejected (ID 5) -->
-                        <li class="sidenav-submenu {{ $page['submenu_refunds_rejected'] ?? '' }}" id="submenu_refunds_rejected">
-                            <a href="{{ url('refunds?filter_refund_statusid%5B%5D=5') }}" class="{{ $page['submenu_refunds_rejected'] ?? '' }}">Rejected</a>
+                        <li class="sidenav-submenu {{ $page['submenu_refunds_rejected'] ?? '' }}"
+                            id="submenu_refunds_rejected">
+                            <a href="{{ url('refunds?filter_refund_statusid%5B%5D=5') }}"
+                                class="{{ $page['submenu_refunds_rejected'] ?? '' }}">Rejected</a>
                         </li>
                     </ul>
                 </li>

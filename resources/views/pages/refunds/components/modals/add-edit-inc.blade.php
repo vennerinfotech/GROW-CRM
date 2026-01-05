@@ -63,8 +63,8 @@
             <div class="form-group row">
                 <label class="col-sm-12 col-lg-3 text-left control-label col-form-label required">Authorized Date</label>
                 <div class="col-sm-12 col-lg-9">
-                    <input type="text" class="form-control form-control-sm pickadate" name="refund_authorized_date_display"
-                        autocomplete="off" value="{{ runtimeDate($refund->refund_authorized_date ?? '') }}">
+                    <input type="text" class="form-control form-control-sm pickadate" name="refund_authorized_date"
+                        autocomplete="off" value="{{ runtimeDatepickerDate($refund->refund_authorized_date ?? '') }}">
                     <input class="mysql-date" type="hidden" name="refund_authorized_date" id="refund_authorized_date"
                         value="{{ $refund->refund_authorized_date ?? '' }}">
                 </div>
@@ -76,8 +76,8 @@
             <div class="form-group row">
                 <label class="col-sm-12 col-lg-3 text-left control-label col-form-label required">Payment Date</label>
                 <div class="col-sm-12 col-lg-9">
-                    <input type="text" class="form-control form-control-sm pickadate" name="refund_payment_date_display"
-                        autocomplete="off" value="{{ runtimeDate($refund->refund_payment_date ?? '') }}">
+                    <input type="text" class="form-control form-control-sm pickadate" name="refund_payment_date"
+                        autocomplete="off" value="{{ runtimeDatepickerDate($refund->refund_payment_date ?? '') }}">
                     <input class="mysql-date" type="hidden" name="refund_payment_date" id="refund_payment_date"
                         value="{{ $refund->refund_payment_date ?? '' }}">
                 </div>
@@ -107,17 +107,7 @@
             </div>
 
             <!-- Payment Date (Status: Completed) -->
-            <div id="payment_date_container" style="display:none;">
-                <div class="form-group row">
-                    <label class="col-sm-12 col-lg-3 text-left control-label col-form-label required">Payment Date</label>
-                    <div class="col-sm-12 col-lg-9">
-                        <input type="text" class="form-control form-control-sm pickadate" name="refund_payment_date"
-                            autocomplete="off" value="{{ runtimeDate($refund->refund_payment_date ?? '') }}">
-                        <input class="mysql-date" type="hidden" name="refund_payment_date" id="refund_payment_date"
-                            value="{{ $refund->refund_payment_date ?? '' }}">
-                    </div>
-                </div>
-            </div>
+
 
             <!-- Description/Note -->
             <div class="form-group row">
@@ -159,7 +149,7 @@
                         var existingAuthDate = $('#refund_authorized_date').val();
                         if (!existingAuthDate) {
                              // Set to today
-                             var picker = $('[name="refund_authorized_date_display"]').pickadate('picker');
+                             var picker = $('[name="refund_authorized_date"]').pickadate('picker');
                              if(picker) picker.set('select', new Date());
                         }
                     }
@@ -169,14 +159,14 @@
                         // Ensure Authorized Date is present if not already
                          var existingAuthDate = $('#refund_authorized_date').val();
                         if (!existingAuthDate) {
-                             var pickerAuth = $('[name="refund_authorized_date_display"]').pickadate('picker');
+                             var pickerAuth = $('[name="refund_authorized_date"]').pickadate('picker');
                              if(pickerAuth) pickerAuth.set('select', new Date());
                         }
 
                         // Payment Date
                         var existingPayDate = $('#refund_payment_date').val();
                         if (!existingPayDate) {
-                             var pickerPay = $('[name="refund_payment_date_display"]').pickadate('picker');
+                             var pickerPay = $('[name="refund_payment_date"]').pickadate('picker');
                              if(pickerPay) pickerPay.set('select', new Date());
                         }
                     }

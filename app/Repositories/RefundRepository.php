@@ -30,12 +30,16 @@ class RefundRepository
         $refunds->leftJoin('users as creator', 'creator.id', '=', 'refunds.refund_creatorid');
         $refunds->leftJoin('refund_error_sources', 'refund_error_sources.refunderrorsource_id', '=', 'refunds.refund_error_sourceid');
         $refunds->leftJoin('refund_sales_sources', 'refund_sales_sources.refundsalessource_id', '=', 'refunds.refund_sales_sourceid');
+        $refunds->leftJoin('refund_reasons', 'refund_reasons.refundreason_id', '=', 'refunds.refund_reasonid');
+        $refunds->leftJoin('refund_couriers', 'refund_couriers.refundcourier_id', '=', 'refunds.refund_courierid');
 
         // select all
         $refunds->selectRaw('refunds.*, refund_statuses.refundstatus_title, refund_statuses.refundstatus_color, refund_payment_modes.refundpaymentmode_title');
         $refunds->selectRaw('creator.first_name as creator_first_name, creator.last_name as creator_last_name');
         $refunds->selectRaw('refund_error_sources.refunderrorsource_title');
         $refunds->selectRaw('refund_sales_sources.refundsalessource_title');
+        $refunds->selectRaw('refund_reasons.refundreason_title as refund_reason');
+        $refunds->selectRaw('refund_couriers.refundcourier_title as refund_courier');
 
         // default sorting
         $refunds->orderBy('refund_id', 'desc');

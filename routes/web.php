@@ -797,6 +797,14 @@ Route::group(['prefix' => 'settings/refunds'], function () {
     Route::get('reasons/{id}/edit', 'Settings\Refunds@editReason');
     Route::put('reasons/{id}', 'Settings\Refunds@updateReason');
     Route::delete('reasons/{id}', 'Settings\Refunds@destroyReason');
+
+    // couriers
+    Route::get('couriers', 'Settings\Refunds@couriers');
+    Route::get('couriers/create', 'Settings\Refunds@createCourier');
+    Route::post('couriers', 'Settings\Refunds@storeCourier');
+    Route::get('couriers/{id}/edit', 'Settings\Refunds@editCourier');
+    Route::put('couriers/{id}', 'Settings\Refunds@updateCourier');
+    Route::delete('couriers/{id}', 'Settings\Refunds@destroyCourier');
 });
 
 // SETTINGS - LEADS - OCCASIONS

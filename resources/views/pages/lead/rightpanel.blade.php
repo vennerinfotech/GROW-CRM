@@ -46,10 +46,8 @@
         <!--value-->
         <div class="x-element"><i class="mdi mdi-cash-multiple"></i> <span>{{ cleanLang(__('lang.value')) }}: </span>
             @if ($lead->permission_edit_lead)
-                <span class="x-highlight x-editable js-card-settings-button-static" data-container=".card-modal"
-                    id="card-lead-value" tabindex="0" data-popover-content="card-lead-value-popover"
-                    data-value="{{ $lead->lead_value }}"
-                    data-title="{{ cleanLang(__('lang.value')) }}">{{ runtimeMoneyFormat($lead->lead_value) }}</span>
+                <span class="x-highlight"
+                    id="card-lead-value">{{ runtimeMoneyFormat($lead->lead_value) }}</span>
             @else
                 <span class="x-highlight">{{ runtimeMoneyFormat($lead->lead_value) }}</span>
             @endif

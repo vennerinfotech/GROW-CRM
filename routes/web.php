@@ -1469,5 +1469,3 @@ Route::group(['prefix' => 'settings/refunds'], function () {
     Route::delete('/sales-sources/{id}', 'Settings\Refunds@destroySalesSource')->where('id', '[0-9]+');
     Route::post('/sales-sources/create', 'Settings\Refunds@storeSalesSource');
 });
-
-test

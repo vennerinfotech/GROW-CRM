@@ -333,7 +333,7 @@
                 </li>
 
                 <!--refunds-->
-                <li class="sidenav-menu-item">
+                {{-- <li class="sidenav-menu-item">
                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
                         id="settings-menu-refunds">
                         <span class="hide-menu">Refunds
@@ -348,17 +348,20 @@
                         <li>
                             <a href="javascript:void(0);" data-url="/settings/refunds/payment-modes"
                                 id="settings-menu-refunds-paymentmodes"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Mode of Payment</a>
+                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Mode
+                                of Payment</a>
                         </li>
                         <li>
                             <a href="javascript:void(0);" data-url="/settings/refunds/error-sources"
                                 id="settings-menu-refunds-errorsources"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Error Sources</a>
+                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Error
+                                Sources</a>
                         </li>
                         <li>
                             <a href="javascript:void(0);" data-url="/settings/refunds/sales-sources"
                                 id="settings-menu-refunds-salessources"
-                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Sales Sources</a>
+                                class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Sales
+                                Sources</a>
                         </li>
                         <li>
                             <a href="javascript:void(0);" data-url="/settings/refunds/reasons"
@@ -371,7 +374,7 @@
                                 class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Couriers</a>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
 
 
                 <!--[MODULES] - dynamic menu-->

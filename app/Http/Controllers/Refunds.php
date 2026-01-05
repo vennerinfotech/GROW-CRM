@@ -209,7 +209,7 @@ class Refunds extends Controller
             'refund_bill_no' => 'required',
             'refund_amount' => 'required|numeric',
             'refund_statusid' => 'required',
-            'refund_payment_modeid' => 'required',
+            'refund_payment_modeid' => 'required_if:refund_statusid,3',
         ]);
 
         if ($validator->fails()) {
@@ -311,7 +311,7 @@ class Refunds extends Controller
         // Authorized (2) does NOT show payment mode, so don't require it?
         // But if it's new, it will be null. Is that okay?
         // We will require it for 1 and 3.
-        if ($new_status == 1 || $new_status == 3) {
+        if ($new_status == 3) {
             $rules['refund_payment_modeid'] = 'required';
         }
 

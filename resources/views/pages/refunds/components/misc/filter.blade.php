@@ -51,8 +51,7 @@
                                     placeholder="{{ cleanLang(__('lang.end')) }}"
                                     value="{{ runtimeDatepickerDate(request('filter_refund_created_end')) }}">
                                 <input class="mysql-date" type="hidden" id="filter_refund_created_end"
-                                    name="filter_refund_created_end"
-                                    value="{{ request('filter_refund_created_end') }}">
+                                    name="filter_refund_created_end" value="{{ request('filter_refund_created_end') }}">
                             </div>
                         </div>
                     </div>
@@ -92,11 +91,11 @@
                                 <select name="filter_refund_statusid" id="filter_refund_statusid"
                                     class="form-control form-control-sm select2-basic select2-multiple select2-tags select2-hidden-accessible"
                                     multiple="multiple" tabindex="-1" aria-hidden="true">
-                                    @foreach($statuses as $status)
-                                    <option value="{{ $status->refundstatus_id }}"
-                                        {{ runtimePreselectedInArray($status->refundstatus_id, request('filter_refund_statusid') ?? []) }}>
-                                        {{ $status->refundstatus_title }}
-                                    </option>
+                                    @foreach ($statuses as $status)
+                                        <option value="{{ $status->refundstatus_id }}"
+                                            {{ runtimePreselectedInArray($status->refundstatus_id, request('filter_refund_statusid') ?? []) }}>
+                                            {{ $status->refundstatus_title }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -116,11 +115,11 @@
                                 <select name="filter_refund_payment_modeid" id="filter_refund_payment_modeid"
                                     class="form-control form-control-sm select2-basic select2-multiple select2-tags select2-hidden-accessible"
                                     multiple="multiple" tabindex="-1" aria-hidden="true">
-                                    @foreach($payment_modes as $mode)
-                                    <option value="{{ $mode->refundpaymentmode_id }}"
-                                        {{ runtimePreselectedInArray($mode->refundpaymentmode_id, request('filter_refund_payment_modeid') ?? []) }}>
-                                        {{ $mode->refundpaymentmode_title }}
-                                    </option>
+                                    @foreach ($payment_modes as $mode)
+                                        <option value="{{ $mode->refundpaymentmode_id }}"
+                                            {{ runtimePreselectedInArray($mode->refundpaymentmode_id, request('filter_refund_payment_modeid') ?? []) }}>
+                                            {{ $mode->refundpaymentmode_title }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -140,11 +139,11 @@
                                 <select name="filter_refund_error_sourceid" id="filter_refund_error_sourceid"
                                     class="form-control form-control-sm select2-basic select2-multiple select2-tags select2-hidden-accessible"
                                     multiple="multiple" tabindex="-1" aria-hidden="true">
-                                    @foreach($error_sources as $error_source)
-                                    <option value="{{ $error_source->refunderrorsource_id }}"
-                                        {{ runtimePreselectedInArray($error_source->refunderrorsource_id, request('filter_refund_error_sourceid') ?? []) }}>
-                                        {{ $error_source->refunderrorsource_title }}
-                                    </option>
+                                    @foreach ($error_sources as $error_source)
+                                        <option value="{{ $error_source->refunderrorsource_id }}"
+                                            {{ runtimePreselectedInArray($error_source->refunderrorsource_id, request('filter_refund_error_sourceid') ?? []) }}>
+                                            {{ $error_source->refunderrorsource_title }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -164,11 +163,11 @@
                                 <select name="filter_refund_sales_sourceid" id="filter_refund_sales_sourceid"
                                     class="form-control form-control-sm select2-basic select2-multiple select2-tags select2-hidden-accessible"
                                     multiple="multiple" tabindex="-1" aria-hidden="true">
-                                    @foreach($sales_sources as $sales_source)
-                                    <option value="{{ $sales_source->refundsalessource_id }}"
-                                        {{ runtimePreselectedInArray($sales_source->refundsalessource_id, request('filter_refund_sales_sourceid') ?? []) }}>
-                                        {{ $sales_source->refundsalessource_title }}
-                                    </option>
+                                    @foreach ($sales_sources as $sales_source)
+                                        <option value="{{ $sales_source->refundsalessource_id }}"
+                                            {{ runtimePreselectedInArray($sales_source->refundsalessource_id, request('filter_refund_sales_sourceid') ?? []) }}>
+                                            {{ $sales_source->refundsalessource_title }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -179,7 +178,14 @@
 
                 <!--buttons-->
                 <div class="buttons-block">
-                    <a href="{{ url('/refunds') }}" class="btn btn-rounded-x btn-ignore-secondary">
+                    <div class="form-group form-group-checkbox row m-b-10">
+                        <div class="col-12 p-t-5">
+                            <input type="checkbox" id="remember_options" name="remember_options"
+                                class="filled-in chk-col-light-blue" {{ session('refund_filters') ? 'checked' : '' }}>
+                            <label class="p-l-30" for="remember_options">Remember Filters</label>
+                        </div>
+                    </div>
+                    <a href="{{ url('/refunds?action=reset') }}" class="btn btn-rounded-x btn-ignore-secondary">
                         {{ cleanLang(__('lang.reset')) }}
                     </a>
                     <input type="hidden" name="action" value="search">

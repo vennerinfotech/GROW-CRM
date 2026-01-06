@@ -23,6 +23,11 @@
     </td>
     <td>
         <span title="{{ $refund->refund_reason ?? '' }}">{{ \Illuminate\Support\Str::limit($refund->refund_reason ?? '', 20) }}</span>
+        @if($refund->refund_statusid == 5 && $refund->refund_rejected_reason)
+            <div class="text-danger font-12 m-t-3" title="{{ $refund->refund_rejected_reason }}">
+                <i class="sl-icon-info"></i> {{ \Illuminate\Support\Str::limit($refund->refund_rejected_reason, 30) }}
+            </div>
+        @endif
     </td>
     <td>
         {{ $refund->refund_courier }} / {{ $refund->refund_docket_no }}

@@ -42,11 +42,11 @@
                         </li>
                         <!--[MULTITENANCY]-->
                         @if (config('system.settings_type') == 'standalone')
-                            {{-- <li>
+                            <li>
                                 <a href="javascript:void(0);" data-url="/settings/modules"
                                     id="settings-menu-main-modules"
                                     class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">{{ cleanLang(__('lang.modules')) }}</a>
-                            </li> --}}
+                            </li>
                             <li>
                                 <a href="javascript:void(0);" data-url="/settings/cronjobs"
                                     id="settings-menu-main-cronjobs"

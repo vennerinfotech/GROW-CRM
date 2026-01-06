@@ -82,8 +82,26 @@ class Refunds extends Controller
      */
     public function export()
     {
-        // get all records (no pagination)
-        $refunds = $this->refundrepo->search('all');
+        // EXPORT ALL logic
+        if (request('export_all') == 'true') {
+            // search all records ignoring filters (pass 'all' to search, which repo handles as get() instead of paginate())
+            // repo search also filters by request() params, so we might need to clear request params ideally,
+            // but the repository uses request() directly.
+            // However, passing 'all' as ID usually returns a single record in some repos, but here:
+            // if ($id == 'all') { return $refunds->get(); }
+            // So we need to ensure we don't accidentally filter if export_all is true.
+            // Since repo uses request(), we should flash/clear request or use a fresh request instance, but that's hard in Laravel global state.
+            // Alternative: Modify repository to accept an explicit "ignore filters" flag, OR (simpler) manually unset request params here.
+            request()->replace([]);  // Clear all request params so repo sees empty filters
+            $refunds = $this->refundrepo->search('all');
+        } else {
+            // EXPORT CURRENT FILTERS
+            // If we have remembered filters and they aren't in the URL (unlikely for export button click usually, but good for consistency)
+            if (session()->has('refund_filters')) {
+                request()->merge(session('refund_filters'));
+            }
+            $refunds = $this->refundrepo->search('all');
+        }
 
         $headers = [
             'Content-type' => 'text/csv',
@@ -146,6 +164,29 @@ class Refunds extends Controller
         // Action buttons
         config(['visibility.list_page_actions_add_button' => true]);
 
+        // RESET FILTER
+        if (request('action') == 'reset') {
+            session()->forget('refund_filters');
+            return redirect('refunds');
+        }
+
+        // FILTER FORM SUBMITTED
+        if (request('action') == 'search') {
+            // Always save to session to support Clean URL + Redirect strategy
+            // The user demands Clean URL (no params) AND Page Refresh.
+            // This requires Session Persistence for the filters to survive the redirect.
+            session(['refund_filters' => request()->except(['action', 'page', '_token'])]);
+
+            // Force reload to apply filters and keep URL clean
+            if (request()->ajax()) {
+                return response()->json(['redirect_url' => url('refunds')]);
+            }
+        }
+        // PAGE LOAD (NO ACTION)
+        else if (session()->has('refund_filters')) {
+            request()->merge(array_merge(session('refund_filters'), request()->all()));
+        }
+
         $refunds = $this->refundrepo->search();
 
         // If ajax request (pagination/sorting)
@@ -156,6 +197,14 @@ class Refunds extends Controller
                 'action' => 'replace',
                 'value' => $html
             ];
+
+            // Close the filter sidepanel
+            $jsondata['dom_classes'][] = [
+                'selector' => '#sidepanel-filter-refunds',
+                'action' => 'remove',
+                'value' => 'shw-rside'
+            ];
+
             return response()->json($jsondata);
         }
 

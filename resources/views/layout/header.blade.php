@@ -38,6 +38,7 @@
     <link rel="stylesheet" href="vendor/css/vendor.css?v={{ config('system.versioning') }}">
     <link rel="stylesheet"
         href="vendor/js/bootstrap-timepicker/bootstrap-timepicker.css?v={{ config('system.versioning') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
     <!--ICONS-->
     <link rel="stylesheet" href="vendor/fonts/growcrm-icons/styles.css?v={{ config('system.versioning') }}">

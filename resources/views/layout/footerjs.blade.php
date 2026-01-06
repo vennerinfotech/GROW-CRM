@@ -3,6 +3,7 @@
 
 <!--ALL THIRD PART JAVASCRIPTS-->
 <script src="vendor/js/vendor.footer.js?v={{ config('system.versioning') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
 
 <!--nextloop.core.js-->

@@ -220,15 +220,7 @@ class Refunds extends Controller
             abort(409, __('lang.request_could_not_be_completed'));
         }
 
-        $refunds = $this->refundrepo->search();
-        $html = view('pages/refunds/components/table/table', compact('refunds'))->render();
-
-        $jsondata['dom_html'][] = [
-            'selector' => '#refunds-view-wrapper',
-            'action' => 'replace',
-            'value' => $html
-        ];
-        $jsondata['dom_visibility'][] = ['selector' => '#commonModal', 'action' => 'close-modal'];
+        $jsondata['redirect_url'] = url('refunds?filter_refund_statusid[]=' . request('refund_statusid'));
         $jsondata['notification'] = ['type' => 'success', 'value' => __('lang.request_has_been_completed')];
 
         return response()->json($jsondata);
@@ -265,6 +257,7 @@ class Refunds extends Controller
             'value' => $html
         ];
         $jsondata['postrun_functions'][] = ['value' => 'NXCommonSelectorInput'];
+        $jsondata['postrun_functions'][] = ['value' => 'NXRefundsInitTinyMCE'];  // Custom init for TinyMCE in modal if needed
 
         return response()->json($jsondata);
     }
@@ -286,19 +279,29 @@ class Refunds extends Controller
         $current_status = $refund->refund_statusid;
         $new_status = request('refund_statusid');
 
-        // Constraint: Authorized (2) -> Initial (1)
-        if ($current_status == 2 && $new_status == 1) {
-            abort(409, 'Cannot revert status from Authorized to Initial');
+        // STRICT TRANSITION RULES
+        // 1. Rejected (5) cannot be changed to anything else.
+        if ($current_status == 5 && $new_status != 5) {
+            abort(409, 'This refund is Rejected and cannot be modified.');
         }
 
-        // Constraint: Complete (3) -> Authorized (2)
-        if ($current_status == 3 && $new_status == 2) {
-            abort(409, 'Cannot revert status from Complete to Authorized');
+        // 2. Completed (3) cannot be changed to anything else (implied "Completed pachi...").
+        // Although user said "Pending -> Authorized -> Completed", checking if Completed is final.
+        // Usually Completed is final.
+        // User didn't explicitly forbid editing Completed, but "next" implies one way.
+        // Let's at least block going back.
+        if ($current_status == 3 && $new_status != 3) {
+            abort(409, 'This refund is Completed and cannot be changed.');
         }
 
-        // Constraint: Rejected (5) -> Authorized (2) or Completed (3)
-        if ($current_status == 5 && ($new_status == 2 || $new_status == 3)) {
-            abort(409, 'Cannot change status from Rejected to Authorized or Completed');
+        // 3. Authorized (2) can only go to Completed (3).
+        if ($current_status == 2 && $new_status != 3 && $new_status != 2) {
+            abort(409, 'Authorized refunds can only be moved to Completed status.');
+        }
+
+        // 4. Initial/Pending (1) can go to Authorized (2) or Rejected (5). Not directly to Completed (3).
+        if ($current_status == 1 && $new_status == 3) {
+            abort(409, 'Please authorize the refund before completing it.');
         }
 
         $rules = [
@@ -307,25 +310,17 @@ class Refunds extends Controller
             'refund_statusid' => 'required',
         ];
 
-        // Conditional Validation: Initial (1) or Completed (3) - Payment Mode required
-        // Authorized (2) does NOT show payment mode, so don't require it?
-        // But if it's new, it will be null. Is that okay?
-        // We will require it for 1 and 3.
-        if ($new_status == 3) {
-            $rules['refund_payment_modeid'] = 'required';
-        }
-
-        // Conditional Validation: Authorized
+        // Conditional Validation: Authorized (2)
         if ($new_status == 2) {
             $rules['refund_authorized_date'] = 'required';
-            // Description/Image no longer required for Authorized
         }
 
-        // Conditional Validation: Completed
+        // Conditional Validation: Completed (3)
         if ($new_status == 3) {
-            $rules['refund_authorized_date'] = 'required';  // Usually assumes authorized date exists
-            $rules['refund_payment_date'] = 'required';  // Payment date check
-            $rules['refund_authorized_description'] = 'required';  // Note
+            $rules['refund_authorized_date'] = 'required';
+            $rules['refund_payment_date'] = 'required';
+            $rules['refund_authorized_description'] = 'required';
+            $rules['refund_payment_modeid'] = 'required';
 
             // Valid image required if not already present
             if (empty($refund->refund_image)) {
@@ -333,7 +328,7 @@ class Refunds extends Controller
             }
         }
 
-        // Conditional Validation: Rejected
+        // Conditional Validation: Rejected (5)
         if ($new_status == 5) {
             $rules['refund_rejected_reason'] = 'required';
         }
@@ -353,15 +348,8 @@ class Refunds extends Controller
             abort(409, __('lang.request_could_not_be_completed'));
         }
 
-        $refunds = $this->refundrepo->search();
-        $html = view('pages/refunds/components/table/table', compact('refunds'))->render();
-
-        $jsondata['dom_html'][] = [
-            'selector' => '#refunds-view-wrapper',
-            'action' => 'replace',
-            'value' => $html
-        ];
-        $jsondata['dom_visibility'][] = ['selector' => '#commonModal', 'action' => 'close-modal'];
+        // Redirect to the filter page of the NEW status
+        $jsondata['redirect_url'] = url('refunds?filter_refund_statusid[]=' . $new_status);
         $jsondata['notification'] = ['type' => 'success', 'value' => __('lang.request_has_been_completed')];
 
         return response()->json($jsondata);

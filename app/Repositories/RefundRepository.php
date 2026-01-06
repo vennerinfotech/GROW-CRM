@@ -111,6 +111,7 @@ class RefundRepository
         $refund->refund_error_sourceid = request('refund_error_sourceid');
         $refund->refund_sales_sourceid = request('refund_sales_sourceid');
         $refund->refund_authorized_date = request('refund_authorized_date');
+        $refund->refund_payment_date = request('refund_payment_date');
         $refund->refund_authorized_description = request('refund_authorized_description');
         $refund->refund_rejected_reason = request('refund_rejected_reason');
         $refund->refund_creatorid = auth()->id();
@@ -151,6 +152,7 @@ class RefundRepository
         $refund->refund_error_sourceid = request('refund_error_sourceid');
         $refund->refund_sales_sourceid = request('refund_sales_sourceid');
         $refund->refund_authorized_date = request('refund_authorized_date');
+        $refund->refund_payment_date = request('refund_payment_date');
         $refund->refund_authorized_description = request('refund_authorized_description');
         $refund->refund_rejected_reason = request('refund_rejected_reason');
 

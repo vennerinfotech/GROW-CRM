@@ -53,6 +53,15 @@
                                 </a>
                             </th>
 
+                            <!--Mobile No-->
+                            <th class="col_lead_phone">
+                                <a class="js-ajax-ux-request js-list-sorting" id="sort_lead_phone"
+                                    href="javascript:void(0)"
+                                    data-url="{{ urlResource('/leads?action=sort&orderby=lead_phone&sortorder=asc') }}">@lang('lang.phone')<span
+                                        class="sorting-icons"><i class="ti-arrows-vertical"></i></span>
+                                </a>
+                            </th>
+
 
                             <!--tableconfig_column_3 [lead_created]-->
                             <th
@@ -62,6 +71,11 @@
                                     data-url="{{ urlResource('/leads?action=sort&orderby=lead_created&sortorder=asc') }}">@lang('lang.created')<span
                                         class="sorting-icons"><i class="ti-arrows-vertical"></i></span>
                                 </a>
+                            </th>
+
+                            <!--Follow Up-->
+                            <th class="col_lead_reminder">
+                                <a href="javascript:void(0);">Follow-Up Date</a>
                             </th>
 
 

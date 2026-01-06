@@ -38,11 +38,30 @@
             </span>
         </td>
 
+        <!--Mobile No-->
+        <td class="col_lead_phone" id="leads_col_phone_{{ $lead->lead_id }}">
+            {{ $lead->lead_phone ?? '---' }}
+        </td>
+
 
         <!--tableconfig_column_3 [lead_created]-->
         <td class="col_lead_created {{ config('table.tableconfig_column_3') }} tableconfig_column_3"
             id="leads_col_date_{{ $lead->lead_id }}">
             {{ runtimeDate($lead->lead_created) }}
+        </td>
+
+        <!--Follow Up-->
+        <td class="col_lead_reminder" id="leads_col_reminder_{{ $lead->lead_id }}">
+            @if($lead->reminders->isNotEmpty())
+                @php $reminder = $lead->reminders->where('reminder_userid', auth()->id())->sortBy('reminder_datetime')->first(); @endphp
+                @if($reminder)
+                    <span class="text-info"><i class="sl-icon-clock"></i> {{ runtimeDate($reminder->reminder_datetime) }}</span>
+                @else
+                    ---
+                @endif
+            @else
+                ---
+            @endif
         </td>
 
 

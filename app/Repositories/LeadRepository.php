@@ -311,11 +311,11 @@ class LeadRepository
                         ->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC');
 
                     // subquery to get the next reminder date
-                    $leads->orderByRaw('(SELECT MIN(reminder_datetime) 
+                    $leads->orderByRaw('(SELECT MAX(reminder_updated) 
                                          FROM reminders 
                                          WHERE reminderresource_type = "lead" 
                                          AND reminderresource_id = leads.lead_id '
-                        . (auth()->user()->is_admin ? '' : 'AND reminder_userid = ' . auth()->id())
+                        . ((auth()->user()->is_admin || auth()->user()->role->role_leads_scope == 'global') ? '' : 'AND reminder_userid = ' . auth()->id())
                         . ') ' . request('sortorder'));
                     break;
             }

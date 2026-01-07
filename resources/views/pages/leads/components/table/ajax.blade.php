@@ -55,8 +55,8 @@
         <td class="col_lead_reminder" id="leads_col_reminder_{{ $lead->lead_id }}">
             @if($lead->reminders->isNotEmpty())
                 @php 
-                    if(auth()->user()->is_admin) {
-                         $reminder = $lead->reminders->sortBy('reminder_datetime')->first();
+                    if(auth()->user()->is_admin || auth()->user()->role->role_leads_scope == 'global') {
+                         $reminder = $lead->reminders->sortByDesc('reminder_updated')->first();
                     } else {
                          $reminder = $lead->reminders->where('reminder_userid', auth()->id())->sortBy('reminder_datetime')->first(); 
                     }

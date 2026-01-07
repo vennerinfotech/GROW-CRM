@@ -1,20 +1,24 @@
 <?php
 
-/** --------------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------------
  * This classes renders the response for the [update] process for the leads
  * controller
  * @package    Grow CRM
  * @author     NextLoop
- *----------------------------------------------------------------------------------*/
+ * ----------------------------------------------------------------------------------
+ */
 
 namespace App\Http\Responses\Leads;
+
 use Illuminate\Contracts\Support\Responsable;
 
-class UpdateResponse implements Responsable {
-
+class UpdateResponse implements Responsable
+{
     private $payload;
 
-    public function __construct($payload = array()) {
+    public function __construct($payload = array())
+    {
         $this->payload = $payload;
     }
 
@@ -24,88 +28,92 @@ class UpdateResponse implements Responsable {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function toResponse($request) {
-
-        //set all data to arrays
+    public function toResponse($request)
+    {
+        // set all data to arrays
         foreach ($this->payload as $key => $value) {
             $$key = $value;
         }
 
-        //update
+        // update
         $html = view('pages/leads/components/table/ajax', compact('leads'))->render();
         $jsondata['dom_html'][] = array(
-            'selector' => "#lead_" . $leads->first()->lead_id,
+            'selector' => '#lead_' . $leads->first()->lead_id,
             'action' => 'replace-with',
-            'value' => $html);
+            'value' => $html
+        );
 
-        //assigned update
+        // assigned update
         if (isset($type) && $type == 'update-assigned') {
-            //new list of assigned users
+            // new list of assigned users
             $html = view('pages/lead/components/assigned', compact('assigned'))->render();
             $jsondata['dom_html'][] = array(
-                'selector' => "#lead-assigned-container",
+                'selector' => '#lead-assigned-container',
                 'action' => 'replace',
-                'value' => $html);
+                'value' => $html
+            );
             $jsondata['dom_classes'][] = [
                 'selector' => '#lead-assigned-container',
                 'action' => 'remove',
                 'value' => 'loading-placeholder',
             ];
-
         }
 
-        //update name
+        // update name
         if (isset($type) && $type == 'update-name') {
-
             if ($firstname == '' && $lastname == '') {
                 $jsondata['dom_html'][] = array(
-                    'selector' => "#card-lead-firstname-containter",
+                    'selector' => '#card-lead-firstname-containter',
                     'action' => 'replace',
-                    'value' => __('lang.add_contact'));
+                    'value' => __('lang.add_contact')
+                );
                 $jsondata['dom_html'][] = array(
-                    'selector' => "#card-lead-lastname-containter",
+                    'selector' => '#card-lead-lastname-containter',
                     'action' => 'replace',
-                    'value' => '');
+                    'value' => ''
+                );
             } else {
                 $jsondata['dom_html'][] = array(
-                    'selector' => "#card-lead-firstname-containter",
+                    'selector' => '#card-lead-firstname-containter',
                     'action' => 'replace',
-                    'value' => $firstname);
+                    'value' => $firstname
+                );
                 $jsondata['dom_html'][] = array(
-                    'selector' => "#card-lead-lastname-containter",
+                    'selector' => '#card-lead-lastname-containter',
                     'action' => 'replace',
-                    'value' => $lastname);
+                    'value' => $lastname
+                );
             }
             $jsondata['dom_classes'][] = [
                 'selector' => '#card-lead-element-container-name',
                 'action' => 'remove',
                 'value' => 'loading',
             ];
-
         }
 
-        //[other] update value
+        // [other] update value
         if (isset($type) && $type == 'update-value') {
             $jsondata['dom_html'][] = [
-                'selector' => "#card-lead-value",
-                'action' => 'replace',
-                'value' => ($amount > 0) ? runtimeMoneyFormat($amount) : '---',
+                'selector' => '#card-lead-value',
+                'action' => 'replace-with',
+                'value' => '<span class="x-highlight" id="card-lead-value">' . (($amount > 0) ? runtimeMoneyFormat($amount) : '---') . '</span>',
             ];
             $jsondata['dom_classes'][] = array(
                 'selector' => '#card-lead-value',
                 'action' => 'remove',
-                'value' => 'loading');
+                'value' => 'loading'
+            );
             $jsondata['dom_attributes'][] = [
-                'selector' => "#card-lead-value",
+                'selector' => '#card-lead-value',
                 'attr' => 'data-value',
                 'value' => $amount,
             ];
         }
 
-        //[other] update category
+        // [other] update category
         if (isset($type) && $type == 'update-category') {
             $jsondata['dom_html'][] = [
-                'selector' => "#card-lead-category-text",
+                'selector' => '#card-lead-category-text',
                 'action' => 'replace',
                 'value' => $new_lead_category,
             ];
@@ -116,10 +124,10 @@ class UpdateResponse implements Responsable {
             ];
         }
 
-        //[other] update phone
+        // [other] update phone
         if (isset($type) && $type == 'update-phone') {
             $jsondata['dom_html'][] = [
-                'selector' => "#card-lead-phone",
+                'selector' => '#card-lead-phone',
                 'action' => 'replace',
                 'value' => ($phone == '') ? '---' : $phone,
             ];
@@ -130,10 +138,10 @@ class UpdateResponse implements Responsable {
             ];
         }
 
-        //[other] update email
+        // [other] update email
         if (isset($type) && $type == 'update-email') {
             $jsondata['dom_html'][] = [
-                'selector' => "#card-lead-email",
+                'selector' => '#card-lead-email',
                 'action' => 'replace',
                 'value' => ($email == '') ? '---' : $email,
             ];
@@ -144,10 +152,10 @@ class UpdateResponse implements Responsable {
             ];
         }
 
-        //[other] update email
+        // [other] update email
         if (isset($type) && $type == 'update-source') {
             $jsondata['dom_html'][] = [
-                'selector' => "#card-lead-source-text",
+                'selector' => '#card-lead-source-text',
                 'action' => 'replace',
                 'value' => ($source == '') ? '---' : $source,
             ];
@@ -158,7 +166,7 @@ class UpdateResponse implements Responsable {
             ];
         }
 
-        //update error
+        // update error
         if (isset($error) && isset($message)) {
             $jsondata['notification'] = [
                 'type' => 'error',
@@ -166,19 +174,19 @@ class UpdateResponse implements Responsable {
             ];
         }
 
-        //kanbad
+        // kanbad
         $board['leads'] = $leads;
         $html = view('pages/leads/components/kanban/card', compact('board'))->render();
         $jsondata['dom_html'][] = array(
-            'selector' => "#card_lead_" . $leads->first()->lead_id,
+            'selector' => '#card_lead_' . $leads->first()->lead_id,
             'action' => 'replace-with',
-            'value' => $html);
+            'value' => $html
+        );
 
-        //close modal
+        // close modal
         $jsondata['dom_visibility'][] = array('selector' => '#actionsModal', 'action' => 'close-modal');
 
-        //response
+        // response
         return response()->json($jsondata);
     }
-
 }

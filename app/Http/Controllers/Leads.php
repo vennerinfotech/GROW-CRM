@@ -886,10 +886,15 @@ class Leads extends Controller
             ->update(['eventtracking_status' => 'read']);
 
         // get users reminders
-        if ($reminder = \App\Models\Reminder::Where('reminderresource_type', 'lead')
-                ->Where('reminderresource_id', $id)
-                ->Where('reminder_userid', auth()->id())
-                ->first()) {
+        $reminderQuery = \App\Models\Reminder::Where('reminderresource_type', 'lead')
+            ->Where('reminderresource_id', $id);
+
+        // Filter by user if not admin and not global scope
+        if (!auth()->user()->is_admin && auth()->user()->role->role_leads_scope != 'global') {
+            $reminderQuery->where('reminder_userid', auth()->id());
+        }
+
+        if ($reminder = $reminderQuery->orderBy('reminder_updated', 'desc')->first()) {
             $has_reminder = true;
         } else {
             $reminder = [];

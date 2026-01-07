@@ -33,14 +33,7 @@
                             @endif
 
 
-                            <!--tableconfig_column_2 [lead_title]-->
-                            <th class="col_lead_title {{ config('table.tableconfig_column_2') }} tableconfig_column_2">
-                                <a class="js-ajax-ux-request js-list-sorting" id="sort_lead_title"
-                                    href="javascript:void(0)"
-                                    data-url="{{ urlResource('/leads?action=sort&orderby=lead_title&sortorder=asc') }}">{{ cleanLang(__('lang.title')) }}<span
-                                        class="sorting-icons"><i class="ti-arrows-vertical"></i></span>
-                                </a>
-                            </th>
+
 
                             <!--Occasion-->
                             <th class="col_lead_occasion">
@@ -84,7 +77,11 @@
 
                             <!--Follow Up-->
                             <th class="col_lead_reminder">
-                                <a href="javascript:void(0);">Follow-Up Date</a>
+                                <a class="js-ajax-ux-request js-list-sorting" id="sort_lead_reminder"
+                                    href="javascript:void(0)"
+                                    data-url="{{ urlResource('/leads?action=sort&orderby=lead_reminder&sortorder=asc') }}">Follow-Up Date<span
+                                        class="sorting-icons"><i class="ti-arrows-vertical"></i></span>
+                                </a>
                             </th>
 
 

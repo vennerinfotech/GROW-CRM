@@ -306,6 +306,18 @@ class LeadRepository
                         ->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC')
                         ->orderBy('leads_occasions.leadoccasions_title', request('sortorder'));
                     break;
+                case 'lead_reminder':
+                    $leads
+                        ->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC');
+
+                    // subquery to get the next reminder date
+                    $leads->orderByRaw('(SELECT MIN(reminder_datetime) 
+                                         FROM reminders 
+                                         WHERE reminderresource_type = "lead" 
+                                         AND reminderresource_id = leads.lead_id '
+                        . (auth()->user()->is_admin ? '' : 'AND reminder_userid = ' . auth()->id())
+                        . ') ' . request('sortorder'));
+                    break;
             }
         } else {
             // default sorting

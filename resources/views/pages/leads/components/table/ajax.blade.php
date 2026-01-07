@@ -14,17 +14,7 @@
         @endif
 
 
-        <!--tableconfig_column_2 [lead_title]-->
-        <td class="col_lead_title {{ config('table.tableconfig_column_2') }} tableconfig_column_2"
-            id="leads_col_title_{{ $lead->lead_id }}">
-            <span title="{{ $lead->lead_title }}">
-                <a class="show-modal-button reset-card-modal-form js-ajax-ux-request" data-toggle="modal"
-                    href="javascript:void(0)" data-target="#cardModal"
-                    data-url="{{ urlResource('/leads/' . $lead->lead_id) }}" data-loading-target="main-top-nav-bar"
-                    id="table_lead_title_{{ $lead->lead_id }}">
-                    <span title="{{ $lead->lead_title }}">{{ str_limit($lead->lead_title, 20) }}</span></a>
-            </span>
-        </td>
+
 
         <!--Occasion-->
         <td class="col_lead_occasion">

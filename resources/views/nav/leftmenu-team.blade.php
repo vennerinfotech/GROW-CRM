@@ -450,7 +450,7 @@
                 @stack('menu_main_team_19')
 
                 <!--team-->
-                {{-- @if (auth()->user()->is_team)
+                @if (auth()->user()->is_team)
                     <li data-modular-id="main_menu_team_team"
                         class="sidenav-menu-item {{ $page['mainmenu_settings'] ?? '' }}">
                         <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);"
@@ -479,7 +479,7 @@
                             @stack('menu_main_team_20')
                         </ul>
                     </li>
-                @endif --}}
+                @endif
 
                 <!--[MODULES] - dynamic menu-->
                 {!! config('modules.menus.main.parent13') !!}

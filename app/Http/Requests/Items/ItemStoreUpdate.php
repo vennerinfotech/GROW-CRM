@@ -1,11 +1,13 @@
 <?php
 
-/** --------------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------------
  * This middleware class validates input requests for the items controller
  *
  * @package    Grow CRM
  * @author     NextLoop
- *----------------------------------------------------------------------------------*/
+ * ----------------------------------------------------------------------------------
+ */
 
 namespace App\Http\Requests\Items;
 
@@ -14,15 +16,15 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-
-class ItemStoreUpdate extends FormRequest {
-
+class ItemStoreUpdate extends FormRequest
+{
     /**
      * we are checking authorised users via the middleware
      * so just retun true here
      * @return bool
      */
-    public function authorize() {
+    public function authorize()
+    {
         return true;
     }
 
@@ -31,7 +33,8 @@ class ItemStoreUpdate extends FormRequest {
      * @optional
      * @return array
      */
-    public function messages() {
+    public function messages()
+    {
         return [
             'item_categoryid.exists' => __('lang.category_not_found'),
         ];
@@ -41,32 +44,34 @@ class ItemStoreUpdate extends FormRequest {
      * Validate the request
      * @return array
      */
-    public function rules() {
-
-        //initialize
+    public function rules()
+    {
+        // initialize
         $rules = [];
 
-        /**-------------------------------------------------------
+        /*
+         * -------------------------------------------------------
          * [create] only rules
-         * ------------------------------------------------------*/
+         * ------------------------------------------------------
+         */
         if ($this->getMethod() == 'POST') {
-            $rules += [
-
-            ];
+            $rules += [];
         }
 
-        /**-------------------------------------------------------
+        /*
+         * -------------------------------------------------------
          * [update] only rules
-         * ------------------------------------------------------*/
+         * ------------------------------------------------------
+         */
         if ($this->getMethod() == 'PUT') {
-            $rules += [
-
-            ];
+            $rules += [];
         }
 
-        /**-------------------------------------------------------
+        /*
+         * -------------------------------------------------------
          * common rules for both [create] and [update] requests
-         * ------------------------------------------------------*/
+         * ------------------------------------------------------
+         */
         $rules += [
             'item_description' => [
                 'required',
@@ -75,11 +80,11 @@ class ItemStoreUpdate extends FormRequest {
             'item_unit' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    //accept numeric (existing unit ID) or string (new unit name)
+                    // accept numeric (existing unit ID) or string (new unit name)
                     if (!is_numeric($value) && !is_string($value)) {
                         $fail(__('lang.unit_is_invalid'));
                     }
-                    //if string, validate length and no HTML
+                    // if string, validate length and no HTML
                     if (is_string($value)) {
                         if (strlen($value) > 50) {
                             $fail(__('lang.unit_name_too_long'));
@@ -99,26 +104,26 @@ class ItemStoreUpdate extends FormRequest {
                 Rule::exists('categories', 'category_id'),
             ],
             'item_default_tax' => [
-                'required',
+                'nullable',
                 'integer',
             ],
         ];
 
-        //validate
+        // validate
         return $rules;
     }
 
     /**
      * Deal with the errors - send messages to the frontend
      */
-    public function failedValidation(Validator $validator) {
-
+    public function failedValidation(Validator $validator)
+    {
         $errors = $validator->errors();
         $messages = '';
         foreach ($errors->all() as $message) {
             $messages .= "<li>$message</li>";
         }
-        
+
         abort(409, $messages);
     }
 }

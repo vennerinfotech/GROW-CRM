@@ -3,16 +3,13 @@
 <div class="container-fluid">
 
     <!-- summary row -->
-    @include('pages.refunds.dashboard.widgets.summary-wrapper')
+    @include('pages.leads.components.misc.list-pages-stats', ['stats' => $payload['stats'] ?? []])
 
-    <!-- charts row -->
-    <div class="row">
-        <!-- BY STATUS -->
-        @include('pages.refunds.dashboard.widgets.by-status')
+    <!-- refunds table -->
+    @include('pages.refunds.components.table.wrapper')
 
-        <!-- BY MODE -->
-        @include('pages.refunds.dashboard.widgets.by-mode')
-    </div>
+    <!-- filter -->
+    @include('pages.refunds.components.misc.filter')
 
 </div>
 <!--main content -->

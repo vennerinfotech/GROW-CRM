@@ -1,3 +1,16 @@
+<!--filtered results warning-->
+@if (config('filter.status') == 'active')
+    <div class="filtered-results-warning opacity-8 p-b-5">
+        <small>
+            @lang('lang.these_results_are')
+            <a href="javascript:void(0);" class="js-toggle-side-panel"
+                data-target="sidepanel-filter-refunds">@lang('lang.filtered')</a>.
+            @lang('lang.you_can')
+            <a href="{{ url('/refunds?action=reset') }}">@lang('lang.clear_the_filters')</a>.
+        </small>
+    </div>
+@endif
+
 <div class="card count-{{ @count($refunds ?? []) }}" id="refunds-view-wrapper">
     <div class="card-body">
         <div class="table-responsive list-table-wrapper">

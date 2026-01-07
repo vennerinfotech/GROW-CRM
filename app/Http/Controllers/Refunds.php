@@ -56,24 +56,49 @@ class Refunds extends Controller
      */
 
     /**
-     * Display the dashboard.
-     *
+     * Display the dashboard home page
      * @return \Illuminate\Http\Response
      */
     public function dashboard()
     {
-        $page = $this->pageSettings('dashboard');
-
-        $stats = [
-            'today' => $this->refundrepo->getStatistics('today'),
-            'month' => $this->refundrepo->getStatistics('month'),
-            'all' => $this->refundrepo->getStatistics('all'),
+        // reponse payload
+        $payload = [
+            'page' => $this->pageSettings('dashboard'),
+            'stats' => $this->statsWidget(),
         ];
 
-        $by_status = $this->refundrepo->groupByStatus();
-        $by_mode = $this->refundrepo->groupByPaymentMode();
+        // get refunds
+        $refunds = $this->refundrepo->search();
 
-        return view('pages/refunds/dashboard/wrapper', compact('page', 'stats', 'by_status', 'by_mode'));
+        // get auxiliary data for filters
+        $statuses = \App\Models\RefundStatus::all();
+        $payment_modes = \App\Models\RefundPaymentMode::all();
+        $users = $this->userrepo->getTeamMembers();
+        $error_sources = \App\Models\RefundErrorSource::all();
+        $sales_sources = \App\Models\RefundSalesSource::all();
+
+        // return view
+        return view('pages/refunds/dashboard/wrapper', compact('payload', 'refunds', 'statuses', 'payment_modes', 'users', 'error_sources', 'sales_sources'));
+    }
+
+    /**
+     * stats widget
+     * @return array
+     */
+    private function statsWidget()
+    {
+        $stats = [];
+        $rows = $this->refundrepo->groupByStatus();
+
+        foreach ($rows as $row) {
+            $stats[] = [
+                'value' => runtimeMoneyFormat($row->sum),
+                'title' => $row->title . ' - ' . $row->count,
+                'color' => 'bg-' . $row->color,
+            ];
+        }
+
+        return $stats;
     }
 
     /**
@@ -185,6 +210,11 @@ class Refunds extends Controller
         // PAGE LOAD (NO ACTION)
         else if (session()->has('refund_filters')) {
             request()->merge(array_merge(session('refund_filters'), request()->all()));
+
+            // set config for active filter
+            if (count(session('refund_filters')) > 0) {
+                config(['filter.status' => 'active']);
+            }
         }
 
         $refunds = $this->refundrepo->search();

@@ -158,7 +158,7 @@
             <!--default tax rate-->
             <div class="form-group row">
                 <label
-                    class="col-sm-12 col-lg-3 text-left control-label col-form-label required">{{ cleanLang(__('lang.default_tax')) }}*
+                    class="col-sm-12 col-lg-3 text-left control-label col-form-label">{{ cleanLang(__('lang.default_tax')) }}
                     <span class="align-middle text-info font-16" data-toggle="tooltip"
                         title="{{ cleanLang(__('lang.default_tax_info')) }}" data-placement="top"><i
                             class="ti-info-alt"></i></span></label>

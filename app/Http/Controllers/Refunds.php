@@ -61,9 +61,12 @@ class Refunds extends Controller
      */
     public function dashboard()
     {
+        // page settings
+        $page = $this->pageSettings('dashboard');
+
         // reponse payload
         $payload = [
-            'page' => $this->pageSettings('dashboard'),
+            'page' => $page,
             'stats' => $this->statsWidget(),
         ];
 
@@ -78,7 +81,7 @@ class Refunds extends Controller
         $sales_sources = \App\Models\RefundSalesSource::all();
 
         // return view
-        return view('pages/refunds/dashboard/wrapper', compact('payload', 'refunds', 'statuses', 'payment_modes', 'users', 'error_sources', 'sales_sources'));
+        return view('pages/refunds/dashboard/wrapper', compact('page', 'payload', 'refunds', 'statuses', 'payment_modes', 'users', 'error_sources', 'sales_sources'));
     }
 
     /**
@@ -162,8 +165,8 @@ class Refunds extends Controller
                     $refund->refund_amount,
                     $refund->refundstatus_title ?? '',
                     $refund->refundpaymentmode_title ?? '',
-                    $refund->refund_reasonid,  // You might want to join reasons table
-                    $refund->refund_courierid,  // You might want to join couriers table
+                    $refund->refund_reason,
+                    $refund->refund_courier,
                     $refund->refund_docket_no,
                     $refund->refunderrorsource_title ?? '',
                     $refund->refundsalessource_title ?? '',
@@ -398,13 +401,16 @@ class Refunds extends Controller
         if ($new_status == 3) {
             $rules['refund_authorized_date'] = 'required';
             $rules['refund_payment_date'] = 'required';
-            $rules['refund_authorized_description'] = 'required';
+            // $rules['refund_authorized_description'] = 'required'; // Removed as per request
             $rules['refund_payment_modeid'] = 'required';
 
-            // Valid image required if not already present
-            if (empty($refund->refund_image)) {
-                $rules['refund_image'] = 'required';
-            }
+            // Valid image required if not already present -> REMOVED as per request
+
+            /*
+             * if (empty($refund->refund_image)) {
+             *     $rules['refund_image'] = 'required';
+             * }
+             */
         }
 
         // Conditional Validation: Rejected (5)
@@ -470,6 +476,7 @@ class Refunds extends Controller
 
         if ($section == 'index') {
             $page['heading'] = 'Refund Report';
+            $page['dynamic_search_url'] = url('refunds/search');
             $filters = request('filter_refund_statusid');
             if (is_array($filters)) {
                 if (in_array(1, $filters))
@@ -485,6 +492,29 @@ class Refunds extends Controller
 
         if ($section == 'dashboard') {
             $page['heading'] = 'Refunds Dashboard';
+
+            // Dynamic Title for Filters
+            if (request()->filled('filter_refund_statusid')) {
+                $status_id = request('filter_refund_statusid');
+                // Ensure it's a single value if passed as array or check first element
+                if (is_array($status_id)) {
+                    $status_id = reset($status_id);
+                }
+
+                $status_name = match ((int) $status_id) {
+                    1 => 'Initiate',
+                    2 => 'Authorized',
+                    3 => 'Completed',
+                    5 => 'Rejected',
+                    default => ''
+                };
+
+                if ($status_name) {
+                    $page['heading'] = 'Refunds - ' . $status_name;
+                }
+            }
+
+            $page['dynamic_search_url'] = url('refunds/dashboard');
             $page['mainmenu_refunds'] = 'active';
             $page['submenu_refunds_dashboard'] = 'active';
         }

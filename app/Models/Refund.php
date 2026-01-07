@@ -79,4 +79,20 @@ class Refund extends Model
     {
         return $this->belongsTo('App\Models\RefundCourier', 'refund_courierid', 'refundcourier_id');
     }
+
+    /**
+     * Relationship: Error Source
+     */
+    public function error_source()
+    {
+        return $this->belongsTo('App\Models\RefundErrorSource', 'refund_error_sourceid', 'refunderrorsource_id');
+    }
+
+    /**
+     * Relationship: Sales Source
+     */
+    public function sales_source()
+    {
+        return $this->belongsTo('App\Models\RefundSalesSource', 'refund_sales_sourceid', 'refundsalessource_id');
+    }
 }

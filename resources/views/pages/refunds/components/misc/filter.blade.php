@@ -1,6 +1,6 @@
 <!-- right-sidebar -->
 <div class="right-sidebar" id="sidepanel-filter-refunds">
-    <form>
+    <form action="{{ $page['dynamic_search_url'] ?? url('refunds/search') }}" method="GET">
         <div class="slimscrollright">
             <!--title-->
             <div class="rpanel-title">

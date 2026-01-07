@@ -26,6 +26,17 @@
             </span>
         </td>
 
+        <!--Occasion-->
+        <td class="col_lead_occasion">
+            <span title="{{ $lead->occasion->leadoccasions_title ?? '---' }}">
+                <a class="show-modal-button reset-card-modal-form js-ajax-ux-request" data-toggle="modal"
+                    href="javascript:void(0)" data-target="#cardModal"
+                    data-url="{{ urlResource('/leads/' . $lead->lead_id) }}" data-loading-target="main-top-nav-bar">
+                    {{ str_limit($lead->occasion->leadoccasions_title ?? '---', 15) }}
+                </a>
+            </span>
+        </td>
+
         <!--tableconfig_column_1 [lead_firstname lead_lastname]-->
         <td class="col_lead_firstname {{ config('table.tableconfig_column_1') }} tableconfig_column_1"
             id="leads_col_contact_{{ $lead->lead_id }}">
@@ -53,7 +64,13 @@
         <!--Follow Up-->
         <td class="col_lead_reminder" id="leads_col_reminder_{{ $lead->lead_id }}">
             @if($lead->reminders->isNotEmpty())
-                @php $reminder = $lead->reminders->where('reminder_userid', auth()->id())->sortBy('reminder_datetime')->first(); @endphp
+                @php 
+                    if(auth()->user()->is_admin) {
+                         $reminder = $lead->reminders->sortBy('reminder_datetime')->first();
+                    } else {
+                         $reminder = $lead->reminders->where('reminder_userid', auth()->id())->sortBy('reminder_datetime')->first(); 
+                    }
+                @endphp
                 @if($reminder)
                     <span class="text-info"><i class="sl-icon-clock"></i> {{ runtimeDate($reminder->reminder_datetime) }}</span>
                 @else
@@ -114,6 +131,9 @@
             <span class="label {{ bootstrapColors($lead->leadstatus->leadstatus_color ?? '', 'label') }}">
                 <!--notes: alternatve lang for lead status will need to be added manally by end user in lang files-->
                 {{ runtimeLang($lead->leadstatus->leadstatus_title ?? '') }}</span>
+            @if ($lead->leadstatus_title == 'Unsuccessful' && $lead->lead_reason)
+                <div class="m-t-3 small text-danger"><i class="sl-icon-info"></i> {{ str_limit($lead->lead_reason, 20) }}</div>
+            @endif
 
             <!--captured via a webform-->
             @if ($lead->lead_input_source == 'webform')

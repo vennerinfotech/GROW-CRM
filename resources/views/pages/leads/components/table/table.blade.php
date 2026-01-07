@@ -42,6 +42,15 @@
                                 </a>
                             </th>
 
+                            <!--Occasion-->
+                            <th class="col_lead_occasion">
+                                <a class="js-ajax-ux-request js-list-sorting" id="sort_lead_occasion"
+                                    href="javascript:void(0)"
+                                    data-url="{{ urlResource('/leads?action=sort&orderby=lead_occasion&sortorder=asc') }}">Occasion<span
+                                        class="sorting-icons"><i class="ti-arrows-vertical"></i></span>
+                                </a>
+                            </th>
+
 
                             <!--tableconfig_column_1 [lead_firstname lead_lastname]-->
                             <th

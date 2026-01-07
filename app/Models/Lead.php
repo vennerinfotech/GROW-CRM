@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Lead extends Model {
-
+class Lead extends Model
+{
     /**
      * @primaryKey string - primry key column.
      * @dateFormat string - date storage format
@@ -14,8 +14,10 @@ class Lead extends Model {
      * @UPDATED_AT string - updated date column
      */
     protected $primaryKey = 'lead_id';
+
     protected $dateFormat = 'Y-m-d H:i:s';
     protected $guarded = ['lead_id'];
+
     const CREATED_AT = 'lead_created';
     const UPDATED_AT = 'lead_updated';
 
@@ -24,7 +26,8 @@ class Lead extends Model {
      *         - the Creator (user) can have many Leads
      *         - the Lead belongs to one Creator (user)
      */
-    public function creator() {
+    public function creator()
+    {
         return $this->belongsTo('App\Models\User', 'lead_creatorid', 'id');
     }
 
@@ -33,7 +36,8 @@ class Lead extends Model {
      *         - the Creator (user) can have many Projects
      *         - the Project belongs to one User (user)
      */
-    public function leadstatus() {
+    public function leadstatus()
+    {
         return $this->belongsTo('App\Models\LeadStatus', 'lead_status', 'leadstatus_id');
     }
 
@@ -42,7 +46,8 @@ class Lead extends Model {
      *         - the Category can have many Leads
      *         - the ProLeadject belongs to one Category
      */
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo('App\Models\Category', 'lead_categoryid', 'category_id');
     }
 
@@ -52,7 +57,8 @@ class Lead extends Model {
      *         - the Tags belongs to one Lead
      *         - other tags can belong to other tables
      */
-    public function tags() {
+    public function tags()
+    {
         return $this->morphMany('App\Models\Tag', 'tagresource');
     }
 
@@ -62,7 +68,8 @@ class Lead extends Model {
      *         - the Attachment belongs to one Lead
      *         - other Attachments can belong to other tables
      */
-    public function attachments() {
+    public function attachments()
+    {
         return $this->morphMany('App\Models\Attachment', 'attachmentresource');
     }
 
@@ -71,14 +78,16 @@ class Lead extends Model {
      *         - the Task can have many Comments
      *         - the Checklist belongs to one Task
      */
-    public function checklists() {
+    public function checklists()
+    {
         return $this->morphMany('App\Models\Checklist', 'checklistresource');
     }
 
     /**
      * The assigned users table records
      */
-    public function assignedrecords() {
+    public function assignedrecords()
+    {
         return $this->hasMany('App\Models\LeadAssigned', 'leadsassigned_leadid', 'lead_id');
     }
 
@@ -87,7 +96,8 @@ class Lead extends Model {
      *         - the Lead can have many Comments
      *         - the Comment belongs to one Lead
      */
-    public function comments() {
+    public function comments()
+    {
         return $this->morphMany('App\Models\Comment', 'commentresource');
     }
 
@@ -97,13 +107,16 @@ class Lead extends Model {
      *         - the Event belongs to one Lead
      *         - other Event can belong to other tables (Leads, etc)
      */
-    public function events() {
+    public function events()
+    {
         return $this->morphMany('App\Models\Event', 'eventresource');
     }
+
     /**
      * The Users that are assigned to the Task.
      */
-    public function assigned() {
+    public function assigned()
+    {
         return $this->belongsToMany('App\Models\User', 'leads_assigned', 'leadsassigned_leadid', 'leadsassigned_userid');
     }
 
@@ -112,7 +125,8 @@ class Lead extends Model {
      *         - the Lead can have many Proposals
      *         - the Proposal belongs to one Lead
      */
-    public function proposals() {
+    public function proposals()
+    {
         return $this->hasMany('App\Models\Proposal', 'doc_lead_id', 'lead_id');
     }
 
@@ -121,14 +135,16 @@ class Lead extends Model {
      *         - the Lead can have many Contracts
      *         - the Contract belongs to one Lead
      */
-    public function contracts() {
+    public function contracts()
+    {
         return $this->hasMany('App\Models\Contract', 'doc_lead_id', 'lead_id');
     }
 
     /**
      * leads full name ucfirst
      */
-    public function getFullNameAttribute() {
+    public function getFullNameAttribute()
+    {
         if ($this->lead_firstname == '' && $this->lead_lastname == '') {
             return '---';
         }
@@ -139,7 +155,8 @@ class Lead extends Model {
      * format last contacted date
      * @return string
      */
-    public function getCarbonLastContactedAttribute() {
+    public function getCarbonLastContactedAttribute()
+    {
         if ($this->lead_last_contacted == '' || $this->lead_last_contacted == null) {
             return '---';
         }
@@ -152,7 +169,8 @@ class Lead extends Model {
      *         - the reminder belongs to one Lead
      *         - other reminders can belong to other resources
      */
-    public function reminders() {
+    public function reminders()
+    {
         return $this->morphMany('App\Models\Reminder', 'reminderresource');
     }
 
@@ -161,7 +179,8 @@ class Lead extends Model {
      *         - the Lead can have many LeadLogs
      *         - the LeadLog belongs to one Lead
      */
-    public function logs() {
+    public function logs()
+    {
         return $this->hasMany('App\Models\LeadLog', 'lead_log_leadid', 'lead_id');
     }
 
@@ -171,7 +190,8 @@ class Lead extends Model {
      *         - the Starred entry belongs to one Lead
      *         - other Starred entries can belong to other resources
      */
-    public function starred() {
+    public function starred()
+    {
         return $this->morphMany('App\Models\Starred', 'starredresource', 'starred_resource_type', 'starred_resource_id');
     }
 
@@ -179,7 +199,8 @@ class Lead extends Model {
      * check if the lead is starred by the current user
      * @return bool
      */
-    public function getIsStarredAttribute() {
+    public function getIsStarredAttribute()
+    {
         if (!auth()->check()) {
             return false;
         }
@@ -188,5 +209,14 @@ class Lead extends Model {
             ->where('starred_resource_type', 'lead')
             ->where('starred_resource_id', $this->lead_id)
             ->exists();
+    }
+
+    /**
+     * relationship business rules:
+     *         - the Lead belongs to one Occasion
+     */
+    public function occasion()
+    {
+        return $this->belongsTo('App\Models\LeadOccasion', 'lead_occasionid', 'leadoccasions_id');
     }
 }

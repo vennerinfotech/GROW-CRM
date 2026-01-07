@@ -85,6 +85,54 @@ class RefundRepository
             $refunds->whereIn('refund_sales_sourceid', request('filter_refund_sales_sourceid'));
         }
 
+        if (request()->filled('search_query') || request()->filled('query')) {
+            $refunds->where(function ($query) {
+                $query->orWhere('refund_id', '=', request('search_query'));
+                $query->orWhere('refund_bill_no', 'LIKE', '%' . request('search_query') . '%');
+                $query->orWhere('refund_amount', 'LIKE', '%' . request('search_query') . '%');
+                $query->orWhere('refund_docket_no', 'LIKE', '%' . request('search_query') . '%');
+                $query->orWhere('refund_authorized_description', 'LIKE', '%' . request('search_query') . '%');
+                $query->orWhere('refund_rejected_reason', 'LIKE', '%' . request('search_query') . '%');
+                $query->orWhereDate('refund_created', '=', date('Y-m-d', strtotime(request('search_query'))));
+
+                // Search by Status
+                $query->orWhereHas('status', function ($q) {
+                    $q->where('refundstatus_title', 'LIKE', '%' . request('search_query') . '%');
+                });
+
+                // Search by Creator
+                $query->orWhereHas('creator', function ($q) {
+                    $q->where('first_name', 'LIKE', '%' . request('search_query') . '%');
+                    $q->where('last_name', 'LIKE', '%' . request('search_query') . '%');
+                });
+
+                // Search by Payment Mode
+                $query->orWhereHas('payment_mode', function ($q) {
+                    $q->where('refundpaymentmode_title', 'LIKE', '%' . request('search_query') . '%');
+                });
+
+                // Search by Reason
+                $query->orWhereHas('reason', function ($q) {
+                    $q->where('refundreason_title', 'LIKE', '%' . request('search_query') . '%');
+                });
+
+                // Search by Courier
+                $query->orWhereHas('courier', function ($q) {
+                    $q->where('refundcourier_title', 'LIKE', '%' . request('search_query') . '%');
+                });
+
+                // Search by Error Source
+                $query->orWhereHas('error_source', function ($q) {
+                    $q->where('refunderrorsource_title', 'LIKE', '%' . request('search_query') . '%');
+                });
+
+                // Search by Sales Source
+                $query->orWhereHas('sales_source', function ($q) {
+                    $q->where('refundsalessource_title', 'LIKE', '%' . request('search_query') . '%');
+                });
+            });
+        }
+
         // return query
         if ($id == 'all') {
             return $refunds->get();
@@ -200,13 +248,39 @@ class RefundRepository
      */
     public function groupByStatus()
     {
-        return $this
-            ->refunds
-            ->newQuery()
-            ->join('refund_statuses', 'refund_statuses.refundstatus_id', '=', 'refunds.refund_statusid')
-            ->selectRaw('count(*) as count, sum(refund_amount) as sum, refund_statuses.refundstatus_title as title, refund_statuses.refundstatus_color as color')
-            ->groupBy('refund_statusid')
-            ->get();
+        // statuses to include
+        $statuses = [
+            1 => 'Initiate',  // Initial/New/Initiate
+            2 => 'Authorized',
+            3 => 'Completed',
+            5 => 'Rejected'
+        ];
+
+        $stats = collect();
+
+        foreach ($statuses as $id => $title) {
+            $count = $this->refunds->newQuery()->where('refund_statusid', $id)->count();
+            $sum = $this->refunds->newQuery()->where('refund_statusid', $id)->sum('refund_amount');
+
+            // Map status ID to color (hardcoded for now based on standard logic or could fetch from DB)
+            $color = match ($id) {
+                1 => 'info',
+                2 => 'primary',
+                3 => 'success',
+                5 => 'danger',
+                default => 'default'
+            };
+
+            $stats->push((object) [
+                'count' => $count,
+                'sum' => $sum,
+                'title' => $title,
+                'color' => $color,
+                'percentage' => 0  // Placeholder, if needed calculate percentage here or remove
+            ]);
+        }
+
+        return $stats;
     }
 
     /**

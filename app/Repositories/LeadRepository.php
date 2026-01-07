@@ -60,6 +60,9 @@ class LeadRepository
             }
         });
 
+        // join: occasions
+        $leads->leftJoin('leads_occasions', 'leads_occasions.leadoccasions_id', '=', 'leads.lead_occasionid');
+
         // join: users reminders - do not do this for cronjobs
         if (auth()->check()) {
             $leads->leftJoin('reminders', function ($join) {
@@ -72,6 +75,9 @@ class LeadRepository
 
         // select all
         $leads->selectRaw('*');
+
+        // eager load occasion
+        $leads->with('occasion');
 
         // count unread notifications
         $leads->selectRaw('(SELECT COUNT(*)
@@ -294,6 +300,11 @@ class LeadRepository
                     $leads
                         ->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC')
                         ->orderBy('category_name', request('sortorder'));
+                    break;
+                case 'lead_occasion':
+                    $leads
+                        ->orderByRaw('CASE WHEN pinned.pinned_id IS NOT NULL THEN 1 ELSE 0 END DESC')
+                        ->orderBy('leads_occasions.leadoccasions_title', request('sortorder'));
                     break;
             }
         } else {

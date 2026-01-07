@@ -2388,8 +2388,21 @@ class Leads extends Controller
         $statuses = \App\Models\LeadStatus::Where('leadstatus_id', request('lead_status'))->first();
         $new_lead_status = $statuses->leadstatus_title;
 
+        // validate reason if status is Unsuccessful
+        if ($new_lead_status == 'Unsuccessful') {
+            if (request('lead_reason') == '') {
+                return new UpdateErrorResponse([
+                    'type' => 'update-status',
+                    'reset_target' => '#card-lead-status-text',
+                    'reset_value' => safestr(request('current_lead_status_text')),
+                    'error_message' => 'Lead Unsuccessful Reason is required',
+                ]);
+            }
+        }
+
         // validate
         $lead->lead_status = request('lead_status');
+        $lead->lead_reason = request('lead_reason');
         $lead->save();
 
         // get refreshed & reprocess

@@ -46,8 +46,7 @@
         <!--value-->
         <div class="x-element"><i class="mdi mdi-cash-multiple"></i> <span>{{ cleanLang(__('lang.value')) }}: </span>
             @if ($lead->permission_edit_lead)
-                <span class="x-highlight"
-                    id="card-lead-value">{{ runtimeMoneyFormat($lead->lead_value) }}</span>
+                <span class="x-highlight" id="card-lead-value">{{ runtimeMoneyFormat($lead->lead_value) }}</span>
             @else
                 <span class="x-highlight">{{ runtimeMoneyFormat($lead->lead_value) }}</span>
             @endif
@@ -79,7 +78,7 @@
         </div>
 
         <!--category-->
-        <div class="x-element" id="card-lead-category"><i class="mdi mdi-folder"></i>
+        {{-- <div class="x-element" id="card-lead-category"><i class="mdi mdi-folder"></i>
             <span>{{ cleanLang(__('lang.category')) }}:
             </span>
             @if ($lead->permission_edit_lead)
@@ -89,6 +88,13 @@
             @else
                 <span class="x-highlight">{{ runtimeLang($lead->category_name) }}</span>
             @endif
+        </div> --}}
+
+        <!--occasion-->
+        <div class="x-element" id="card-lead-occasion"><i class="mdi mdi-calendar-blank"></i>
+            <span>Occasion:
+            </span>
+            <span class="x-highlight">{{ $lead->occasion->leadoccasions_title ?? '---' }}</span>
         </div>
         <!--last contacted-->
         <div class="x-element" id="lead-contacted"><i class="mdi mdi-message-text"></i>
@@ -313,6 +319,36 @@
             </select>
             <input type="hidden" id="current_lead_status_text" name="current_lead_status_text" value="">
         </div>
+        <!--reason-->
+        <div class="form-group m-t-10 {{ $lead->leadstatus_title == 'Unsuccessful' ? '' : 'hidden' }}" id="lead_reason_container">
+            <textarea class="form-control form-control-sm" id="lead_reason" name="lead_reason" placeholder="Reason">{{ $lead->lead_reason ?? '' }}</textarea>
+        </div>
+        <script>
+            $(document).ready(function() {
+                $(document).on('change', '#lead_status', function() {
+                    var statusText = $(this).find("option:selected").text().trim();
+                    // Find the container relative to this select element to ensure we target the visible one
+                    // (The select is inside a form-group, and the reason container is a sibling form-group)
+                    var container = $(this).closest('.form-group').next('#lead_reason_container');
+                    
+                    // If not found via sibling (e.g. structure change), try broader context
+                    if (container.length === 0) {
+                         container = $(this).closest('.popover-content, .popover-body').find('#lead_reason_container');
+                    }
+                    // Fallback to ID selection if all else fails (e.g. not in popover)
+                    if (container.length === 0) {
+                        container = $('#lead_reason_container');
+                    }
+
+                    if (statusText === 'Unsuccessful') {
+                        container.removeClass('hidden');
+                    } else {
+                        container.addClass('hidden');
+                        container.find('textarea').val('');
+                    }
+                });
+            });
+        </script>
         <div class="form-group text-right">
             <button type="button" class="btn btn-danger btn-sm" id="card-leads-update-status-button"
                 data-progress-bar='hidden' data-url="{{ url('/leads/' . $lead->lead_id . '/update-status') }}"

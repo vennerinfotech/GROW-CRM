@@ -143,6 +143,16 @@
                 toggleRefundFields(currentStatus);
                 handleRefundStatusLogic(currentStatus);
 
+                // View Mode: Hide Footer buttons
+                @if(request('view') == 'true')
+                    $("#commonModalFooter").hide();
+                    // Disable all inputs
+                    $("#commonModalBody input, #commonModalBody select, #commonModalBody textarea").prop('disabled', true);
+                    $(".pickadate").prop('disabled', true); // Disable datepickers specifically if needed
+                @else
+                    $("#commonModalFooter").show();
+                @endif
+
                 // On Change event
                 $('#refund_statusid').on('change', function() {
                     var statusId = $(this).val();

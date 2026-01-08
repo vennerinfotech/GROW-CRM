@@ -63,13 +63,22 @@ class LeadRepository
         // join: occasions
         $leads->leftJoin('leads_occasions', 'leads_occasions.leadoccasions_id', '=', 'leads.lead_occasionid');
 
+        // [AG] - Subquery to get latest reminder date per lead for filtering
+        $latestReminders = \Illuminate\Support\Facades\DB::table('reminders')
+            ->select('reminderresource_id as lr_id', \Illuminate\Support\Facades\DB::raw('MAX(reminder_datetime) as max_reminder_date'))
+            ->where('reminderresource_type', 'lead')
+            ->groupBy('reminderresource_id');
+
+        $leads->leftJoinSub($latestReminders, 'latest_reminders', function ($join) {
+            $join->on('leads.lead_id', '=', 'latest_reminders.lr_id');
+        });
+
         // join: users reminders - do not do this for cronjobs
         if (auth()->check()) {
             $leads->leftJoin('reminders', function ($join) {
                 $join
                     ->on('reminders.reminderresource_id', '=', 'leads.lead_id')
-                    ->where('reminders.reminderresource_type', '=', 'lead')
-                    ->where('reminders.reminder_userid', '=', auth()->id());
+                    ->where('reminders.reminderresource_type', '=', 'lead');
             });
         }
 
@@ -165,12 +174,12 @@ class LeadRepository
 
             // filter: reminder date (start)
             if (request()->filled('filter_lead_reminder_date_start')) {
-                $leads->whereDate('reminders.reminder_datetime', '>=', request('filter_lead_reminder_date_start'));
+                $leads->whereDate('latest_reminders.max_reminder_date', '>=', request('filter_lead_reminder_date_start'));
             }
 
             // filter: reminder date (end)
             if (request()->filled('filter_lead_reminder_date_end')) {
-                $leads->whereDate('reminders.reminder_datetime', '<=', request('filter_lead_reminder_date_end'));
+                $leads->whereDate('latest_reminders.max_reminder_date', '<=', request('filter_lead_reminder_date_end'));
             }
 
             // filter: value (min)
@@ -353,6 +362,9 @@ class LeadRepository
             'attachments',
             'checklists',
         ]);
+
+        // group by lead id to prevent duplicates
+        $leads->groupBy('leads.lead_id');
 
         // Get the results and return them.
         return $leads->paginate(config('system.settings_system_kanban_pagination_limits'));

@@ -162,17 +162,18 @@ class CalendarRepository
         }
 
         // filter - assigned projects (if set or for all none admins)
-        if (auth()->user()->pref_calendar_view == 'own' || !auth()->user()->is_admin) {
-            // projects assigned to me and those that I manage
-            $projects->where(function ($query) {
-                $query->whereHas('assigned', function ($q) {
-                    $q->whereIn('projectsassigned_userid', [auth()->id()]);
-                });
-                $query->orWhereHas('managers', function ($q) {
-                    $q->whereIn('projectsmanager_userid', [auth()->id()]);
-                });
-            });
-        }
+        // [UPDATED] - show all projects to everyone
+        // if (auth()->user()->pref_calendar_view == 'own' || !auth()->user()->is_admin) {
+        //     // projects assigned to me and those that I manage
+        //     $projects->where(function ($query) {
+        //         $query->whereHas('assigned', function ($q) {
+        //             $q->whereIn('projectsassigned_userid', [auth()->id()]);
+        //         });
+        //         $query->orWhereHas('managers', function ($q) {
+        //             $q->whereIn('projectsmanager_userid', [auth()->id()]);
+        //         });
+        //     });
+        // }
 
         // get results
         $rows = $projects->get();
@@ -328,11 +329,12 @@ class CalendarRepository
         }
 
         // filter - assigned tasks (if set or for all none admins)
-        if (auth()->user()->pref_calendar_view == 'own' || !auth()->user()->is_admin) {
-            $tasks->whereHas('assigned', function ($query) {
-                $query->whereIn('tasksassigned_userid', [auth()->id()]);
-            });
-        }
+        // [UPDATED] - show all tasks to everyone
+        // if (auth()->user()->pref_calendar_view == 'own' || !auth()->user()->is_admin) {
+        //     $tasks->whereHas('assigned', function ($query) {
+        //         $query->whereIn('tasksassigned_userid', [auth()->id()]);
+        //     });
+        // }
 
         // get results
         $rows = $tasks->get();
@@ -483,14 +485,15 @@ class CalendarRepository
             $calendarevent->Where('calendar_event_uniqueid', $id);
         }
 
-        $calendarevent->where(function ($query) {
-            $query
-                ->whereHas('assigned', function ($query) {
-                    $query->whereIn('calendarsharing_userid', [auth()->id()]);
-                })
-                ->orWhere('calendar_event_creatorid', auth()->id())
-                ->orWhere('calendar_event_sharing', 'whole-team');
-        });
+        // [UPDATED] - show all events to everyone
+        // $calendarevent->where(function ($query) {
+        //     $query
+        //         ->whereHas('assigned', function ($query) {
+        //             $query->whereIn('calendarsharing_userid', [auth()->id()]);
+        //         })
+        //         ->orWhere('calendar_event_creatorid', auth()->id())
+        //         ->orWhere('calendar_event_sharing', 'whole-team');
+        // });
 
         // get results
         $rows = $calendarevent->get();
@@ -998,7 +1001,8 @@ class CalendarRepository
         $reminders->selectRaw('*');
 
         // filter - my reminders
-        $reminders->where('reminder_userid', auth()->id());
+        // [UPDATED] - show all reminders to everyone
+        // $reminders->where('reminder_userid', auth()->id());
 
         // specific event (not really applicable for reminders usually, but for consistency)
         if ($id) {

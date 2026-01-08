@@ -63,11 +63,19 @@ class LeadRepository
         // join: occasions
         $leads->leftJoin('leads_occasions', 'leads_occasions.leadoccasions_id', '=', 'leads.lead_occasionid');
 
-        // [AG] - Subquery to get latest reminder date per lead for filtering
-        $latestReminders = \Illuminate\Support\Facades\DB::table('reminders')
-            ->select('reminderresource_id as lr_id', \Illuminate\Support\Facades\DB::raw('MAX(reminder_datetime) as max_reminder_date'))
+        // [AG] - Subquery to get latest reminder date (based on latest CREATED reminder) per lead for filtering
+        // 1. Get the max reminder_id for each lead
+        $latestReminderIdsQuery = \Illuminate\Support\Facades\DB::table('reminders')
+            ->select(\Illuminate\Support\Facades\DB::raw('MAX(reminder_id) as max_id'))
             ->where('reminderresource_type', 'lead')
             ->groupBy('reminderresource_id');
+
+        // 2. Get the details (date) for these specific reminders
+        $latestReminders = \Illuminate\Support\Facades\DB::table('reminders')
+            ->select('reminderresource_id as lr_id', 'reminder_datetime as max_reminder_date')
+            ->joinSub($latestReminderIdsQuery, 'latest_ids', function ($join) {
+                $join->on('reminders.reminder_id', '=', 'latest_ids.max_id');
+            });
 
         $leads->leftJoinSub($latestReminders, 'latest_reminders', function ($join) {
             $join->on('leads.lead_id', '=', 'latest_reminders.lr_id');

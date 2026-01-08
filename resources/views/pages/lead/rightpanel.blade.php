@@ -57,6 +57,7 @@
             @if ($lead->permission_edit_lead)
                 <span class="x-highlight x-editable js-card-settings-button-static" data-container=".card-modal"
                     id="card-lead-status-text" tabindex="0" data-popover-content="card-lead-status-popover"
+                    data-value="{{ $lead->lead_status }}"
                     data-title="{{ cleanLang(__('lang.status')) }}">{{ runtimeLang($lead->leadstatus_title) }}</strong></span>
             @else
                 <span class="x-highlight">{{ runtimeLang($lead->leadstatus_title) }}</span>
@@ -313,7 +314,8 @@
         <div class="form-group m-t-10">
             <select class="custom-select col-12 form-control form-control-sm" id="lead_status" name="lead_status">
                 @foreach ($statuses as $statuse)
-                    <option value="{{ $statuse->leadstatus_id }}">
+                    <option value="{{ $statuse->leadstatus_id }}"
+                        {{ runtimePreselected($lead->lead_status ?? '', $statuse->leadstatus_id) }}>
                         {{ runtimeLang($statuse->leadstatus_title) }}</option>
                 @endforeach
             </select>

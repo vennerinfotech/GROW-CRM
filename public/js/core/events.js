@@ -745,10 +745,36 @@ $(document).ready(function () {
 
   /** --------------------------------------------------------------------------------------------------
    *  [global - stacked modals] - ensure body remains scrollable when a top modal is closed
+   *  [list update] - refresh list when lead modal is closed to show updated data (e.g. reminders)
    * -------------------------------------------------------------------------------------------------*/
   $(document).on("hidden.bs.modal", ".modal", function () {
+      // 1. Restore scroll if stacked modals are open
       if ($(".modal.show").length > 0) {
           $("body").addClass("modal-open");
+      }
+
+      // 2. Refresh list if lead modal is closed (to update reminder date etc)
+      // Check if the closed modal is a lead modal (usually has specific ID or class, or just generic card-modal)
+      // And check if we are on the leads list page
+      if ($(this).attr('id') === 'commonModal' || $(this).attr('id') === 'cardModal') {
+           if(window.location.href.indexOf("leads") > -1) {
+               //Trigger a reload of the list if needed. 
+               //Use the existing list refresh mechanism if available, otherwise just reload pjax
+               if(typeof nxAjaxUxRequest !== 'undefined') {
+                   //Or just trigger the filter apply button to re-fetch to ensure data is fresh
+                   //Use specific ID to avoid triggering export button which also shares this class
+                   var applyFilterBtn = $("#sidepanel-filter-leads .apply-filter-button");
+                   if(applyFilterBtn.length > 0) {
+                       // Add a small buffer to allow modal to close fully and avoid blank page glitch
+                       setTimeout(function(){
+                           applyFilterBtn.trigger('click');
+                       }, 500);
+                   } else {
+                       // Fallback: try to find any search button or just standard reload if absolutely needed,
+                       // but apply-filter-button should exist on leads page.
+                   }
+               }
+           }
       }
   });
 
@@ -1199,11 +1225,23 @@ $(document).ready(function () {
 
       console.log('Total Price:', total_price);
 
-      $("#lead_product_id").val(first_id);
-      $("#lead_product_name").val(product_names.join(', ')); // Join names if multiple are selected
-      $("#lead_value").val(total_price.toFixed(2)); // Format total price
+      // Target the input inside the active lead modal (create/edit lead)
+      // We use filtering to ensure we get the right one if duplicates exist
+      var $targetModal = $("#commonModal, #cardModal").filter(".show");
+      var $productID = $targetModal.find("#lead_product_id");
+      var $productName = $targetModal.find("#lead_product_name");
+      var $leadValue = $targetModal.find("#lead_value");
+
+      // Fallback to global if modal context fail (e.g. if logic changes)
+      if ($productID.length === 0) $productID = $("#lead_product_id");
+      if ($productName.length === 0) $productName = $("#lead_product_name");
+      if ($leadValue.length === 0) $leadValue = $("#lead_value");
+
+      $productID.val(first_id);
+      $productName.val(product_names.join(', ')); // Join names if multiple are selected
+      $leadValue.val(total_price.toFixed(2)); // Format total price
       
-      console.log('Updated #lead_value to:', $("#lead_value").val());
+      console.log('Updated #lead_value to:', $leadValue.val());
 
     } else {
         // Handle empty selection
@@ -1211,7 +1249,22 @@ $(document).ready(function () {
         $("#lead_product_name").val("");
         $("#lead_value").val("");
     }
+  });
 
+  /** --------------------------------------------------------------------------------------------------
+   *  [lead - status sync] - sync status from card to edit modal
+   * -------------------------------------------------------------------------------------------------*/
+  $(document).on('shown.bs.modal', '#commonModal', function () {
+      // Check if we are in lead edit/add mode and have a background card status
+      if($("#lead_status").length > 0 && $("#card-lead-status-text").length > 0) {
+          var statusId = $("#card-lead-status-text").attr('data-value');
+          if(statusId) {
+              // Sync the status dropdown
+              $("#lead_status").val(statusId).trigger('change');
+              console.log('Synced #lead_status to:', statusId);
+          }
+      }
+  });
     //close modal (Always close modal)
     $("#itemsModal").modal("hide");
 
@@ -3489,7 +3542,7 @@ $(document).ready(function () {
       .find("#bill_due_date")
       .val(due_date_mysql);
   }
-});
+
 
 /** -------------------------------------------------------------------------------------------------
  *  [INVOICE DUE DATE] - Initialize due date calculation on create modal load

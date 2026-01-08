@@ -181,8 +181,8 @@ class Reminders extends Controller
             abort(409, __('lang.reminder_title') . ' - ' . __('lang.is_required'));
         }
 
-        // cannot be in the past if (Carbon::now()->gt(Carbon::parse($date))
-        if (\Carbon\Carbon::now()->gt(\Carbon\Carbon::parse(request('reminder_datetime')))) {
+        // cannot be in the past (allow today) -- Compare date strings only to avoid time/timezone issues
+        if (\Carbon\Carbon::parse(request('reminder_datetime'))->format('Y-m-d') < \Carbon\Carbon::now()->format('Y-m-d')) {
             abort(409, __('lang.reminder_cannot_be_past'));
         }
 

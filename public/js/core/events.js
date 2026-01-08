@@ -744,6 +744,15 @@ $(document).ready(function () {
     });
 
   /** --------------------------------------------------------------------------------------------------
+   *  [global - stacked modals] - ensure body remains scrollable when a top modal is closed
+   * -------------------------------------------------------------------------------------------------*/
+  $(document).on("hidden.bs.modal", ".modal", function () {
+      if ($(".modal.show").length > 0) {
+          $("body").addClass("modal-open");
+      }
+  });
+
+  /** --------------------------------------------------------------------------------------------------
    *  [lead - restore checklist product selection]
    * -------------------------------------------------------------------------------------------------*/
   window.NXrestoreChecklistProductSelection = function() {

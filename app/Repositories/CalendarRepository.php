@@ -1004,6 +1004,14 @@ class CalendarRepository
         // [UPDATED] - show all reminders to everyone
         // $reminders->where('reminder_userid', auth()->id());
 
+        // [UPDATED] - show only latest created reminder for each resource (Latest Created -> MAX(reminder_id))
+        $reminders->whereIn('reminder_id', function ($query) {
+            $query
+                ->selectRaw('MAX(reminder_id)')
+                ->from('reminders')
+                ->groupBy('reminderresource_type', 'reminderresource_id');
+        });
+
         // specific event (not really applicable for reminders usually, but for consistency)
         if ($id) {
             $reminders->Where('reminder_id', $id);

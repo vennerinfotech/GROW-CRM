@@ -3906,16 +3906,23 @@ function NXremindersDatePicker() {
         sideBySide: true
     });
 
+    // FORCE UPDATE HIDDEN INPUT ON INIT
+    setTimeout(function(){
+        var picker = $('#reminders-datetimepicker').data("DateTimePicker");
+        if (picker && picker.date()) {
+             var formatted_date = picker.date().format('YYYY-MM-DD HH:mm');
+             $('#reminder_datetime').val(formatted_date);
+        }
+    }, 200);
 
     $('#reminders-datetimepicker').on('change.datetimepicker', function (event) {
         if (event.date) {
             var formatted_date = event.date.format('YYYY-MM-DD HH:mm');
             $('#reminder_datetime').val(formatted_date);
         } else {
-            $('#reminder_datetime').val(''); // Or handle accordingly
+            $('#reminder_datetime').val('');
         }
     });
-
 }
 
 

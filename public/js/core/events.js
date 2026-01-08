@@ -1244,11 +1244,28 @@ $(document).ready(function () {
       console.log('Updated #lead_value to:', $leadValue.val());
 
     } else {
-        // Handle empty selection
-        $("#lead_product_id").val("");
-        $("#lead_product_name").val("");
-        $("#lead_value").val("");
+        // Handle empty selection - Target ACTIVE modal
+        var $targetModal = $("#commonModal, #cardModal").filter(".show");
+        var $productID = $targetModal.find("#lead_product_id");
+        var $productName = $targetModal.find("#lead_product_name");
+        var $leadValue = $targetModal.find("#lead_value");
+        
+        // Fallback
+        if ($productID.length === 0) $productID = $("#lead_product_id");
+        if ($productName.length === 0) $productName = $("#lead_product_name");
+        if ($leadValue.length === 0) $leadValue = $("#lead_value");
+
+        $productID.val("");
+        $productName.val("");
+        $leadValue.val("");
     }
+    
+    //close modal (Always close modal)
+    $("#itemsModal").modal("hide");
+
+    //reset button state
+    $btn.removeClass("js-lead-confirm-product-selection");
+    $btn.addClass("hidden");
   });
 
   /** --------------------------------------------------------------------------------------------------
@@ -1264,13 +1281,6 @@ $(document).ready(function () {
               console.log('Synced #lead_status to:', statusId);
           }
       }
-  });
-    //close modal (Always close modal)
-    $("#itemsModal").modal("hide");
-
-    //reset button state
-    $btn.removeClass("js-lead-confirm-product-selection");
-    $btn.addClass("hidden");
   });
 
   /** --------------------------------------------------------------------------------------------------
@@ -3662,4 +3672,5 @@ $(document).on("click", "#show-more-custom-fields", function (e) {
 
   // Hide the button
   $(this).closest(".show-more-button").hide();
+});
 });

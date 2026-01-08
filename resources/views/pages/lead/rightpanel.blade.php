@@ -62,6 +62,10 @@
             @else
                 <span class="x-highlight">{{ runtimeLang($lead->leadstatus_title) }}</span>
             @endif
+            <!--reason-->
+            @if ($lead->leadstatus_title == 'Unsuccessful' && $lead->lead_reason)
+                <div class="m-t-3 small text-danger"><i class="sl-icon-info"></i> {{ $lead->lead_reason }}</div>
+            @endif
         </div>
         <!--added-->
         <div class="x-element" id="lead-date-added"><i class="mdi mdi-calendar-plus"></i>

@@ -1,13 +1,16 @@
 <?php
 
-/** --------------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------------
  * This controller manages all the business logic for home page
  *
  * @package    Grow CRM
  * @author     NextLoop
- *----------------------------------------------------------------------------------*/
+ * ----------------------------------------------------------------------------------
+ */
 
 namespace App\Http\Controllers;
+
 use App\Http\Responses\Home\HomeResponse;
 use App\Http\Responses\Home\UpdateStatsResponse;
 use App\Repositories\EventRepository;
@@ -18,8 +21,8 @@ use App\Repositories\StatsRepository;
 use App\Repositories\TaskRepository;
 use Illuminate\Support\Facades\Log;
 
-class Home extends Controller {
-
+class Home extends Controller
+{
     private $page = array();
 
     protected $statsrepo;
@@ -37,8 +40,7 @@ class Home extends Controller {
         TaskRepository $taskrepo,
         LeadRepository $leadrepo
     ) {
-
-        //parent
+        // parent
         parent::__construct();
 
         $this->statsrepo = $statsrepo;
@@ -48,7 +50,7 @@ class Home extends Controller {
         $this->taskrepo = $taskrepo;
         $this->leadrepo = $leadrepo;
 
-        //authenticated
+        // authenticated
         $this->middleware('auth');
 
         $this->middleware('homeMiddlewareIndex')->only([
@@ -60,49 +62,47 @@ class Home extends Controller {
      * Display the home page
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-
+    public function index()
+    {
         $page = $this->pageSettings();
 
         $payload = [];
 
-        //Team Dashboards
+        // Team Dashboards
         if (auth()->user()->type == 'team') {
-            //admin user
+            // admin user
             if (auth()->user()->is_admin) {
-                //get payload
+                // get payload
                 $payload = $this->adminDashboard();
-                $payload['available_years'] = $this->statsrepo->getAvailableYears();                
+                $payload['available_years'] = $this->statsrepo->getAvailableYears();
             }
-            //team uder
+            // team uder
             if (!auth()->user()->is_admin) {
-                //get payload
+                // get payload
                 $payload = $this->teamDashboard();
             }
         }
 
-        //Client Dashboards
+        // Client Dashboards
         if (auth()->user()->type == 'client') {
-            //get payload
+            // get payload
             $payload = $this->clientDashboard();
-
         }
 
-        //[AFFILIATE]
+        // [AFFILIATE]
         if (config('settings.custom_modules.cs_affiliate')) {
             if (auth()->user()->type == 'cs_affiliate') {
-                //get payload
+                // get payload
                 $payload = $this->csAffiliateDashboard();
                 return view('pages/cs_affiliates/home/home', compact('page', 'payload'));
             }
         }
 
-        //page
+        // page
         $payload['page'] = $page;
 
-        //process reponse
+        // process reponse
         return new HomeResponse($payload);
-
     }
 
     /**
@@ -111,14 +111,15 @@ class Home extends Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function csAffiliateDashboard() {
-
-        //get events
-        $events = \App\Models\Custom\CSEvent::Where('cs_event_affliateid', auth()->id())->orderBy('cs_event_id', 'DESC')
+    public function csAffiliateDashboard()
+    {
+        // get events
+        $events = \App\Models\Custom\CSEvent::Where('cs_event_affliateid', auth()->id())
+            ->orderBy('cs_event_id', 'DESC')
             ->take(100)
             ->get();
 
-        //get projects
+        // get projects
         $projects = \App\Models\Custom\CSAffiliateProject::leftJoin('projects', 'projects.project_id', '=', 'cs_affiliate_projects.cs_affiliate_project_projectid')
             ->selectRaw('*')
             ->Where('cs_affiliate_project_affiliateid', auth()->id())
@@ -127,14 +128,14 @@ class Home extends Controller {
             ->take(100)
             ->get();
 
-        //Profits - today
+        // Profits - today
         $today = \Carbon\Carbon::now()->format('Y-m-d');
         $profits['today'] = \App\Models\Custom\CSAffiliateEarning::where('cs_affiliate_earning_commission_approval_date', $today)
             ->where('cs_affiliate_earning_affiliateid', auth()->id())
             ->where('cs_affiliate_earning_status', 'paid')
             ->sum('cs_affiliate_earning_amount');
 
-        //Profits - today
+        // Profits - today
         $start = \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d');
         $end = \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d');
         $profits['this_month'] = \App\Models\Custom\CSAffiliateEarning::where('cs_affiliate_earning_commission_approval_date', '>=', $start)
@@ -143,12 +144,12 @@ class Home extends Controller {
             ->where('cs_affiliate_earning_affiliateid', auth()->id())
             ->sum('cs_affiliate_earning_amount');
 
-        //Profits - all time
+        // Profits - all time
         $profits['all_time'] = \App\Models\Custom\CSAffiliateEarning::where('cs_affiliate_earning_affiliateid', auth()->id())
             ->where('cs_affiliate_earning_status', 'paid')
             ->sum('cs_affiliate_earning_amount');
 
-        //Profits - pending
+        // Profits - pending
         $profits['pending'] = \App\Models\Custom\CSAffiliateEarning::where('cs_affiliate_earning_affiliateid', auth()->id())
             ->where('cs_affiliate_earning_status', 'unpaid')
             ->sum('cs_affiliate_earning_amount');
@@ -160,19 +161,18 @@ class Home extends Controller {
         ];
 
         return $payload;
-
     }
 
     /**
      * display team dashboard
      * @return \Illuminate\Http\Response
      */
-    public function teamDashboard() {
-
-        //payload
+    public function teamDashboard()
+    {
+        // payload
         $payload = [];
 
-        //[projects][all]
+        // [projects][all]
         $payload['projects'] = [
             'pending' => $this->statsrepo->countProjects([
                 'status' => 'pending',
@@ -180,7 +180,7 @@ class Home extends Controller {
             ]),
         ];
 
-        //tasks]
+        // tasks]
         $payload['tasks'] = [
             'new' => $this->statsrepo->countTasks([
                 'status' => 'new',
@@ -196,33 +196,32 @@ class Home extends Controller {
             ]),
         ];
 
-        //filter
+        // filter
         request()->merge([
             'eventtracking_userid' => auth()->id(),
         ]);
         $payload['all_events'] = $this->trackingrepo->search(20);
 
-        //filter
+        // filter
         request()->merge([
             'filter_assigned' => [auth()->id()],
         ]);
         $payload['my_projects'] = $this->projectrepo->search('', ['limit' => 30]);
 
-        //return payload
+        // return payload
         return $payload;
-
     }
 
     /**
      * display client dashboard
      * @return \Illuminate\Http\Response
      */
-    public function clientDashboard() {
-
-        //payload
+    public function clientDashboard()
+    {
+        // payload
         $payload = [];
 
-        //[invoices]
+        // [invoices]
         $payload['invoices'] = [
             'due' => $this->statsrepo->sumCountInvoices([
                 'type' => 'sum',
@@ -236,7 +235,7 @@ class Home extends Controller {
             ]),
         ];
 
-        //[projects][all]
+        // [projects][all]
         $payload['projects'] = [
             'pending' => $this->statsrepo->countProjects([
                 'status' => 'pending',
@@ -248,33 +247,32 @@ class Home extends Controller {
             ]),
         ];
 
-        //filter
+        // filter
         request()->merge([
             'eventtracking_userid' => auth()->id(),
         ]);
         $payload['all_events'] = $this->trackingrepo->search(20);
 
-        //filter
+        // filter
         request()->merge([
             'filter_project_clientid' => auth()->user()->clientid,
         ]);
         $payload['my_projects'] = $this->projectrepo->search('', ['limit' => 30]);
 
-        //return payload
+        // return payload
         return $payload;
-
     }
 
     /**
      * display admin User
      * @return \Illuminate\Http\Response
      */
-    public function adminDashboard() {
-
-        //payload
+    public function adminDashboard()
+    {
+        // payload
         $payload = [];
 
-        //[payments]
+        // [payments]
         $payload['payments'] = [
             'today' => $this->statsrepo->sumCountPayments([
                 'type' => 'sum',
@@ -287,7 +285,7 @@ class Home extends Controller {
             ]),
         ];
 
-        //[invoices]
+        // [invoices]
         $payload['invoices'] = [
             'due' => $this->statsrepo->sumCountInvoices([
                 'type' => 'sum',
@@ -299,24 +297,24 @@ class Home extends Controller {
             ]),
         ];
 
-        //[income][yearly]
+        // [income][yearly]
         $payload['income'] = $this->statsrepo->sumYearlyIncome([
             'period' => 'this_year',
         ]);
 
-        //[expense][yearly]
+        // [expense][yearly]
         $payload['expenses'] = $this->statsrepo->sumYearlyExpenses([
             'period' => 'this_year',
         ]);
 
-        //[projects][all]
+        // [projects][all]
         $payload['all_projects'] = [
             'not_started' => $this->statsrepo->countProjects([
                 'status' => 'not_started',
             ]),
             'in_progress' => $this->statsrepo->countProjects([
                 'status' =>
-                'in_progress',
+                    'in_progress',
             ]),
             'on_hold' => $this->statsrepo->countProjects([
                 'status' => 'on_hold',
@@ -326,7 +324,7 @@ class Home extends Controller {
             ]),
         ];
 
-        //[projects][ny]
+        // [projects][ny]
         $payload['my_projects'] = [
             'not_started' => $this->statsrepo->countProjects([
                 'status' => 'not_started',
@@ -346,35 +344,52 @@ class Home extends Controller {
             ]),
         ];
 
-        //filter
+        // [AG] - Widget: Lead Stages (Open, Pending, Unsuccessful, Converted)
+        $payload['lead_stages_stats'] = [];
+        $target_statuses = ['Open', 'Pending', 'Unsuccessful', 'Converted'];
+        foreach ($target_statuses as $status_title) {
+            $status = \App\Models\LeadStatus::where('leadstatus_title', $status_title)->first();
+            $count = 0;
+            $status_id = 0;
+            if ($status) {
+                $status_id = $status->leadstatus_id;
+                $count = \App\Models\Lead::where('lead_status', $status_id)->count();
+            }
+            $payload['lead_stages_stats'][strtolower($status_title)] = [
+                'count' => $count,
+                'id' => $status_id,
+                'title' => $status_title
+            ];
+        }
+
+        // filter
         $payload['all_events'] = $this->eventsrepo->search([
             'pagination' => 20,
             'filter' => 'timeline_visible',
         ]);
 
-        //[leads] - alltime
+        // [leads] - alltime
         $data = $this->widgetLeads('alltime');
         $payload['leads_stats'] = json_encode($data['stats']);
         $payload['leads_key_colors'] = json_encode($data['leads_key_colors']);
         $payload['leads_chart_center_title'] = $data['leads_chart_center_title'];
 
-        //[tickets] - this year
+        // [tickets] - this year
         $ticket_data = $this->widgetTickets('thisyear');
         $payload['tickets_stats'] = json_encode($ticket_data['stats']);
         $payload['tickets_key_colors'] = json_encode($ticket_data['tickets_key_colors']);
         $payload['tickets_chart_center_title'] = $ticket_data['tickets_chart_center_title'] . ' - ' . $ticket_data['count_all_tickets'];
         $payload['ticket_statuses'] = $ticket_data['ticket_statuses'];
 
-        //filter payments-today
+        // filter payments-today
         $payload['filter_payment_today'] = \Carbon\Carbon::now()->format('Y-m-d');
 
-        //filter payments - this month
+        // filter payments - this month
         $payload['filter_payment_month_start'] = \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d');
         $payload['filter_payment_month_end'] = \Carbon\Carbon::now()->lastOfMonth()->format('Y-m-d');
 
-        //return payload
+        // return payload
         return $payload;
-
     }
 
     /**
@@ -383,56 +398,57 @@ class Home extends Controller {
      * @param string $filter [alltime|...]  //add as we go
      * @return \Illuminate\Http\Response
      */
-    public function widgetLeads($filter) {
-
+    public function widgetLeads($filter)
+    {
         $payload['stats'] = [];
         $payload['leads_key_colors'] = [];
         $payload['leads_chart_center_title'] = __('lang.leads');
 
         $counter = 0;
 
-        //do this for each lead category
+        // do this for each lead category
         foreach (config('home.lead_statuses') as $status) {
-
-            //count all leads
+            // count all leads
             if ($filter = 'alltime') {
                 $count = $this->statsrepo->countLeads(
                     [
                         'status' => $status['id'],
-                    ]);
+                    ]
+                );
             }
 
-            //add to array
+            // add to array
             $payload['stats'][] = [
-                $status['title'], $count,
+                $status['title'],
+                $count,
             ];
 
-            //add to counter
+            // add to counter
             $counter += $count;
 
             $payload['leads_key_colors'][] = $status['colorcode'];
-
         }
 
         // no lead in system - display something (No Leads - 100%) in chart
         if ($counter == 0) {
             $payload['stats'][] = [
-                'No Leads', 1,
+                'No Leads',
+                1,
             ];
-            $payload['leads_key_colors'][] = "#eff4f5";
+            $payload['leads_key_colors'][] = '#eff4f5';
             $payload['leads_chart_center_title'] = __('lang.no_leads');
         }
 
         return $payload;
     }
 
-/**
- * generate a chart to show the following ticket stats
- * @param string $filter [alltime|thisyear]  //add as we go
- * @return array
- */
-    public function widgetTickets($filter = 'thisyear') {
-
+    /**
+     * generate a chart to show the following ticket stats
+     * @param string $filter [alltime|thisyear]  //add as we go
+     * @return array
+     */
+    public function widgetTickets($filter = 'thisyear')
+    {
         $payload['stats'] = [];
         $payload['tickets_key_colors'] = [];
         $payload['tickets_chart_center_title'] = __('lang.tickets');
@@ -451,7 +467,6 @@ class Home extends Controller {
 
         // Loop through each status
         foreach ($statuses as $status) {
-
             $count = \App\Models\Ticket::where('ticket_status', $status->ticketstatus_id)
                 ->where('ticket_created', '>=', $year_start)
                 ->where('ticket_created', '<=', $year_end)
@@ -464,10 +479,11 @@ class Home extends Controller {
             ];
 
             // Add to stats array - use JS-safe title with count included (escape any special characters)
-            $safe_title = str_replace("'", "\\'", $status->ticketstatus_title . ': ' . $count);
+            $safe_title = str_replace("'", "\'", $status->ticketstatus_title . ': ' . $count);
 
             $payload['stats'][] = [
-                $safe_title, $count,
+                $safe_title,
+                $count,
             ];
 
             // Add to counter
@@ -476,53 +492,54 @@ class Home extends Controller {
             $payload['tickets_key_colors'][] = runtimeColorCode($status->ticketstatus_color);
         }
 
-        //sum all tickets
+        // sum all tickets
         $payload['count_all_tickets'] = \App\Models\Ticket::where('ticket_created', '>=', $year_start)->where('ticket_created', '<=', $year_end)->count();
 
         // No tickets in system - display something (No Tickets - 100%) in chart
         if ($counter == 0) {
             $payload['stats'][] = [
-                'No Tickets: 0', 1,
+                'No Tickets: 0',
+                1,
             ];
-            $payload['tickets_key_colors'][] = "#eff4f5";
+            $payload['tickets_key_colors'][] = '#eff4f5';
             $payload['tickets_chart_center_title'] = __('lang.no_tickets');
         }
 
         return $payload;
     }
 
-/**
- * Update income vs expenses chart for selected year
- * @return \Illuminate\Http\Response
- */
-    public function updateIncomeExpensesChart() {
-
-        //validation - ensure year parameter is provided and valid
+    /**
+     * Update income vs expenses chart for selected year
+     * @return \Illuminate\Http\Response
+     */
+    public function updateIncomeExpensesChart()
+    {
+        // validation - ensure year parameter is provided and valid
         $selected_year = request('income_expenses_year');
         if (!$selected_year || !is_numeric($selected_year)) {
             abort(400, 'Invalid year parameter');
         }
 
-        //payload
+        // payload
         $payload = [];
 
-        //[income][yearly] for selected year
+        // [income][yearly] for selected year
         $payload['income'] = $this->statsrepo->sumYearlyIncome([
             'period' => $selected_year,
         ]);
 
-        //[expenses][yearly] for selected year
+        // [expenses][yearly] for selected year
         $payload['expenses'] = $this->statsrepo->sumYearlyExpenses([
             'period' => $selected_year,
         ]);
 
-        //available years for dropdown
+        // available years for dropdown
         $payload['available_years'] = $this->statsrepo->getAvailableYears();
 
-        //response type
+        // response type
         $payload['response'] = 'admin-income-expenses-chart';
 
-        //process response
+        // process response
         return new UpdateStatsResponse($payload);
     }
 
@@ -532,8 +549,8 @@ class Home extends Controller {
      * @param array $data any other data (optional)
      * @return array
      */
-    private function pageSettings($section = '', $data = []) {
-
+    private function pageSettings($section = '', $data = [])
+    {
         $page = [
             'crumbs' => [
                 __('lang.home'),
@@ -548,5 +565,4 @@ class Home extends Controller {
 
         return $page;
     }
-
 }

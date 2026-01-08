@@ -56,20 +56,18 @@
             @if($lead->reminders->isNotEmpty())
                 @php 
                     $reminder = null;
-                    if(request()->filled('filter_lead_reminder_date_start') && request()->filled('filter_lead_reminder_date_end')) {
-                        $reminder = $lead->reminders->whereBetween('reminder_datetime', [
-                            request('filter_lead_reminder_date_start') . ' 00:00:00', 
-                            request('filter_lead_reminder_date_end') . ' 23:59:59'
-                        ])->sortByDesc('reminder_datetime')->first();
-                    }
-                    
-                    if(!$reminder) {
-                        if(auth()->user()->is_admin || auth()->user()->role->role_leads_scope == 'global') {
-                             $reminder = $lead->reminders->sortByDesc('reminder_datetime')->first();
-                        } else {
-                             $reminder = $lead->reminders->where('reminder_userid', auth()->id())->sortBy('reminder_datetime')->first(); 
-                        }
-                    }
+                    //CASE 1: Filters are active - prioritize matching reminder
+        if(request()->filled('filter_lead_reminder_date_start') && request()->filled('filter_lead_reminder_date_end')) {
+             $reminder = $lead->reminders->whereBetween('reminder_datetime', [
+                 \Carbon\Carbon::parse(request('filter_lead_reminder_date_start'))->startOfDay(),
+                 \Carbon\Carbon::parse(request('filter_lead_reminder_date_end'))->endOfDay()
+             ])->sortByDesc('reminder_datetime')->first();
+        } 
+        //CASE 2: No filters - Match Lead Logs (Latest Created -> sortByDesc('reminder_id'))
+        else {
+             //Show the most recently created reminder (Global), appearing at top of logs
+             $reminder = $lead->reminders->sortByDesc('reminder_id')->first();
+        }
                 @endphp
                 @if($reminder)
                     <span class="text-info"><i class="sl-icon-clock"></i> {{ runtimeDate($reminder->reminder_datetime) }}</span>

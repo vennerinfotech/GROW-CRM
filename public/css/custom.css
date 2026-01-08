@@ -28,3 +28,10 @@ a.disabled {
     cursor: not-allowed;
     pointer-events: none;
 }
+a {
+    color: #1586B0;
+    font-weight: 500;
+}
+.table td {
+    font-weight: 500;
+}

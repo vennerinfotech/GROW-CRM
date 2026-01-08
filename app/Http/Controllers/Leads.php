@@ -815,117 +815,8 @@ class Leads extends Controller
         ChecklistRepository $checklistrepo,
         AttachmentRepository $attachmentrepo, $id
     ) {
-        // get the lead
-        $leads = $this->leadrepo->search($id);
-
-        // lead
-        $lead = $leads->first();
-
-        // process lead
-        $this->processLead($lead);
-
-        // apply permissions
-        $this->applyPermissions($lead);
-
-        // get tags
-        $tags_resource = $this->tagrepo->getByResource('lead', $id);
-        $tags_system = $this->tagrepo->getByType('lead');
-        $tags = $tags_resource->merge($tags_system);
-        $tags = $tags->unique('tag_title');
-
-        // get tags (attachements)
-        $attachment_tags = $this->tagrepo->getByType('attachment');
-        $attachment_tags = $attachment_tags->unique('tag_title');
-
-        // client categories
-        $categories = $categoryrepo->get('lead');
-
-        // get assigned users
-        $assigned = $assignedrepo->getAssigned($id);
-
-        // all available lead sources
-        $sources = \App\Models\LeadSources::all();
-
-        // all available lead statuses
-        $statuses = \App\Models\LeadStatus::all();
-
-        // comments
-        request()->merge([
-            'commentresource_type' => 'lead',
-            'commentresource_id' => $id,
-        ]);
-        $comments = $commentrepo->search();
-        foreach ($comments as $comment) {
-            $this->applyCommentPermissions($comment);
-        }
-
-        // attachments
-        request()->merge([
-            'attachmentresource_type' => 'lead',
-            'attachmentresource_id' => $id,
-        ]);
-        $attachments = $attachmentrepo->search();
-        foreach ($attachments as $attachment) {
-            $this->applyAttachmentPermissions($attachment, $lead);
-        }
-
-        // checklists
-        request()->merge([
-            'checklistresource_type' => 'lead',
-            'checklistresource_id' => $id,
-        ]);
-        $checklists = $checklistrepo->search();
-        foreach ($checklists as $checklist) {
-            $this->applyChecklistPermissions($checklist);
-        }
-
-        // mark events as read
-        \App\Models\EventTracking::where('parent_id', $id)
-            ->where('parent_type', 'lead')
-            ->where('eventtracking_userid', auth()->id())
-            ->update(['eventtracking_status' => 'read']);
-
-        // get users reminders
-        $reminderQuery = \App\Models\Reminder::Where('reminderresource_type', 'lead')
-            ->Where('reminderresource_id', $id);
-
-        // Filter by user if not admin and not global scope
-        if (!auth()->user()->is_admin && auth()->user()->role->role_leads_scope != 'global') {
-            $reminderQuery->where('reminder_userid', auth()->id());
-        }
-
-        if ($reminder = $reminderQuery->orderBy('reminder_updated', 'desc')->first()) {
-            $has_reminder = true;
-        } else {
-            $reminder = [];
-            $has_reminder = false;
-        }
-
-        // get client custom fields (for lead conversion form)
-        $client_custom_fields = $this->getClientCustomFields();
-
-        // reponse payload
-        $payload = [
-            'page' => $this->pageSettings('lead', $lead),
-            'lead' => $lead,
-            'id' => $id,
-            'tags' => $tags,
-            'current_tags' => $lead->tags,
-            'assigned' => $assigned,
-            'sources' => $sources,
-            'statuses' => $statuses,
-            'comments' => $comments,
-            'attachments' => $attachments,
-            'categories' => $categories,
-            'checklists' => $checklists,
-            'reminder' => $reminder,
-            'resource_type' => 'lead',
-            'resource_id' => $id,
-            'has_reminder' => $has_reminder,
-            'progress' => $this->checklistProgress($checklists),
-            'attachment_tags' => $attachment_tags,
-            'client_custom_fields' => $client_custom_fields,
-        ];
+        // get lead data
+        $payload = $this->getLeadData($id);
 
         // showing just the tab
         if (request('show') == 'tab') {
@@ -2410,10 +2301,9 @@ class Leads extends Controller
         $lead->lead_reason = request('lead_reason');
         $lead->save();
 
-        // get refreshed & reprocess
-        $leads = $this->leadrepo->search($id);
-        $lead = $leads->first();
-        $this->processLead($lead);
+        // get refreshed data
+        $payload = $this->getLeadData($id);
+        $lead = $payload['lead'];
 
         /**
          * ----------------------------------------------
@@ -2463,14 +2353,11 @@ class Leads extends Controller
             }
         }
 
-        // reponse payload
-        $payload = [
-            'leads' => $leads,
-            'old_status' => $old_status,
-            'new_status' => request('lead_status'),
-            'new_lead_status' => $new_lead_status,
-            'stats' => $this->statsWidget(),
-        ];
+        // merge payload
+        $payload['old_status'] = $old_status;
+        $payload['new_status'] = request('lead_status');
+        $payload['new_lead_status'] = $new_lead_status;
+        $payload['stats'] = $this->statsWidget();
 
         // fire status updated event
         event(new \App\Events\Leads\LeadStatusUpdated(request(), $lead, $payload));
@@ -4993,5 +4880,135 @@ class Leads extends Controller
         }
 
         return response()->json(['exists' => false]);
+    }
+
+    /**
+     * Get all data for a lead
+     * @param int $id lead id
+     * @return array
+     */
+    private function getLeadData($id)
+    {
+        // get repositories
+        $categoryrepo = app(\App\Repositories\CategoryRepository::class);
+        $assignedrepo = app(\App\Repositories\LeadAssignedRepository::class);
+        $commentrepo = app(\App\Repositories\CommentRepository::class);
+        $checklistrepo = app(\App\Repositories\ChecklistRepository::class);
+        $attachmentrepo = $this->attachmentrepo;
+
+        // get the lead
+        $leads = $this->leadrepo->search($id);
+
+        // lead
+        $lead = $leads->first();
+
+        // process lead
+        $this->processLead($lead);
+
+        // apply permissions
+        $this->applyPermissions($lead);
+
+        // get tags
+        $tags_resource = $this->tagrepo->getByResource('lead', $id);
+        $tags_system = $this->tagrepo->getByType('lead');
+        $tags = $tags_resource->merge($tags_system);
+        $tags = $tags->unique('tag_title');
+
+        // get tags (attachements)
+        $attachment_tags = $this->tagrepo->getByType('attachment');
+        $attachment_tags = $attachment_tags->unique('tag_title');
+
+        // client categories
+        $categories = $categoryrepo->get('lead');
+
+        // get assigned users
+        $assigned = $assignedrepo->getAssigned($id);
+
+        // all available lead sources
+        $sources = \App\Models\LeadSources::all();
+
+        // all available lead statuses
+        $statuses = \App\Models\LeadStatus::all();
+
+        // comments
+        request()->merge([
+            'commentresource_type' => 'lead',
+            'commentresource_id' => $id,
+        ]);
+        $comments = $commentrepo->search();
+        foreach ($comments as $comment) {
+            $this->applyCommentPermissions($comment);
+        }
+
+        // attachments
+        request()->merge([
+            'attachmentresource_type' => 'lead',
+            'attachmentresource_id' => $id,
+        ]);
+        $attachments = $attachmentrepo->search();
+        foreach ($attachments as $attachment) {
+            $this->applyAttachmentPermissions($attachment, $lead);
+        }
+
+        // checklists
+        request()->merge([
+            'checklistresource_type' => 'lead',
+            'checklistresource_id' => $id,
+        ]);
+        $checklists = $checklistrepo->search();
+        foreach ($checklists as $checklist) {
+            $this->applyChecklistPermissions($checklist);
+        }
+
+        // mark events as read
+        \App\Models\EventTracking::where('parent_id', $id)
+            ->where('parent_type', 'lead')
+            ->where('eventtracking_userid', auth()->id())
+            ->update(['eventtracking_status' => 'read']);
+
+        // get users reminders
+        $reminderQuery = \App\Models\Reminder::Where('reminderresource_type', 'lead')
+            ->Where('reminderresource_id', $id);
+
+        // Filter by user if not admin and not global scope
+        if (!auth()->user()->is_admin && auth()->user()->role->role_leads_scope != 'global') {
+            $reminderQuery->where('reminder_userid', auth()->id());
+        }
+
+        if ($reminder = $reminderQuery->orderBy('reminder_updated', 'desc')->first()) {
+            $has_reminder = true;
+        } else {
+            $reminder = [];
+            $has_reminder = false;
+        }
+
+        // get client custom fields (for lead conversion form)
+        $client_custom_fields = $this->getClientCustomFields();
+
+        // reponse payload
+        $payload = [
+            'page' => $this->pageSettings('lead', $lead),
+            'leads' => $leads,
+            'lead' => $lead,
+            'id' => $id,
+            'tags' => $tags,
+            'current_tags' => $lead->tags,
+            'assigned' => $assigned,
+            'sources' => $sources,
+            'statuses' => $statuses,
+            'comments' => $comments,
+            'attachments' => $attachments,
+            'categories' => $categories,
+            'checklists' => $checklists,
+            'reminder' => $reminder,
+            'resource_type' => 'lead',
+            'resource_id' => $id,
+            'has_reminder' => $has_reminder,
+            'progress' => $this->checklistProgress($checklists),
+            'attachment_tags' => $attachment_tags,
+            'client_custom_fields' => $client_custom_fields,
+        ];
+
+        return $payload;
     }
 }

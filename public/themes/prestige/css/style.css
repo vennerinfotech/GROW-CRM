@@ -59,6 +59,7 @@ html {
 
 a {
   color: #1586b0;
+  font-weight: 500;
 }
 
 a:hover,
@@ -9837,6 +9838,7 @@ Table Cell
 .table td,
 .table th {
   border-color: #efeeee;
+
 }
 
 .table thead th,
@@ -20869,6 +20871,7 @@ a {
 .table td,
 .table th {
   border-color: #d9dee9;
+  font-weight: 500;
 }
 
 .client-selector,

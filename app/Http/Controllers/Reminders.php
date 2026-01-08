@@ -182,7 +182,10 @@ class Reminders extends Controller
         }
 
         // cannot be in the past (allow today) -- Compare date strings only to avoid time/timezone issues
-        if (\Carbon\Carbon::parse(request('reminder_datetime'))->format('Y-m-d') < \Carbon\Carbon::now()->format('Y-m-d')) {
+        $requestDate = \Carbon\Carbon::parse(request('reminder_datetime'))->format('Y-m-d');
+        $serverDate = \Carbon\Carbon::now()->format('Y-m-d');
+
+        if ($requestDate < $serverDate) {
             abort(409, __('lang.reminder_cannot_be_past'));
         }
 

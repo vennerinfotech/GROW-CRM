@@ -72,6 +72,22 @@
                 </div>
                 <!--lead status-->
 
+                <!--lead reason-->
+                <!-- <div class="filter-block">
+                    <div class="title">
+                        Unsuccessful Reason
+                    </div>
+                    <div class="fields">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="text" class="form-control form-control-sm" id="filter_lead_reason"
+                                    name="filter_lead_reason" value="{{ config('filter.saved_data.filter_lead_reason') ?? '' }}">
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                <!--lead reason-->
+
                 <!--date addded-->
                 <div class="filter-block">
                     <div class="title">

@@ -188,6 +188,11 @@ class LeadRepository
                 $leads->where('lead_status', request('filter_single_lead_status'));
             }
 
+            // filter: lead reason
+            if (request()->filled('filter_lead_reason')) {
+                $leads->where('lead_reason', 'LIKE', '%' . request('filter_lead_reason') . '%');
+            }
+
             // filter status
             if (is_numeric(request('filter_lead_status'))) {
                 $leads->where('lead_status', request('filter_lead_status'));

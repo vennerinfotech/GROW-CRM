@@ -1,20 +1,24 @@
 <?php
 
-/** --------------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------------
  * This classes renders the response for the [update status] process for the leads
  * controller
  * @package    Grow CRM
  * @author     NextLoop
- *----------------------------------------------------------------------------------*/
+ * ----------------------------------------------------------------------------------
+ */
 
 namespace App\Http\Responses\Leads;
+
 use Illuminate\Contracts\Support\Responsable;
 
-class UpdateStatusResponse implements Responsable {
-
+class UpdateStatusResponse implements Responsable
+{
     private $payload;
 
-    public function __construct($payload = array()) {
+    public function __construct($payload = array())
+    {
         $this->payload = $payload;
     }
 
@@ -24,46 +28,48 @@ class UpdateStatusResponse implements Responsable {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function toResponse($request) {
-
-        //set all data to arrays
+    public function toResponse($request)
+    {
+        // set all data to arrays
         foreach ($this->payload as $key => $value) {
             $$key = $value;
         }
 
-        //full payload array
+        // full payload array
         $payload = $this->payload;
 
-        //card
+        // card
         $board['leads'] = $leads;
         $html = view('pages/leads/components/kanban/card', compact('board'))->render();
 
-        //update kanban card completely
+        // update kanban card completely
         if ($old_status == $new_status) {
             $jsondata['dom_html'][] = array(
-                'selector' => "#card_lead_" . $leads->first()->lead_id,
+                'selector' => '#card_lead_' . $leads->first()->lead_id,
                 'action' => 'replace-with',
-                'value' => $html);
+                'value' => $html
+            );
         }
 
-        //update table row
+        // update table row
         $html = view('pages/leads/components/table/ajax', compact('leads'))->render();
         $jsondata['dom_html'][] = array(
-            'selector' => "#lead_" . $leads->first()->lead_id,
+            'selector' => '#lead_' . $leads->first()->lead_id,
             'action' => 'replace-with',
-            'value' => $html);
+            'value' => $html
+        );
 
-        //move card to new board
+        // move card to new board
         if ($old_status != $new_status) {
-            //render card
+            // render card
             $html = view('pages/leads/components/kanban/card', compact('board'))->render();
 
-            //remove from current board
+            // remove from current board
             $jsondata['dom_visibility'][] = [
                 'selector' => '#card_lead_' . $leads->first()->lead_id,
                 'action' => 'hide-remove',
             ];
-            //add new board
+            // add new board
             $jsondata['dom_html_end'][] = [
                 'selector' => '#kanban-board-wrapper-' . $new_status,
                 'action' => 'prepend',
@@ -71,13 +77,14 @@ class UpdateStatusResponse implements Responsable {
             ];
         }
 
-        //reload stats widget
+        // reload stats widget
         $html = view('misc/list-pages-stats', compact('stats'))->render();
         $jsondata['dom_html'][] = array(
             'selector' => '#list-pages-stats-widget',
             'action' => 'replace-with',
-            'value' => $html);
-        //stats visibility of reload
+            'value' => $html
+        );
+        // stats visibility of reload
         if (auth()->user()->stats_panel_position == 'open') {
             $jsondata['dom_visibility'][] = [
                 'selector' => '#list-pages-stats-widget',
@@ -85,23 +92,46 @@ class UpdateStatusResponse implements Responsable {
             ];
         }
 
-        //update card text
+        // update card text
         $jsondata['dom_html'][] = [
             'selector' => '#card-lead-status-text',
             'action' => 'replace',
             'value' => $new_lead_status,
         ];
 
-        //remove loading
+        // remove loading
         $jsondata['dom_classes'][] = [
             'selector' => '#card-lead-status-text',
             'action' => 'remove',
             'value' => 'loading',
         ];
 
-        //response
+        // update card data-value
+        $jsondata['dom_attributes'][] = [
+            'selector' => '#card-lead-status-text',
+            'attr' => 'data-value',
+            'value' => request('lead_status'),
+        ];
+
+        // [Modal Refresh] - Refresh the right panel with new data
+        if (isset($this->payload['page'])) {
+            $data = $this->payload;
+            $data['payload'] = $this->payload;  // View expects 'payload' variable
+
+            $html = view('pages/lead/rightpanel', $data)->render();
+            $jsondata['dom_html'][] = [
+                'selector' => '#card--leads-right-panel',
+                'action' => 'replace',
+                'value' => $html,
+            ];
+
+            // Re-initialise UI elements (popovers, etc)
+            $jsondata['postrun_functions'][] = [
+                'value' => 'NXBootCards',
+            ];
+        }
+
+        // response
         return response()->json($jsondata);
-
     }
-
 }

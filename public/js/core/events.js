@@ -1283,6 +1283,33 @@ $(document).ready(function () {
       }
   });
 
+    /** --------------------------------------------------------------------------------------------------
+   *  [lead - status popover sync] - sync status when popover opens
+   * -------------------------------------------------------------------------------------------------*/
+  $(document).on('shown.bs.popover', '.js-card-settings-button-static', function () {
+        var $trigger = $(this);
+        // Check if this is the lead status popover
+        if($trigger.attr('id') === 'card-lead-status-text') {
+            var statusId = $trigger.attr('data-value');
+            // Find the visible popover connected to this trigger
+            var popoverId = $trigger.attr('aria-describedby');
+            if(popoverId) {
+                var $popover = $('#' + popoverId);
+                var $popover = $('#' + popoverId);
+                // Use name selector as ID might be duplicated in hidden clone
+                var $select = $popover.find('select[name="lead_status"]');
+                if($select.length > 0) {
+                    $select.val(statusId);
+                    // Manually trigger change to show/hide reason box
+                    $select.trigger('change');
+                    console.log('Popover synced status to:', statusId);
+                } else {
+                    console.log('Popover select not found');
+                }
+            }
+        }
+  });
+
   /** --------------------------------------------------------------------------------------------------
    *  [task - reset the task form]
    * -------------------------------------------------------------------------------------------------*/

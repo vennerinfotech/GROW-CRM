@@ -235,6 +235,18 @@
                         </div>
                     </div>
 
+                    <!--unsuccessful reason-->
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="form-group form-group-checkbox row">
+                            <div class="col-12 p-t-5">
+                                <input type="checkbox" id="standard_field[lead_reason]"
+                                    name="standard_field[lead_reason]" class="filled-in chk-col-light-blue"
+                                    checked="checked">
+                                <label class="p-l-30" for="standard_field[lead_reason]">Unsuccessful Reason</label>
+                            </div>
+                        </div>
+                    </div>
+
                     <!--last contacted-->
                     <div class="col-sm-12 col-lg-6">
                         <div class="form-group form-group-checkbox row">

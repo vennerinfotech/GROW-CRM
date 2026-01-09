@@ -352,7 +352,7 @@ class Leads extends Controller
     public function indexList()
     {
         // get leads
-        $leads = $this->leadrepo->search();
+        $leads = $this->leadrepo->search('', ['limit' => 10]);
 
         // apply some permissions
         if ($leads) {

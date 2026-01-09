@@ -276,6 +276,109 @@
                                 <!--load more button-->
                                 @include('misc.load-more-button')
                                 <!--load more button-->
+
+                                <!-- infinite scroll sentinel -->
+                                <div id="infinite-scroll-sentinel" style="height: 10px; width: 100%;"></div>
+
+                                <!-- infinite scroll loading animation -->
+                                <div id="infinite-scroll-loading" style="display: none; text-align: center; padding: 20px;">
+                                    <img src="{{ url('images/loading.gif') }}" alt="Loading..." style="width: 50px; height: 50px;">
+                                </div>
+                                
+                                <script>
+                                    document.addEventListener("DOMContentLoaded", function () {
+                                        let observer;
+                                        let loading = false;
+
+                                        function initInfiniteScroll() {
+                                            const loadMoreContainer = document.querySelector(".loadmore-button-container");
+                                            const sentinel = document.getElementById("infinite-scroll-sentinel");
+                                            const loadingIndicator = document.getElementById("infinite-scroll-loading");
+
+                                            // Automatically hide the button container
+                                            if (loadMoreContainer) {
+                                                loadMoreContainer.style.visibility = 'hidden'; 
+                                                loadMoreContainer.style.height = '0';
+                                                loadMoreContainer.style.overflow = 'hidden';
+                                            }
+
+                                            // Observe the sentinel
+                                            if (sentinel) {
+                                                if (observer) observer.disconnect();
+
+                                                observer = new IntersectionObserver((entries) => {
+                                                    entries.forEach(entry => {
+                                                        if (entry.isIntersecting && !loading) {
+                                                            const currentButton = document.querySelector("#load-more-button");
+                                                            const loadMoreContainer = document.querySelector(".loadmore-button-container");
+                                                            
+                                                            // Check if button exists
+                                                            if (currentButton && loadMoreContainer) {
+                                                                // Check if the backend has hidden the container (display: none)
+                                                                // If display is none, it means no more pages to load.
+                                                                const computedStyle = window.getComputedStyle(loadMoreContainer);
+                                                                if (computedStyle.display === 'none') {
+                                                                    console.log("InfScroll: Container is hidden (display: none), stopping.");
+                                                                    return;
+                                                                }
+
+                                                                console.log("Sentinel Intersected: Loading more...");
+                                                                loading = true;
+                                                                if (loadingIndicator) loadingIndicator.style.display = 'block';
+                                                                currentButton.click();
+                                                            }
+                                                        }
+                                                    });
+                                                }, {
+                                                    root: null,
+                                                    rootMargin: '100px',
+                                                    threshold: 0.1
+                                                });
+                                                observer.observe(sentinel);
+                                            }
+                                        }
+
+                                        // Init
+                                        initInfiniteScroll();
+
+                                        // Watch for DOM updates (e.g. content appended) to reset loading state
+                                        const wrapper = document.querySelector('#leads-view-wrapper');
+                                        if (wrapper) {
+                                            new MutationObserver((mutations) => {
+                                                let contentUpdated = false;
+                                                mutations.forEach(m => {
+                                                    if (m.type === 'childList' && m.addedNodes.length > 0) {
+                                                        contentUpdated = true;
+                                                    }
+                                                });
+                                                
+                                                if (contentUpdated && loading) {
+                                                    // Content added, assume loading done
+                                                    loading = false;
+                                                    const loadingIndicator = document.getElementById("infinite-scroll-loading");
+                                                    if (loadingIndicator) loadingIndicator.style.display = 'none';
+                                                    
+                                                    // Re-hide button container key in check
+                                                    const loadMoreContainer = document.querySelector(".loadmore-button-container");
+                                                    if (loadMoreContainer) {
+                                                        loadMoreContainer.style.visibility = 'hidden'; 
+                                                        loadMoreContainer.style.height = '0';
+                                                        loadMoreContainer.style.overflow = 'hidden';
+                                                    }
+                                                }
+                                            }).observe(wrapper, { childList: true, subtree: true });
+                                        }
+                                        
+                                        // Backup: Global AJAX complete event to ensure loading state resets
+                                        $(document).ajaxComplete(function(event, xhr, settings) {
+                                            if (settings.url && settings.url.includes('leads')) {
+                                                loading = false;
+                                                const loadingIndicator = document.getElementById("infinite-scroll-loading");
+                                                if (loadingIndicator) loadingIndicator.style.display = 'none';
+                                            }
+                                        });
+                                    });
+                                </script>
                             </td>
                         </tr>
                     </tfoot>

@@ -375,7 +375,9 @@ class LeadRepository
         $leads->groupBy('leads.lead_id');
 
         // Get the results and return them.
-        return $leads->paginate(config('system.settings_system_kanban_pagination_limits'));
+        // Get the results and return them.
+        $limit = (isset($data['limit']) && is_numeric($data['limit'])) ? $data['limit'] : config('system.settings_system_kanban_pagination_limits');
+        return $leads->paginate($limit);
     }
 
     /**

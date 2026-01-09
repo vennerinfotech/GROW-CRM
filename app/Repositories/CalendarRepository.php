@@ -1022,6 +1022,11 @@ class CalendarRepository
 
         // loop through all reminders
         foreach ($rows as $reminder) {
+            // [Check] - ignore orphaned reminders (e.g. deleted leads)
+            if (!$reminder->reminderresource) {
+                continue;
+            }
+
             $start = $reminder->reminder_datetime;
             $end = $reminder->reminder_datetime;
 
@@ -1032,14 +1037,31 @@ class CalendarRepository
             // resource type
             $resource_type = strtolower($reminder->reminderresource_type ?? '');
 
-            if ($resource_type == 'lead') {
+            // default colors
+            $backgroundColor = '#ffbb00';
+            $borderColor = '#ffbb00';
+
+            // get status color & title
+            $lead = $reminder->reminderresource;
+
+            // [Check] - Lead Resource
+            if ($lead instanceof \App\Models\Lead) {
                 $modal_target_id = '#cardModal';
                 $modal_target_url = url('leads/content/' . $reminder->reminderresource_id . '/show-main');
-                $full_url = url('leads/v/' . $reminder->reminderresource_id . '/' . str_slug($reminder->reminderresource->lead_title ?? 'lead'));
-            } elseif ($resource_type == 'task') {
+                $full_url = url('leads/v/' . $reminder->reminderresource_id . '/' . str_slug($lead->lead_title ?? 'lead'));
+
+                // Try to fetch status
+                $status = \App\Models\LeadStatus::find($lead->lead_status);
+                if ($status) {
+                    $backgroundColor = $status->leadstatus_color ?? '#ffbb00';
+                    $borderColor = $backgroundColor;
+                    // Append status to title clearly
+                    $reminder->reminder_title .= ' - ' . $status->leadstatus_title;
+                }
+            } elseif ($lead instanceof \App\Models\Task) {
                 $modal_target_id = '#cardModal';
                 $modal_target_url = url('tasks/content/' . $reminder->reminderresource_id . '/show-main');
-                $full_url = url('tasks/v/' . $reminder->reminderresource_id . '/' . str_slug($reminder->reminderresource->task_title ?? 'task'));
+                $full_url = url('tasks/v/' . $reminder->reminderresource_id . '/' . str_slug($lead->task_title ?? 'task'));
             } else {
                 $full_url = '';
             }
@@ -1049,8 +1071,8 @@ class CalendarRepository
                 'title' => $reminder->reminder_title,
                 'start' => $start,
                 'end' => $end,
-                'backgroundColor' => '#ffbb00',  // Distinct color for reminders (e.g., orange/yellow)
-                'borderColor' => '#ffbb00',
+                'backgroundColor' => $backgroundColor,
+                'borderColor' => $borderColor,
                 'textColor' => '#ffffff',
                 'className' => 'event-type-reminder',
                 'extendedProps' => [

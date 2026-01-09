@@ -333,7 +333,7 @@
                 </li>
 
                 <!--refunds-->
-                {{-- <li class="sidenav-menu-item">
+                <li class="sidenav-menu-item">
                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0);" aria-expanded="false"
                         id="settings-menu-refunds">
                         <span class="hide-menu">Refunds
@@ -374,7 +374,7 @@
                                 class="settings-menu-link js-ajax-ux-request js-submenu-ajax js-dynamic-settings-url">Couriers</a>
                         </li>
                     </ul>
-                </li> --}}
+                </li>
 
 
                 <!--[MODULES] - dynamic menu-->

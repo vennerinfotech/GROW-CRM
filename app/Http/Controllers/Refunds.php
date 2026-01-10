@@ -47,6 +47,17 @@ class Refunds extends Controller
         $this->salessourcerepo = $salessourcerepo;
         $this->reasonrepo = $reasonrepo;
         $this->courierrepo = $courierrepo;
+
+        // General permission check (View)
+        $this->middleware(function ($request, $next) {
+            if (auth()->user()->is_admin) {
+                return $next($request);
+            }
+            if (auth()->user()->role->role_refunds == 0) {
+                abort(403);
+            }
+            return $next($request);
+        });
     }
 
     /**
@@ -110,6 +121,11 @@ class Refunds extends Controller
      */
     public function export()
     {
+        // Permission check (Export)
+        if (auth()->user()->role->role_content_export != 'yes' && !auth()->user()->is_admin) {
+            abort(403);
+        }
+
         // EXPORT ALL logic
         if (request('export_all') == 'true') {
             // search all records ignoring filters (pass 'all' to search, which repo handles as get() instead of paginate())
@@ -257,6 +273,11 @@ class Refunds extends Controller
      */
     public function create()
     {
+        // Permission check (Add)
+        if (auth()->user()->role->role_refunds < 2 && !auth()->user()->is_admin) {
+            abort(403);
+        }
+
         $page = $this->pageSettings('create');
 
         $statuses = $this->statusrepo->search();
@@ -287,6 +308,11 @@ class Refunds extends Controller
      */
     public function store()
     {
+        // Permission check (Add)
+        if (auth()->user()->role->role_refunds < 2 && !auth()->user()->is_admin) {
+            abort(403);
+        }
+
         $validator = Validator::make(request()->all(), [
             'refund_bill_no' => 'required',
             'refund_amount' => 'required|numeric',
@@ -316,6 +342,17 @@ class Refunds extends Controller
      */
     public function edit($id)
     {
+        // Permission check (Edit vs View)
+        if (request('view') == 'true') {
+            if (auth()->user()->role->role_refunds < 1 && !auth()->user()->is_admin) {
+                abort(403);
+            }
+        } else {
+            if (auth()->user()->role->role_refunds < 2 && !auth()->user()->is_admin) {
+                abort(403);
+            }
+        }
+
         $page = $this->pageSettings('edit');
 
         if (!$refund = \App\Models\Refund::find($id)) {
@@ -352,6 +389,11 @@ class Refunds extends Controller
      */
     public function update($id)
     {
+        // Permission check (Edit)
+        if (auth()->user()->role->role_refunds < 2 && !auth()->user()->is_admin) {
+            abort(403);
+        }
+
         // Get current refund to check status transitions
         $refund = \App\Models\Refund::find($id);
         if (!$refund) {
@@ -448,6 +490,11 @@ class Refunds extends Controller
      */
     public function destroy($id)
     {
+        // Permission check (Delete)
+        if (auth()->user()->role->role_refunds < 3 && !auth()->user()->is_admin) {
+            abort(403);
+        }
+
         if (!$refund = \App\Models\Refund::find($id)) {
             abort(409);
         }
@@ -536,6 +583,11 @@ class Refunds extends Controller
 
     public function uploadImage()
     {
+        // Permission check (Add/Edit)
+        if (auth()->user()->role->role_refunds < 2 && !auth()->user()->is_admin) {
+            abort(403);
+        }
+
         if (request()->hasFile('file')) {
             $path = request()->file('file')->store('files', 'public');
             return response()->json([

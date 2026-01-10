@@ -1097,6 +1097,7 @@ return [
     'recurring' => 'Recurring',
     'reject_amendments' => 'Contract Amendments',
     'reject' => 'Reject',
+    'refunds' => 'Refunds',
     'related' => 'Related',
     'remember_me' => 'Remember me',
     'remove_event' => 'Remove Event',

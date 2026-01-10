@@ -1,19 +1,21 @@
 <?php
 
-/** --------------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------------
  * This repository class manages all the data absctration for roles
  *
  * @package    Grow CRM
  * @author     NextLoop
- *----------------------------------------------------------------------------------*/
+ * ----------------------------------------------------------------------------------
+ */
 
 namespace App\Repositories;
 
 use App\Models\Role;
 use Log;
 
-class RoleRepository {
-
+class RoleRepository
+{
     /**
      * The roles repository instance.
      */
@@ -22,7 +24,8 @@ class RoleRepository {
     /**
      * Inject dependecies
      */
-    public function __construct(Role $roles) {
+    public function __construct(Role $roles)
+    {
         $this->roles = $roles;
     }
 
@@ -30,7 +33,8 @@ class RoleRepository {
      * Get all team roles
      * @return object
      */
-    public function allTeamRoles() {
+    public function allTeamRoles()
+    {
         return $this->roles->All()->whereNotIn('role_name', 'Client');
     }
 
@@ -39,14 +43,14 @@ class RoleRepository {
      * @param int $id optional for getting a single, specified record
      * @return object role collection
      */
-    public function search($id = '') {
-
+    public function search($id = '')
+    {
         $roles = $this->roles->newQuery();
 
         // all client fields
         $roles->selectRaw('*');
 
-        //count users on this role
+        // count users on this role
         $roles->selectRaw("(SELECT COUNT(*)
                                       FROM users
                                       WHERE role_id = roles.role_id
@@ -57,13 +61,13 @@ class RoleRepository {
             $roles->where('role_id', $id);
         }
 
-        //filter clients
+        // filter clients
         if (request()->filled('filter_role_type')) {
             $roles->where('role_type', request('filter_role_type'));
         }
 
-        //default sorting
-        //$roles->orderBy('role_id', 'desc');
+        // default sorting
+        // $roles->orderBy('role_id', 'desc');
         $roles->orderBy('role_name', 'asc');
 
         // Get the results and return them.
@@ -74,15 +78,15 @@ class RoleRepository {
      * Create a new record
      * @return mixed int|bool
      */
-    public function create() {
-
-        //save new user
+    public function create()
+    {
+        // save new user
         $role = new $this->roles;
 
-        //valid role values
+        // valid role values
         $valid = [0, 1, 2, 3];
 
-        //data - for security,we will do some extra validations for each entry
+        // data - for security,we will do some extra validations for each entry
         $role->role_name = ucwords(request('role_name'));
         $role->role_clients = (in_array(request('role_clients'), $valid)) ? request('role_clients') : 0;
         $role->role_contacts = (in_array(request('role_contacts'), $valid)) ? request('role_contacts') : 0;
@@ -95,6 +99,7 @@ class RoleRepository {
         $role->role_projects = (in_array(request('role_projects'), $valid)) ? request('role_projects') : 0;
         $role->role_leads = (in_array(request('role_leads'), $valid)) ? request('role_leads') : 0;
         $role->role_expenses = (in_array(request('role_expenses'), $valid)) ? request('role_expenses') : 0;
+        $role->role_refunds = (in_array(request('role_refunds'), $valid)) ? request('role_refunds') : 0;
         $role->role_timesheets = (in_array(request('role_timesheets'), $valid)) ? request('role_timesheets') : 0;
         $role->role_tickets = (in_array(request('role_tickets'), $valid)) ? request('role_tickets') : 0;
         $role->role_knowledgebase = (in_array(request('role_knowledgebase'), $valid)) ? request('role_knowledgebase') : 0;
@@ -117,11 +122,11 @@ class RoleRepository {
         $role->modules = null;
         $role->role_type = 'team';
 
-        //save and return id
+        // save and return id
         if ($role->save()) {
             return $role->role_id;
         } else {
-            Log::error("record could not be created - database error", ['process' => '[RoleRepository]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error('record could not be created - database error', ['process' => '[RoleRepository]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
     }
@@ -131,17 +136,17 @@ class RoleRepository {
      * @param int $id record id
      * @return mixed int|bool
      */
-    public function update($id) {
-
-        //get the record
+    public function update($id)
+    {
+        // get the record
         if (!$role = $this->roles->find($id)) {
             return false;
         }
 
-        //valid role values
+        // valid role values
         $valid = [0, 1, 2, 3];
 
-        //data - for security,we will do some extra validations for each entry
+        // data - for security,we will do some extra validations for each entry
         $role->role_name = ucwords(request('role_name'));
         $role->role_clients = (in_array(request('role_clients'), $valid)) ? request('role_clients') : 0;
         $role->role_contacts = (in_array(request('role_contacts'), $valid)) ? request('role_contacts') : 0;
@@ -154,6 +159,7 @@ class RoleRepository {
         $role->role_projects = (in_array(request('role_projects'), $valid)) ? request('role_projects') : 0;
         $role->role_leads = (in_array(request('role_leads'), $valid)) ? request('role_leads') : 0;
         $role->role_expenses = (in_array(request('role_expenses'), $valid)) ? request('role_expenses') : 0;
+        $role->role_refunds = (in_array(request('role_refunds'), $valid)) ? request('role_refunds') : 0;
         $role->role_timesheets = (in_array(request('role_timesheets'), $valid)) ? request('role_timesheets') : 0;
         $role->role_tickets = (in_array(request('role_tickets'), $valid)) ? request('role_tickets') : 0;
         $role->role_knowledgebase = (in_array(request('role_knowledgebase'), $valid)) ? request('role_knowledgebase') : 0;
@@ -179,19 +185,17 @@ class RoleRepository {
         $role->role_canned = (request('role_canned') == 'yes') ? 'yes' : 'no';
         $role->role_canned_scope = (request('role_canned_scope') == 'on') ? 'global' : 'own';
 
-        //[modules] - update modules json array
+        // [modules] - update modules json array
         $modules = request('modules');
         $modules = array_values($modules ?? []);
         $role->modules = $modules;
 
-
-        //save
+        // save
         if ($role->save()) {
             return $role->role_id;
         } else {
-            Log::error("record could not be updated - database error", ['process' => '[RoleRepository]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error('record could not be updated - database error', ['process' => '[RoleRepository]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
     }
-
 }

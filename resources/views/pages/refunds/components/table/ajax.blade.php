@@ -51,6 +51,7 @@
             <!--action button-->
             <span class="list-table-action dropdown font-size-inherit">
                 <!--delete-->
+                @if(auth()->user()->role->role_refunds >= 3 || auth()->user()->is_admin)
                 <button type="button" title="{{ cleanLang(__('lang.delete')) }}"
                     class="data-toggle-action-tooltip btn btn-outline-danger btn-circle btn-sm confirm-action-danger"
                     data-confirm-title="{{ cleanLang(__('lang.delete_item')) }}"
@@ -58,6 +59,7 @@
                     data-url="{{ url('/') }}/refunds/{{ $refund->refund_id }}">
                     <i class="sl-icon-trash"></i>
                 </button>
+                @endif
 
                 <!--view-->
                 <button type="button" title="{{ cleanLang(__('lang.view')) }}" style="color: #ff9041 !important;"
@@ -71,6 +73,7 @@
                 </button>
 
                 <!--edit-->
+                @if(auth()->user()->role->role_refunds >= 2 || auth()->user()->is_admin)
                 <button type="button" title="{{ cleanLang(__('lang.edit')) }}"
                     class="data-toggle-action-tooltip btn btn-outline-success btn-circle btn-sm edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
                     data-toggle="modal" data-target="#commonModal"
@@ -80,6 +83,7 @@
                     data-action-ajax-class="js-ajax-ux-request" data-action-ajax-loading-target="refunds-td-container">
                     <i class="sl-icon-note"></i>
                 </button>
+                @endif
             </span>
         </td>
     </tr>

@@ -382,6 +382,42 @@
                     </tr>
 
 
+                    <!--Refunds-->
+                    <tr>
+                        <td>{{ cleanLang(__('lang.refunds')) }}</td>
+                        <td>
+                            <div class="form-group row m-0">
+                                <div class="col-12 text-center">
+                                    <select class="select2-basic form-control form-control-sm" name="role_refunds"
+                                        data-allow-clear="false">
+                                        <option value="0" {{ runtimePreselected($role->role_refunds ?? '', 0) }}>
+                                            {{ cleanLang(__('lang.none')) }}</option>
+                                        <option value="1" {{ runtimePreselected($role->role_refunds ?? '', 1) }}>
+                                            {{ cleanLang(__('lang.view')) }}</option>
+                                        <option value="2" {{ runtimePreselected($role->role_refunds ?? '', 2) }}>
+                                            {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
+                                            {{ cleanLang(__('lang.edit')) }}</option>
+                                        <option value="3" {{ runtimePreselected($role->role_refunds ?? '', 3) }}>
+                                            {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
+                                            {{ cleanLang(__('lang.edit')) }} +
+                                            {{ cleanLang(__('lang.delete')) }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group form-group-checkbox row m-0 w-98">
+                                <div class="col-12 text-center p-t-5">
+                                    <input type="checkbox" id="role_refunds_scope" name="role_refunds_scope"
+                                        class="filled-in chk-col-light-blue" disabled checked="checked">
+                                    <label for="role_refunds_scope" data-toggle="tooltip"
+                                        title="{{ cleanLang(__('lang.can_only_be_set_as_global')) }}"></label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+
                     <!--Products-->
                     <tr>
                         <td>{{ cleanLang(__('lang.products')) }}</td>

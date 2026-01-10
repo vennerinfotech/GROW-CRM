@@ -210,6 +210,7 @@
                 <!--billing-->
 
                 <!--refunds-->
+                @if (auth()->user()->role->role_refunds > 0 || auth()->user()->is_admin)
                 <li data-modular-id="main_menu_refunds"
                     class="sidenav-menu-item {{ $page['mainmenu_refunds'] ?? '' }} menu-tooltip menu-with-tooltip"
                     title="Refunds">
@@ -252,6 +253,7 @@
                         </li>
                     </ul>
                 </li>
+                @endif
 
 
                 <!--[MODULES] - dynamic menu-->

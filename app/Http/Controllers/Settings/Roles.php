@@ -1,13 +1,16 @@
 <?php
 
-/** --------------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------------
  * This controller manages all the business logic for roles settings
  *
  * @package    Grow CRM
  * @author     NextLoop
- *----------------------------------------------------------------------------------*/
+ * ----------------------------------------------------------------------------------
+ */
 
 namespace App\Http\Controllers\Settings;
+
 use App\Http\Controllers\Controller;
 use App\Http\Responses\Settings\Roles\CreateResponse;
 use App\Http\Responses\Settings\Roles\DestroyResponse;
@@ -17,36 +20,35 @@ use App\Http\Responses\Settings\Roles\IndexResponse;
 use App\Http\Responses\Settings\Roles\StoreResponse;
 use App\Http\Responses\Settings\Roles\UpdateHomePageResponse;
 use App\Http\Responses\Settings\Roles\UpdateResponse;
-use App\Repositories\RoleRepository;
 use App\Repositories\Modules\ModuleRolesRespository;
+use App\Repositories\RoleRepository;
 use Illuminate\Http\Request;
 use Validator;
 
-class Roles extends Controller {
-
+class Roles extends Controller
+{
     /**
      * The roles repository instance.
      */
     protected $rolesrepo;
 
-    public function __construct(RoleRepository $rolesrepo) {
-
-        //parent
+    public function __construct(RoleRepository $rolesrepo)
+    {
+        // parent
         parent::__construct();
 
-        //authenticated
+        // authenticated
         $this->middleware('auth');
 
-        //settings general
+        // settings general
         $this->middleware('settingsMiddlewareIndex');
 
-        //demo check
+        // demo check
         $this->middleware('demoModeCheck')->only([
             'destroy',
         ]);
 
         $this->rolesrepo = $rolesrepo;
-
     }
 
     /**
@@ -54,25 +56,25 @@ class Roles extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-
-        //crumbs, page data & stats
+    public function index()
+    {
+        // crumbs, page data & stats
         $page = $this->pageSettings();
 
-        //team roles only
+        // team roles only
         request()->merge([
             'filter_role_type' => 'team',
         ]);
 
         $roles = $this->rolesrepo->search();
 
-        //reponse payload
+        // reponse payload
         $payload = [
             'page' => $page,
             'roles' => $roles,
         ];
 
-        //show the view
+        // show the view
         return new IndexResponse($payload);
     }
 
@@ -80,17 +82,17 @@ class Roles extends Controller {
      * Show the form for creating a new resource.
      * @return \Illuminate\Http\Response
      */
-    public function create() {
-
-        //page settings
+    public function create()
+    {
+        // page settings
         $page = $this->pageSettings('create');
 
-        //reponse payload
+        // reponse payload
         $payload = [
             'page' => $page,
         ];
 
-        //show the form
+        // show the form
         return new CreateResponse($payload);
     }
 
@@ -98,9 +100,9 @@ class Roles extends Controller {
      * Store a newly created resource in storage.
      * @return \Illuminate\Http\Response
      */
-    public function store(ModuleRolesRespository $modulerepo) {
-
-        //validate
+    public function store(ModuleRolesRespository $modulerepo)
+    {
+        // validate
         $validator = Validator::make(request()->all(), [
             'role_name' => 'required',
             'role_clients' => 'required',
@@ -112,6 +114,7 @@ class Roles extends Controller {
             'role_projects' => 'required',
             'role_leads' => 'required',
             'role_expenses' => 'required',
+            'role_refunds' => 'required',
             'role_timesheets' => 'required',
             'role_tickets' => 'required',
             'role_knowledgebase' => 'required',
@@ -129,31 +132,30 @@ class Roles extends Controller {
             abort(409, __('lang.fill_in_all_required_fields'));
         }
 
-        //check duplicates
+        // check duplicates
         if (\App\Models\Role::where('role_name', request('role_name'))
-            ->exists()) {
+                ->exists()) {
             abort(409, __('lang.role_already_exists'));
         }
 
-        //create the role
+        // create the role
         if (!$role_id = $this->rolesrepo->create()) {
             abort(409, __('lang.error_request_could_not_be_completed'));
         }
 
-        //sync module permissions
+        // sync module permissions
         $modulerepo->syncModulePermissions();
 
-        //get the source object (friendly for rendering in blade template)
+        // get the source object (friendly for rendering in blade template)
         $roles = $this->rolesrepo->search($role_id);
 
-        //reponse payload
+        // reponse payload
         $payload = [
             'roles' => $roles,
         ];
 
-        //process reponse
+        // process reponse
         return new StoreResponse($payload);
-
     }
 
     /**
@@ -162,15 +164,15 @@ class Roles extends Controller {
      * @param int $id resource id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id) {
-
-        //page settings
+    public function edit($id)
+    {
+        // page settings
         $page = $this->pageSettings('edit');
 
-        //client leadroles
+        // client leadroles
         $roles = $this->rolesrepo->search($id);
 
-        //not found
+        // not found
         if (!$role = $roles->first()) {
             abort(409, __('lang.error_loading_item'));
         }
@@ -181,14 +183,14 @@ class Roles extends Controller {
             $modules = [];
         }
 
-        //reponse payload
+        // reponse payload
         $payload = [
             'page' => $page,
             'role' => $role,
             'modules' => $modules,
         ];
 
-        //response
+        // response
         return new EditResponse($payload);
     }
 
@@ -197,28 +199,27 @@ class Roles extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function editHomePage($id) {
-
-        //page settings
+    public function editHomePage($id)
+    {
+        // page settings
         $page = $this->pageSettings('edit');
 
-        //get the role setting
+        // get the role setting
         $roles = $this->rolesrepo->search($id);
 
-        //not found
+        // not found
         if (!$role = $roles->first()) {
             abort(409, __('lang.error_loading_item'));
         }
 
-        //reponse payload
+        // reponse payload
         $payload = [
             'page' => $page,
             'role' => $role,
         ];
 
-        //response
+        // response
         return new EditHomePageResponse($payload);
-
     }
 
     /**
@@ -226,9 +227,9 @@ class Roles extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function updateHomePage($id) {
-
-        //validate
+    public function updateHomePage($id)
+    {
+        // validate
         $validator = Validator::make(request()->all(), [
             'role_homepage' => 'required',
         ]);
@@ -237,11 +238,11 @@ class Roles extends Controller {
             abort(409, __('lang.fill_in_all_required_fields'));
         }
 
-        //update setting
+        // update setting
         \App\Models\Role::where('role_id', $id)
             ->update(['role_homepage' => request('role_homepage')]);
 
-        //return view
+        // return view
         return new UpdateHomePageResponse();
     }
 
@@ -252,9 +253,9 @@ class Roles extends Controller {
      * @param int $id resource id
      * @return \Illuminate\Http\Response
      */
-    public function update($id) {
-
-        //validate
+    public function update($id)
+    {
+        // validate
         $validator = Validator::make(request()->all(), [
             'role_name' => 'required',
             'role_clients' => 'required',
@@ -267,6 +268,7 @@ class Roles extends Controller {
             'role_templates_projects' => 'required',
             'role_leads' => 'required',
             'role_expenses' => 'required',
+            'role_refunds' => 'required',
             'role_timesheets' => 'required',
             'role_tickets' => 'required',
             'role_knowledgebase' => 'required',
@@ -282,29 +284,28 @@ class Roles extends Controller {
             abort(409, __('lang.fill_in_all_required_fields'));
         }
 
-        //check duplicates
+        // check duplicates
         if (\App\Models\Role::where('role_name', request('role_name'))
-            ->where('role_id', '!=', $id)
-            ->exists()) {
+                ->where('role_id', '!=', $id)
+                ->exists()) {
             abort(409, __('lang.role_already_exists'));
         }
 
-        //update the resource
+        // update the resource
         if (!$this->rolesrepo->update($id)) {
             abort(409);
-        }        
+        }
 
-        //get the role object (friendly for rendering in blade template)
+        // get the role object (friendly for rendering in blade template)
         $roles = $this->rolesrepo->search($id);
 
-        //reponse payload
+        // reponse payload
         $payload = [
             'roles' => $roles,
         ];
 
-        //process reponse
+        // process reponse
         return new UpdateResponse($payload);
-
     }
 
     /**
@@ -313,46 +314,47 @@ class Roles extends Controller {
      * @param int $id resource id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
-
-        //get record
+    public function destroy($id)
+    {
+        // get record
         if (!\App\Models\Role::find($id)) {
             abort(409, __('lang.error_request_could_not_be_completed'));
         }
 
-        //get it in useful format
+        // get it in useful format
         $roles = $this->rolesrepo->search($id);
         $role = $roles->first();
 
-        //validation: default
+        // validation: default
         if ($role->role_system == 'yes') {
             abort(409, __('lang.you_cannot_delete_system_default_item'));
         }
 
-        //validation: default
+        // validation: default
         if (\App\Models\User::Where('role_id', $id)->exists()) {
             abort(409, __('lang.role_not_empty'));
         }
 
-        //delete the role
+        // delete the role
         $role->delete();
 
-        //reponse payload
+        // reponse payload
         $payload = [
             'role_id' => $id,
         ];
 
-        //process reponse
+        // process reponse
         return new DestroyResponse($payload);
     }
+
     /**
      * basic page setting for this section of the app
      * @param string $section page section (optional)
      * @param array $data any other data (optional)
      * @return array
      */
-    private function pageSettings($section = '', $data = []) {
-
+    private function pageSettings($section = '', $data = [])
+    {
         $page = [
             'crumbs' => [
                 __('lang.settings'),
@@ -364,7 +366,7 @@ class Roles extends Controller {
             'heading' => __('lang.settings'),
         ];
 
-        //default modal settings (modify for sepecif sections)
+        // default modal settings (modify for sepecif sections)
         $page += [
             'add_modal_title' => __('lang.add_role'),
             'add_modal_create_url' => url('settings/roles/create'),
@@ -375,11 +377,10 @@ class Roles extends Controller {
         ];
 
         config([
-            //visibility - add project buttton
+            // visibility - add project buttton
             'visibility.list_page_actions_add_button' => true,
         ]);
 
         return $page;
     }
-
 }

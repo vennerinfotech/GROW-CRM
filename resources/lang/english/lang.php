@@ -2773,4 +2773,9 @@ return [
     'occasion_already_exists' => 'Occasion already exists',
     'lead_occasions' => 'Lead Occasions',
     'occasions' => 'Occasions',
+    'refunds_dashboard' => 'Refunds Dashboard',
+    'refunds_initial' => 'Refunds Initial',
+    'refunds_authorized' => 'Refunds Authorized',
+    'refunds_completed' => 'Refunds Completed',
+    'refunds_rejected' => 'Refunds Rejected',
 ];

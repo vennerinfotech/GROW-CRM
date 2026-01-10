@@ -51,7 +51,20 @@
             <!--action button-->
             <span class="list-table-action dropdown font-size-inherit">
                 <!--delete-->
-                @if(auth()->user()->role->role_refunds >= 3 || auth()->user()->is_admin)
+                @php
+                    $status_id = $refund->refund_statusid;
+                    $permission_level = 0;
+                    switch ($status_id) {
+                        case 1: $permission_level = auth()->user()->role->role_refunds_initial; break;
+                        case 2: $permission_level = auth()->user()->role->role_refunds_authorized; break;
+                        case 3: $permission_level = auth()->user()->role->role_refunds_completed; break;
+                        case 5: $permission_level = auth()->user()->role->role_refunds_rejected; break;
+                        default: $permission_level = auth()->user()->role->role_refunds;
+                    }
+                    $permission_level = max($permission_level, auth()->user()->role->role_refunds);
+                @endphp
+
+                @if($permission_level >= 3 || auth()->user()->is_admin)
                 <button type="button" title="{{ cleanLang(__('lang.delete')) }}"
                     class="data-toggle-action-tooltip btn btn-outline-danger btn-circle btn-sm confirm-action-danger"
                     data-confirm-title="{{ cleanLang(__('lang.delete_item')) }}"
@@ -73,7 +86,7 @@
                 </button>
 
                 <!--edit-->
-                @if(auth()->user()->role->role_refunds >= 2 || auth()->user()->is_admin)
+                @if($permission_level >= 2 || auth()->user()->is_admin)
                 <button type="button" title="{{ cleanLang(__('lang.edit')) }}"
                     class="data-toggle-action-tooltip btn btn-outline-success btn-circle btn-sm edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
                     data-toggle="modal" data-target="#commonModal"

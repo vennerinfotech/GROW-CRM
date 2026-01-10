@@ -210,7 +210,16 @@
                 <!--billing-->
 
                 <!--refunds-->
-                @if (auth()->user()->role->role_refunds > 0 || auth()->user()->is_admin)
+                <!--refunds-->
+                @if (
+                    auth()->user()->role->role_refunds > 0 ||
+                    auth()->user()->role->role_refunds_dashboard > 0 ||
+                    auth()->user()->role->role_refunds_initial > 0 ||
+                    auth()->user()->role->role_refunds_authorized > 0 ||
+                    auth()->user()->role->role_refunds_completed > 0 ||
+                    auth()->user()->role->role_refunds_rejected > 0 ||
+                    auth()->user()->is_admin
+                )
                 <li data-modular-id="main_menu_refunds"
                     class="sidenav-menu-item {{ $page['mainmenu_refunds'] ?? '' }} menu-tooltip menu-with-tooltip"
                     title="Refunds">
@@ -222,35 +231,45 @@
                     </a>
                     <ul aria-expanded="false" class="collapse">
                         <!-- Dashboard -->
+                        @if (auth()->user()->role->role_refunds_dashboard > 0 || auth()->user()->is_admin)
                         <li class="sidenav-submenu {{ $page['submenu_refunds_dashboard'] ?? '' }}"
                             id="submenu_refunds_dashboard">
                             <a href="{{ url('refunds/dashboard') }}"
                                 class="{{ $page['submenu_refunds_dashboard'] ?? '' }}">Dashboard</a>
                         </li>
+                        @endif
                         <!-- Initial (ID 1) -->
+                        @if (auth()->user()->role->role_refunds_initial > 0 || auth()->user()->is_admin)
                         <li class="sidenav-submenu {{ $page['submenu_refunds_initial'] ?? '' }}"
                             id="submenu_refunds_initial">
                             <a href="{{ url('refunds?filter_refund_statusid%5B%5D=1') }}"
                                 class="{{ $page['submenu_refunds_initial'] ?? '' }}">Initial</a>
                         </li>
+                        @endif
                         <!-- Authorized (ID 2) -->
+                        @if (auth()->user()->role->role_refunds_authorized > 0 || auth()->user()->is_admin)
                         <li class="sidenav-submenu {{ $page['submenu_refunds_authorized'] ?? '' }}"
                             id="submenu_refunds_authorized">
                             <a href="{{ url('refunds?filter_refund_statusid%5B%5D=2') }}"
                                 class="{{ $page['submenu_refunds_authorized'] ?? '' }}">Authorized</a>
                         </li>
+                        @endif
                         <!-- Completed (ID 3) -->
+                        @if (auth()->user()->role->role_refunds_completed > 0 || auth()->user()->is_admin)
                         <li class="sidenav-submenu {{ $page['submenu_refunds_completed'] ?? '' }}"
                             id="submenu_refunds_completed">
                             <a href="{{ url('refunds?filter_refund_statusid%5B%5D=3') }}"
                                 class="{{ $page['submenu_refunds_completed'] ?? '' }}">Completed</a>
                         </li>
+                        @endif
                         <!-- Rejected (ID 5) -->
+                        @if (auth()->user()->role->role_refunds_rejected > 0 || auth()->user()->is_admin)
                         <li class="sidenav-submenu {{ $page['submenu_refunds_rejected'] ?? '' }}"
                             id="submenu_refunds_rejected">
                             <a href="{{ url('refunds?filter_refund_statusid%5B%5D=5') }}"
                                 class="{{ $page['submenu_refunds_rejected'] ?? '' }}">Rejected</a>
                         </li>
+                        @endif
                     </ul>
                 </li>
                 @endif

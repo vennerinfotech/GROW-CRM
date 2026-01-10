@@ -53,7 +53,14 @@ class Refunds extends Controller
             if (auth()->user()->is_admin) {
                 return $next($request);
             }
-            if (auth()->user()->role->role_refunds == 0) {
+            if (
+                auth()->user()->role->role_refunds == 0 &&
+                auth()->user()->role->role_refunds_dashboard == 0 &&
+                auth()->user()->role->role_refunds_initial == 0 &&
+                auth()->user()->role->role_refunds_authorized == 0 &&
+                auth()->user()->role->role_refunds_completed == 0 &&
+                auth()->user()->role->role_refunds_rejected == 0
+            ) {
                 abort(403);
             }
             return $next($request);
@@ -72,6 +79,10 @@ class Refunds extends Controller
      */
     public function dashboard()
     {
+        // Permission check (Dashboard View)
+        if (auth()->user()->role->role_refunds_dashboard < 1 && auth()->user()->role->role_refunds < 1 && !auth()->user()->is_admin) {
+            abort(403);
+        }
         // page settings
         $page = $this->pageSettings('dashboard');
 
@@ -273,8 +284,8 @@ class Refunds extends Controller
      */
     public function create()
     {
-        // Permission check (Add)
-        if (auth()->user()->role->role_refunds < 2 && !auth()->user()->is_admin) {
+        // Permission check (Add - assuming Initial status)
+        if (auth()->user()->role->role_refunds_initial < 2 && auth()->user()->role->role_refunds < 2 && !auth()->user()->is_admin) {
             abort(403);
         }
 
@@ -308,8 +319,8 @@ class Refunds extends Controller
      */
     public function store()
     {
-        // Permission check (Add)
-        if (auth()->user()->role->role_refunds < 2 && !auth()->user()->is_admin) {
+        // Permission check (Add - assuming Initial status)
+        if (auth()->user()->role->role_refunds_initial < 2 && auth()->user()->role->role_refunds < 2 && !auth()->user()->is_admin) {
             abort(403);
         }
 
@@ -342,21 +353,42 @@ class Refunds extends Controller
      */
     public function edit($id)
     {
+        if (!$refund = \App\Models\Refund::find($id)) {
+            abort(409, __('lang.item_not_found'));
+        }
+
+        // Determine granular permission based on status
+        $status_id = $refund->refund_statusid;
+        $permission_level = 0;
+        switch ($status_id) {
+            case 1:  // Initial
+                $permission_level = auth()->user()->role->role_refunds_initial;
+                break;
+            case 2:  // Authorized
+                $permission_level = auth()->user()->role->role_refunds_authorized;
+                break;
+            case 3:  // Completed
+                $permission_level = auth()->user()->role->role_refunds_completed;
+                break;
+            case 5:  // Rejected
+                $permission_level = auth()->user()->role->role_refunds_rejected;
+                break;
+            default:
+                $permission_level = auth()->user()->role->role_refunds;  // Fallback
+        }
+
+        // Also allow legacy global permission if it's higher
+        $permission_level = max($permission_level, auth()->user()->role->role_refunds);
+
         // Permission check (Edit vs View)
         if (request('view') == 'true') {
-            if (auth()->user()->role->role_refunds < 1 && !auth()->user()->is_admin) {
+            if ($permission_level < 1 && !auth()->user()->is_admin) {
                 abort(403);
             }
         } else {
-            if (auth()->user()->role->role_refunds < 2 && !auth()->user()->is_admin) {
+            if ($permission_level < 2 && !auth()->user()->is_admin) {
                 abort(403);
             }
-        }
-
-        $page = $this->pageSettings('edit');
-
-        if (!$refund = \App\Models\Refund::find($id)) {
-            abort(409, __('lang.item_not_found'));
         }
 
         $statuses = $this->statusrepo->search();
@@ -367,6 +399,8 @@ class Refunds extends Controller
         $sales_sources = $this->salessourcerepo->search();
         $reasons = $this->reasonrepo->search();
         $couriers = $this->courierrepo->search();
+
+        $page = $this->pageSettings('edit');
 
         $html = view('pages/refunds/components/modals/add-edit-inc', compact('page', 'refund', 'statuses', 'payment_modes', 'users', 'error_sources', 'sales_sources', 'reasons', 'couriers'))->render();
 
@@ -389,15 +423,38 @@ class Refunds extends Controller
      */
     public function update($id)
     {
-        // Permission check (Edit)
-        if (auth()->user()->role->role_refunds < 2 && !auth()->user()->is_admin) {
-            abort(403);
-        }
-
-        // Get current refund to check status transitions
+        // Get current refund to check status transitions and permissions
         $refund = \App\Models\Refund::find($id);
         if (!$refund) {
             abort(409, __('lang.item_not_found'));
+        }
+
+        // Determine granular permission based on status
+        $status_id = $refund->refund_statusid;
+        $permission_level = 0;
+        switch ($status_id) {
+            case 1:  // Initial
+                $permission_level = auth()->user()->role->role_refunds_initial;
+                break;
+            case 2:  // Authorized
+                $permission_level = auth()->user()->role->role_refunds_authorized;
+                break;
+            case 3:  // Completed
+                $permission_level = auth()->user()->role->role_refunds_completed;
+                break;
+            case 5:  // Rejected
+                $permission_level = auth()->user()->role->role_refunds_rejected;
+                break;
+            default:
+                $permission_level = auth()->user()->role->role_refunds;  // Fallback
+        }
+
+        // Also allow legacy global permission if it's higher
+        $permission_level = max($permission_level, auth()->user()->role->role_refunds);
+
+        // Permission check (Edit)
+        if ($permission_level < 2 && !auth()->user()->is_admin) {
+            abort(403);
         }
 
         $current_status = $refund->refund_statusid;
@@ -490,13 +547,36 @@ class Refunds extends Controller
      */
     public function destroy($id)
     {
-        // Permission check (Delete)
-        if (auth()->user()->role->role_refunds < 3 && !auth()->user()->is_admin) {
-            abort(403);
-        }
-
         if (!$refund = \App\Models\Refund::find($id)) {
             abort(409);
+        }
+
+        // Determine granular permission based on status
+        $status_id = $refund->refund_statusid;
+        $permission_level = 0;
+        switch ($status_id) {
+            case 1:  // Initial
+                $permission_level = auth()->user()->role->role_refunds_initial;
+                break;
+            case 2:  // Authorized
+                $permission_level = auth()->user()->role->role_refunds_authorized;
+                break;
+            case 3:  // Completed
+                $permission_level = auth()->user()->role->role_refunds_completed;
+                break;
+            case 5:  // Rejected
+                $permission_level = auth()->user()->role->role_refunds_rejected;
+                break;
+            default:
+                $permission_level = auth()->user()->role->role_refunds;  // Fallback
+        }
+
+        // Also allow legacy global permission if it's higher
+        $permission_level = max($permission_level, auth()->user()->role->role_refunds);
+
+        // Permission check (Delete)
+        if ($permission_level < 3 && !auth()->user()->is_admin) {
+            abort(403);
         }
 
         $refund->delete();
@@ -548,13 +628,13 @@ class Refunds extends Controller
                     $status_id = reset($status_id);
                 }
 
-                $status_name = match ((int) $status_id) {
+                $status_names = [
                     1 => 'Initiate',
                     2 => 'Authorized',
                     3 => 'Completed',
                     5 => 'Rejected',
-                    default => ''
-                };
+                ];
+                $status_name = $status_names[(int) $status_id] ?? '';
 
                 if ($status_name) {
                     $page['heading'] = 'Refunds - ' . $status_name;

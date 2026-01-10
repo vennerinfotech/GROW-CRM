@@ -248,14 +248,18 @@
                                 <div class="col-12 text-center">
                                     <select class="select2-basic form-control form-control-sm" name="role_expenses"
                                         data-allow-clear="false">
-                                        <option value="0" {{ runtimePreselected($role->role_expenses ?? '', 0) }}>
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_expenses ?? '', 0) }}>
                                             {{ cleanLang(__('lang.none')) }}</option>
-                                        <option value="1" {{ runtimePreselected($role->role_expenses ?? '', 1) }}>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_expenses ?? '', 1) }}>
                                             {{ cleanLang(__('lang.view')) }}</option>
-                                        <option value="2" {{ runtimePreselected($role->role_expenses ?? '', 2) }}>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_expenses ?? '', 2) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }}</option>
-                                        <option value="3" {{ runtimePreselected($role->role_expenses ?? '', 3) }}>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_expenses ?? '', 3) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }} +
                                             {{ cleanLang(__('lang.delete')) }}</option>
@@ -283,14 +287,18 @@
                                 <div class="col-12 text-center">
                                     <select class="select2-basic form-control form-control-sm" name="role_timesheets"
                                         data-allow-clear="false">
-                                        <option value="0" {{ runtimePreselected($role->role_timesheets ?? '', 0) }}>
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_timesheets ?? '', 0) }}>
                                             {{ cleanLang(__('lang.none')) }}</option>
-                                        <option value="1" {{ runtimePreselected($role->role_timesheets ?? '', 1) }}>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_timesheets ?? '', 1) }}>
                                             {{ cleanLang(__('lang.view')) }}</option>
-                                        <option value="2" {{ runtimePreselected($role->role_timesheets ?? '', 2) }}>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_timesheets ?? '', 2) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }}</option>
-                                        <option value="3" {{ runtimePreselected($role->role_timesheets ?? '', 3) }}>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_timesheets ?? '', 3) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }} +
                                             {{ cleanLang(__('lang.delete')) }}</option>
@@ -318,14 +326,18 @@
                                 <div class="col-12 text-center">
                                     <select class="select2-basic form-control form-control-sm" name="role_invoices"
                                         data-allow-clear="false">
-                                        <option value="0" {{ runtimePreselected($role->role_invoices ?? '', 0) }}>
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_invoices ?? '', 0) }}>
                                             {{ cleanLang(__('lang.none')) }}</option>
-                                        <option value="1" {{ runtimePreselected($role->role_invoices ?? '', 1) }}>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_invoices ?? '', 1) }}>
                                             {{ cleanLang(__('lang.view')) }}</option>
-                                        <option value="2" {{ runtimePreselected($role->role_invoices ?? '', 2) }}>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_invoices ?? '', 2) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }}</option>
-                                        <option value="3" {{ runtimePreselected($role->role_invoices ?? '', 3) }}>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_invoices ?? '', 3) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }} +
                                             {{ cleanLang(__('lang.delete')) }}</option>
@@ -354,14 +366,18 @@
                                 <div class="col-12 text-center">
                                     <select class="select2-basic form-control form-control-sm" name="role_payments"
                                         data-allow-clear="false">
-                                        <option value="0" {{ runtimePreselected($role->role_payments ?? '', 0) }}>
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_payments ?? '', 0) }}>
                                             {{ cleanLang(__('lang.none')) }}</option>
-                                        <option value="1" {{ runtimePreselected($role->role_payments ?? '', 1) }}>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_payments ?? '', 1) }}>
                                             {{ cleanLang(__('lang.view')) }}</option>
-                                        <option value="2" {{ runtimePreselected($role->role_payments ?? '', 2) }}>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_payments ?? '', 2) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }}</option>
-                                        <option value="3" {{ runtimePreselected($role->role_payments ?? '', 3) }}>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_payments ?? '', 3) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }} +
                                             {{ cleanLang(__('lang.delete')) }}</option>
@@ -383,7 +399,7 @@
 
 
                     <!--Refunds-->
-                    <tr>
+                    {{-- <tr>
                         <td>{{ cleanLang(__('lang.refunds')) }}</td>
                         <td>
                             <div class="form-group row m-0">
@@ -411,6 +427,202 @@
                                     <input type="checkbox" id="role_refunds_scope" name="role_refunds_scope"
                                         class="filled-in chk-col-light-blue" disabled checked="checked">
                                     <label for="role_refunds_scope" data-toggle="tooltip"
+                                        title="{{ cleanLang(__('lang.can_only_be_set_as_global')) }}"></label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr> --}}
+
+                    <!--Refunds Dashboard-->
+                    <tr>
+                        <td>{{ cleanLang(__('lang.refunds_dashboard')) }}</td>
+                        <td>
+                            <div class="form-group row m-0">
+                                <div class="col-12 text-center">
+                                    <select class="select2-basic form-control form-control-sm"
+                                        name="role_refunds_dashboard" data-allow-clear="false">
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_refunds_dashboard ?? '', 0) }}>
+                                            {{ cleanLang(__('lang.none')) }}</option>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_refunds_dashboard ?? '', 1) }}>
+                                            {{ cleanLang(__('lang.view')) }}</option>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_refunds_dashboard ?? '', 2) }}>
+                                            {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
+                                            {{ cleanLang(__('lang.edit')) }}</option>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_refunds_dashboard ?? '', 3) }}>
+                                            {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
+                                            {{ cleanLang(__('lang.edit')) }} +
+                                            {{ cleanLang(__('lang.delete')) }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group form-group-checkbox row m-0 w-98">
+                                <div class="col-12 text-center p-t-5">
+                                    <input type="checkbox" id="role_refunds_dashboard_scope"
+                                        name="role_refunds_dashboard_scope" class="filled-in chk-col-light-blue"
+                                        disabled checked="checked">
+                                    <label for="role_refunds_dashboard_scope" data-toggle="tooltip"
+                                        title="{{ cleanLang(__('lang.can_only_be_set_as_global')) }}"></label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <!--Refunds Initial-->
+                    <tr>
+                        <td>{{ cleanLang(__('lang.refunds_initial')) }}</td>
+                        <td>
+                            <div class="form-group row m-0">
+                                <div class="col-12 text-center">
+                                    <select class="select2-basic form-control form-control-sm"
+                                        name="role_refunds_initial" data-allow-clear="false">
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_refunds_initial ?? '', 0) }}>
+                                            {{ cleanLang(__('lang.none')) }}</option>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_refunds_initial ?? '', 1) }}>
+                                            {{ cleanLang(__('lang.view')) }}</option>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_refunds_initial ?? '', 2) }}>
+                                            {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
+                                            {{ cleanLang(__('lang.edit')) }}</option>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_refunds_initial ?? '', 3) }}>
+                                            {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
+                                            {{ cleanLang(__('lang.edit')) }} +
+                                            {{ cleanLang(__('lang.delete')) }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group form-group-checkbox row m-0 w-98">
+                                <div class="col-12 text-center p-t-5">
+                                    <input type="checkbox" id="role_refunds_initial_scope"
+                                        name="role_refunds_initial_scope" class="filled-in chk-col-light-blue"
+                                        disabled checked="checked">
+                                    <label for="role_refunds_initial_scope" data-toggle="tooltip"
+                                        title="{{ cleanLang(__('lang.can_only_be_set_as_global')) }}"></label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <!--Refunds Authorized-->
+                    <tr>
+                        <td>{{ cleanLang(__('lang.refunds_authorized')) }}</td>
+                        <td>
+                            <div class="form-group row m-0">
+                                <div class="col-12 text-center">
+                                    <select class="select2-basic form-control form-control-sm"
+                                        name="role_refunds_authorized" data-allow-clear="false">
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_refunds_authorized ?? '', 0) }}>
+                                            {{ cleanLang(__('lang.none')) }}</option>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_refunds_authorized ?? '', 1) }}>
+                                            {{ cleanLang(__('lang.view')) }}</option>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_refunds_authorized ?? '', 2) }}>
+                                            {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
+                                            {{ cleanLang(__('lang.edit')) }}</option>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_refunds_authorized ?? '', 3) }}>
+                                            {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
+                                            {{ cleanLang(__('lang.edit')) }} +
+                                            {{ cleanLang(__('lang.delete')) }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group form-group-checkbox row m-0 w-98">
+                                <div class="col-12 text-center p-t-5">
+                                    <input type="checkbox" id="role_refunds_authorized_scope"
+                                        name="role_refunds_authorized_scope" class="filled-in chk-col-light-blue"
+                                        disabled checked="checked">
+                                    <label for="role_refunds_authorized_scope" data-toggle="tooltip"
+                                        title="{{ cleanLang(__('lang.can_only_be_set_as_global')) }}"></label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <!--Refunds Completed-->
+                    <tr>
+                        <td>{{ cleanLang(__('lang.refunds_completed')) }}</td>
+                        <td>
+                            <div class="form-group row m-0">
+                                <div class="col-12 text-center">
+                                    <select class="select2-basic form-control form-control-sm"
+                                        name="role_refunds_completed" data-allow-clear="false">
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_refunds_completed ?? '', 0) }}>
+                                            {{ cleanLang(__('lang.none')) }}</option>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_refunds_completed ?? '', 1) }}>
+                                            {{ cleanLang(__('lang.view')) }}</option>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_refunds_completed ?? '', 2) }}>
+                                            {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
+                                            {{ cleanLang(__('lang.edit')) }}</option>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_refunds_completed ?? '', 3) }}>
+                                            {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
+                                            {{ cleanLang(__('lang.edit')) }} +
+                                            {{ cleanLang(__('lang.delete')) }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group form-group-checkbox row m-0 w-98">
+                                <div class="col-12 text-center p-t-5">
+                                    <input type="checkbox" id="role_refunds_completed_scope"
+                                        name="role_refunds_completed_scope" class="filled-in chk-col-light-blue"
+                                        disabled checked="checked">
+                                    <label for="role_refunds_completed_scope" data-toggle="tooltip"
+                                        title="{{ cleanLang(__('lang.can_only_be_set_as_global')) }}"></label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <!--Refunds Rejected-->
+                    <tr>
+                        <td>{{ cleanLang(__('lang.refunds_rejected')) }}</td>
+                        <td>
+                            <div class="form-group row m-0">
+                                <div class="col-12 text-center">
+                                    <select class="select2-basic form-control form-control-sm"
+                                        name="role_refunds_rejected" data-allow-clear="false">
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_refunds_rejected ?? '', 0) }}>
+                                            {{ cleanLang(__('lang.none')) }}</option>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_refunds_rejected ?? '', 1) }}>
+                                            {{ cleanLang(__('lang.view')) }}</option>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_refunds_rejected ?? '', 2) }}>
+                                            {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
+                                            {{ cleanLang(__('lang.edit')) }}</option>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_refunds_rejected ?? '', 3) }}>
+                                            {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
+                                            {{ cleanLang(__('lang.edit')) }} +
+                                            {{ cleanLang(__('lang.delete')) }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group form-group-checkbox row m-0 w-98">
+                                <div class="col-12 text-center p-t-5">
+                                    <input type="checkbox" id="role_refunds_rejected_scope"
+                                        name="role_refunds_rejected_scope" class="filled-in chk-col-light-blue"
+                                        disabled checked="checked">
+                                    <label for="role_refunds_rejected_scope" data-toggle="tooltip"
                                         title="{{ cleanLang(__('lang.can_only_be_set_as_global')) }}"></label>
                                 </div>
                             </div>
@@ -461,14 +673,18 @@
                                 <div class="col-12 text-center">
                                     <select class="select2-basic form-control form-control-sm" name="role_estimates"
                                         data-allow-clear="false">
-                                        <option value="0" {{ runtimePreselected($role->role_estimates ?? '', 0) }}>
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_estimates ?? '', 0) }}>
                                             {{ cleanLang(__('lang.none')) }}</option>
-                                        <option value="1" {{ runtimePreselected($role->role_estimates ?? '', 1) }}>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_estimates ?? '', 1) }}>
                                             {{ cleanLang(__('lang.view')) }}</option>
-                                        <option value="2" {{ runtimePreselected($role->role_estimates ?? '', 2) }}>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_estimates ?? '', 2) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }}</option>
-                                        <option value="3" {{ runtimePreselected($role->role_estimates ?? '', 3) }}>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_estimates ?? '', 3) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }} +
                                             {{ cleanLang(__('lang.delete')) }}</option>
@@ -498,14 +714,18 @@
                                 <div class="col-12 text-center">
                                     <select class="select2-basic form-control form-control-sm" name="role_proposals"
                                         data-allow-clear="false">
-                                        <option value="0" {{ runtimePreselected($role->role_proposals ?? '', 0) }}>
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_proposals ?? '', 0) }}>
                                             {{ cleanLang(__('lang.none')) }}</option>
-                                        <option value="1" {{ runtimePreselected($role->role_proposals ?? '', 1) }}>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_proposals ?? '', 1) }}>
                                             {{ cleanLang(__('lang.view')) }}</option>
-                                        <option value="2" {{ runtimePreselected($role->role_proposals ?? '', 2) }}>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_proposals ?? '', 2) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }}</option>
-                                        <option value="3" {{ runtimePreselected($role->role_proposals ?? '', 3) }}>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_proposals ?? '', 3) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }} +
                                             {{ cleanLang(__('lang.delete')) }}</option>
@@ -572,14 +792,18 @@
                                 <div class="col-12 text-center">
                                     <select class="select2-basic form-control form-control-sm" name="role_contracts"
                                         data-allow-clear="false">
-                                        <option value="0" {{ runtimePreselected($role->role_contracts ?? '', 0) }}>
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_contracts ?? '', 0) }}>
                                             {{ cleanLang(__('lang.none')) }}</option>
-                                        <option value="1" {{ runtimePreselected($role->role_contracts ?? '', 1) }}>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_contracts ?? '', 1) }}>
                                             {{ cleanLang(__('lang.view')) }}</option>
-                                        <option value="2" {{ runtimePreselected($role->role_contracts ?? '', 2) }}>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_contracts ?? '', 2) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }}</option>
-                                        <option value="3" {{ runtimePreselected($role->role_contracts ?? '', 3) }}>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_contracts ?? '', 3) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }} +
                                             {{ cleanLang(__('lang.delete')) }}</option>
@@ -646,14 +870,18 @@
                                 <div class="col-12 text-center">
                                     <select class="select2-basic form-control form-control-sm" name="role_clients"
                                         data-allow-clear="false">
-                                        <option value="0" {{ runtimePreselected($role->role_clients ?? '', 0) }}>
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_clients ?? '', 0) }}>
                                             {{ cleanLang(__('lang.none')) }}</option>
-                                        <option value="1" {{ runtimePreselected($role->role_clients ?? '', 1) }}>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_clients ?? '', 1) }}>
                                             {{ cleanLang(__('lang.view')) }}</option>
-                                        <option value="2" {{ runtimePreselected($role->role_clients ?? '', 2) }}>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_clients ?? '', 2) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }}</option>
-                                        <option value="3" {{ runtimePreselected($role->role_clients ?? '', 3) }}>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_clients ?? '', 3) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }} +
                                             {{ cleanLang(__('lang.delete')) }}</option>
@@ -681,14 +909,18 @@
                                 <div class="col-12 text-center">
                                     <select class="select2-basic form-control form-control-sm" name="role_contacts"
                                         data-allow-clear="false">
-                                        <option value="0" {{ runtimePreselected($role->role_contacts ?? '', 0) }}>
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_contacts ?? '', 0) }}>
                                             {{ cleanLang(__('lang.none')) }}</option>
-                                        <option value="1" {{ runtimePreselected($role->role_contacts ?? '', 1) }}>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_contacts ?? '', 1) }}>
                                             {{ cleanLang(__('lang.view')) }}</option>
-                                        <option value="2" {{ runtimePreselected($role->role_contacts ?? '', 2) }}>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_contacts ?? '', 2) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }}</option>
-                                        <option value="3" {{ runtimePreselected($role->role_contacts ?? '', 3) }}>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_contacts ?? '', 3) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }} +
                                             {{ cleanLang(__('lang.delete')) }}</option>
@@ -716,14 +948,18 @@
                                 <div class="col-12 text-center">
                                     <select class="select2-basic form-control form-control-sm" name="role_tickets"
                                         data-allow-clear="false">
-                                        <option value="0" {{ runtimePreselected($role->role_tickets ?? '', 0) }}>
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_tickets ?? '', 0) }}>
                                             {{ cleanLang(__('lang.none')) }}</option>
-                                        <option value="1" {{ runtimePreselected($role->role_tickets ?? '', 1) }}>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_tickets ?? '', 1) }}>
                                             {{ cleanLang(__('lang.view')) }}</option>
-                                        <option value="2" {{ runtimePreselected($role->role_tickets ?? '', 2) }}>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_tickets ?? '', 2) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }}</option>
-                                        <option value="3" {{ runtimePreselected($role->role_tickets ?? '', 3) }}>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_tickets ?? '', 3) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }} +
                                             {{ cleanLang(__('lang.delete')) }}</option>
@@ -751,9 +987,11 @@
                                 <div class="col-12 text-center">
                                     <select class="select2-basic form-control form-control-sm" name="role_canned"
                                         data-allow-clear="false">
-                                        <option value="no" {{ runtimePreselected($role->role_canned ?? '', 'no') }}>
+                                        <option value="no"
+                                            {{ runtimePreselected($role->role_canned ?? '', 'no') }}>
                                             {{ cleanLang(__('lang.no')) }}</option>
-                                        <option value="yes" {{ runtimePreselected($role->role_canned ?? '', 'yes') }}>
+                                        <option value="yes"
+                                            {{ runtimePreselected($role->role_canned ?? '', 'yes') }}>
                                             {{ cleanLang(__('lang.yes')) }}</option>
                                     </select>
                                 </div>
@@ -778,16 +1016,20 @@
                         <td>
                             <div class="form-group row m-0">
                                 <div class="col-12 text-center">
-                                    <select class="select2-basic form-control form-control-sm" name="role_knowledgebase"
-                                        data-allow-clear="false">
-                                        <option value="0" {{ runtimePreselected($role->role_knowledgebase ?? '', 0) }}>
+                                    <select class="select2-basic form-control form-control-sm"
+                                        name="role_knowledgebase" data-allow-clear="false">
+                                        <option value="0"
+                                            {{ runtimePreselected($role->role_knowledgebase ?? '', 0) }}>
                                             {{ cleanLang(__('lang.none')) }}</option>
-                                        <option value="1" {{ runtimePreselected($role->role_knowledgebase ?? '', 1) }}>
+                                        <option value="1"
+                                            {{ runtimePreselected($role->role_knowledgebase ?? '', 1) }}>
                                             {{ cleanLang(__('lang.view')) }}</option>
-                                        <option value="2" {{ runtimePreselected($role->role_knowledgebase ?? '', 2) }}>
+                                        <option value="2"
+                                            {{ runtimePreselected($role->role_knowledgebase ?? '', 2) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }}</option>
-                                        <option value="3" {{ runtimePreselected($role->role_knowledgebase ?? '', 3) }}>
+                                        <option value="3"
+                                            {{ runtimePreselected($role->role_knowledgebase ?? '', 3) }}>
                                             {{ cleanLang(__('lang.view')) }} + {{ cleanLang(__('lang.add')) }} +
                                             {{ cleanLang(__('lang.edit')) }} +
                                             {{ cleanLang(__('lang.delete')) }}</option>
@@ -798,8 +1040,9 @@
                         <td>
                             <div class="form-group form-group-checkbox row m-0 w-98">
                                 <div class="col-12 text-center  p-t-5">
-                                    <input type="checkbox" id="role_knowledgebase_scope" name="role_knowledgebase_scope"
-                                        class="filled-in chk-col-light-blue" disabled checked="checked">
+                                    <input type="checkbox" id="role_knowledgebase_scope"
+                                        name="role_knowledgebase_scope" class="filled-in chk-col-light-blue" disabled
+                                        checked="checked">
                                     <label for="role_knowledgebase_scope" data-toggle="tooltip"
                                         title="{{ cleanLang(__('lang.can_only_be_set_as_global')) }}"></label>
                                 </div>
@@ -815,9 +1058,11 @@
                                 <div class="col-12 text-center">
                                     <select class="select2-basic form-control form-control-sm" name="role_messages"
                                         data-allow-clear="false">
-                                        <option value="no" {{ runtimePreselected($role->role_messages ?? '', 'no') }}>
+                                        <option value="no"
+                                            {{ runtimePreselected($role->role_messages ?? '', 'no') }}>
                                             {{ cleanLang(__('lang.no')) }}</option>
-                                        <option value="yes" {{ runtimePreselected($role->role_messages ?? '', 'yes') }}>
+                                        <option value="yes"
+                                            {{ runtimePreselected($role->role_messages ?? '', 'yes') }}>
                                             {{ cleanLang(__('lang.yes')) }}</option>
                                     </select>
                                 </div>
@@ -845,7 +1090,8 @@
                                         data-allow-clear="false">
                                         <option value=no" {{ runtimePreselected($role->role_reports ?? '', 'no') }}>
                                             {{ cleanLang(__('lang.no')) }}</option>
-                                        <option value="yes" {{ runtimePreselected($role->role_reports ?? '', 'yes') }}>
+                                        <option value="yes"
+                                            {{ runtimePreselected($role->role_reports ?? '', 'yes') }}>
                                             {{ cleanLang(__('lang.yes')) }}</option>
                                     </select>
                                 </div>
@@ -885,8 +1131,8 @@
                             <div class="form-group form-group-checkbox row m-0 w-98">
                                 <div class="col-12 text-center p-t-5">
                                     <input type="checkbox" id="role_assign_projects_scope"
-                                        name="role_assign_projects_scope" class="filled-in chk-col-light-blue" disabled
-                                        checked="checked">
+                                        name="role_assign_projects_scope" class="filled-in chk-col-light-blue"
+                                        disabled checked="checked">
                                     <label for="role_assign_projects_scope" data-toggle="tooltip"
                                         title="{{ cleanLang(__('lang.can_only_be_set_as_global')) }}"></label>
                                 </div>
@@ -900,8 +1146,8 @@
                         <td>
                             <div class="form-group row m-0">
                                 <div class="col-12 text-center">
-                                    <select class="select2-basic form-control form-control-sm" name="role_assign_leads"
-                                        data-allow-clear="false">
+                                    <select class="select2-basic form-control form-control-sm"
+                                        name="role_assign_leads" data-allow-clear="false">
                                         <option value="no"
                                             {{ runtimePreselected($role->role_assign_leads ?? '', 'no') }}>
                                             {{ cleanLang(__('lang.no')) }}</option>
@@ -916,8 +1162,9 @@
                         <td>
                             <div class="form-group form-group-checkbox row m-0 w-98">
                                 <div class="col-12 text-center p-t-5">
-                                    <input type="checkbox" id="role_assign_leads_scope" name="role_assign_leads_scope"
-                                        class="filled-in chk-col-light-blue" disabled checked="checked">
+                                    <input type="checkbox" id="role_assign_leads_scope"
+                                        name="role_assign_leads_scope" class="filled-in chk-col-light-blue" disabled
+                                        checked="checked">
                                     <label for="role_assign_leads_scope" data-toggle="tooltip"
                                         title="{{ cleanLang(__('lang.can_only_be_set_as_global')) }}"></label>
                                 </div>
@@ -931,8 +1178,8 @@
                         <td>
                             <div class="form-group row m-0">
                                 <div class="col-12 text-center">
-                                    <select class="select2-basic form-control form-control-sm" name="role_assign_tasks"
-                                        data-allow-clear="false">
+                                    <select class="select2-basic form-control form-control-sm"
+                                        name="role_assign_tasks" data-allow-clear="false">
                                         <option value="no"
                                             {{ runtimePreselected($role->role_assign_tasks ?? '', 'no') }}>
                                             {{ cleanLang(__('lang.no')) }}</option>
@@ -946,8 +1193,9 @@
                         <td>
                             <div class="form-group form-group-checkbox row m-0 w-98">
                                 <div class="col-12 text-center p-t-5">
-                                    <input type="checkbox" id="role_assign_tasks_scope" name="role_assign_tasks_scope"
-                                        class="filled-in chk-col-light-blue" disabled checked="checked">
+                                    <input type="checkbox" id="role_assign_tasks_scope"
+                                        name="role_assign_tasks_scope" class="filled-in chk-col-light-blue" disabled
+                                        checked="checked">
                                     <label for="role_assign_tasks_scope" data-toggle="tooltip"
                                         title="{{ cleanLang(__('lang.can_only_be_set_as_global')) }}"></label>
                                 </div>
@@ -1089,45 +1337,45 @@
         </div>
 
         <!--[modules] permissions-->
-        @if(config('response.mode') == 'edit')
-        <div class="row m-t-30">
-            <div class="col-12">
-                <div class="modal-selector m-l-0 m-r-10">
-                    <h4>@lang('lang.modules')</h4>
-                    <div class="table-responsive">
-                        <table class="table table-bordered w-99">
-                            @foreach($modules as $index => $module)
-                            <tr>
-                                <td>{{ $module['module_alias'] }}</td>
-                                <td class="w-px-250">
-                                    <input type="hidden" name="modules[{{ $index }}][module_name]"
-                                        value="{{ $module['module_name'] }}">
-                                    <input type="hidden" name="modules[{{ $index }}][module_alias]"
-                                        value="{{ $module['module_alias'] }}">
-                                    <select class="select2-basic form-control form-control-sm select2-preselected"
-                                        name="modules[{{ $index }}][module_permission]"
-                                        data-preselected="{{ $module['module_permission'] ?? ''}}">
-                                        <option></option>
-                                        <option value="none">@lang('lang.none')</option>
-                                        <option value="view">@lang('lang.view')</option>
-                                        <option value="manage">@lang('lang.manage')</option>
-                                        <option value="admin">@lang('lang.admin')</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </table>
+        @if (config('response.mode') == 'edit')
+            <div class="row m-t-30">
+                <div class="col-12">
+                    <div class="modal-selector m-l-0 m-r-10">
+                        <h4>@lang('lang.modules')</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered w-99">
+                                @foreach ($modules as $index => $module)
+                                    <tr>
+                                        <td>{{ $module['module_alias'] }}</td>
+                                        <td class="w-px-250">
+                                            <input type="hidden" name="modules[{{ $index }}][module_name]"
+                                                value="{{ $module['module_name'] }}">
+                                            <input type="hidden" name="modules[{{ $index }}][module_alias]"
+                                                value="{{ $module['module_alias'] }}">
+                                            <select
+                                                class="select2-basic form-control form-control-sm select2-preselected"
+                                                name="modules[{{ $index }}][module_permission]"
+                                                data-preselected="{{ $module['module_permission'] ?? '' }}">
+                                                <option></option>
+                                                <option value="none">@lang('lang.none')</option>
+                                                <option value="view">@lang('lang.view')</option>
+                                                <option value="manage">@lang('lang.manage')</option>
+                                                <option value="admin">@lang('lang.admin')</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         @endif
 
         <!--[modules] permissions-->
-        @if(config('response.mode') == 'create')
-        <div class="alert alert-info">
-            @lang('lang.permission_for_modules_info')
-        </div>
+        @if (config('response.mode') == 'create')
+            <div class="alert alert-info">
+                @lang('lang.permission_for_modules_info')
+            </div>
         @endif
     </div>
-

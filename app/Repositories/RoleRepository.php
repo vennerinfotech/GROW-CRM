@@ -100,6 +100,11 @@ class RoleRepository
         $role->role_leads = (in_array(request('role_leads'), $valid)) ? request('role_leads') : 0;
         $role->role_expenses = (in_array(request('role_expenses'), $valid)) ? request('role_expenses') : 0;
         $role->role_refunds = (in_array(request('role_refunds'), $valid)) ? request('role_refunds') : 0;
+        $role->role_refunds_dashboard = (in_array(request('role_refunds_dashboard'), $valid)) ? request('role_refunds_dashboard') : 0;
+        $role->role_refunds_initial = (in_array(request('role_refunds_initial'), $valid)) ? request('role_refunds_initial') : 0;
+        $role->role_refunds_authorized = (in_array(request('role_refunds_authorized'), $valid)) ? request('role_refunds_authorized') : 0;
+        $role->role_refunds_completed = (in_array(request('role_refunds_completed'), $valid)) ? request('role_refunds_completed') : 0;
+        $role->role_refunds_rejected = (in_array(request('role_refunds_rejected'), $valid)) ? request('role_refunds_rejected') : 0;
         $role->role_timesheets = (in_array(request('role_timesheets'), $valid)) ? request('role_timesheets') : 0;
         $role->role_tickets = (in_array(request('role_tickets'), $valid)) ? request('role_tickets') : 0;
         $role->role_knowledgebase = (in_array(request('role_knowledgebase'), $valid)) ? request('role_knowledgebase') : 0;
@@ -160,6 +165,11 @@ class RoleRepository
         $role->role_leads = (in_array(request('role_leads'), $valid)) ? request('role_leads') : 0;
         $role->role_expenses = (in_array(request('role_expenses'), $valid)) ? request('role_expenses') : 0;
         $role->role_refunds = (in_array(request('role_refunds'), $valid)) ? request('role_refunds') : 0;
+        $role->role_refunds_dashboard = (in_array(request('role_refunds_dashboard'), $valid)) ? request('role_refunds_dashboard') : 0;
+        $role->role_refunds_initial = (in_array(request('role_refunds_initial'), $valid)) ? request('role_refunds_initial') : 0;
+        $role->role_refunds_authorized = (in_array(request('role_refunds_authorized'), $valid)) ? request('role_refunds_authorized') : 0;
+        $role->role_refunds_completed = (in_array(request('role_refunds_completed'), $valid)) ? request('role_refunds_completed') : 0;
+        $role->role_refunds_rejected = (in_array(request('role_refunds_rejected'), $valid)) ? request('role_refunds_rejected') : 0;
         $role->role_timesheets = (in_array(request('role_timesheets'), $valid)) ? request('role_timesheets') : 0;
         $role->role_tickets = (in_array(request('role_tickets'), $valid)) ? request('role_tickets') : 0;
         $role->role_knowledgebase = (in_array(request('role_knowledgebase'), $valid)) ? request('role_knowledgebase') : 0;

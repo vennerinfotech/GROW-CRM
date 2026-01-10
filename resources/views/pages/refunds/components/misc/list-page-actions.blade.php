@@ -43,7 +43,7 @@
 
         <!--ADD NEW ITEM-->
         <!--ADD NEW ITEM-->
-        @if(auth()->user()->role->role_refunds >= 2 || auth()->user()->is_admin)
+        @if(auth()->user()->role->role_refunds >= 2 || auth()->user()->role->role_refunds_initial >= 2 || auth()->user()->is_admin)
         <button type="button"
             class="btn btn-danger btn-add-circle edit-add-modal-button js-ajax-ux-request reset-target-modal-form"
             data-toggle="modal" data-target="#commonModal" data-url="{{ url('refunds/create') }}"
